@@ -2,7 +2,6 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import WelcomeScreen from '../screens/WelcomeScreen';
-import HomeScreen from '../screens/HomeScreen';
 import MainMenu from '../screens/MainMenu';
 
 export type RootStackParamList = {
@@ -11,12 +10,19 @@ export type RootStackParamList = {
   Details: { itemId: number };
 };
 
+// Створюємо Stack перед використанням
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function AppNavigation() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Welcome" screenOptions={{ headerShown: false }}>
+      <Stack.Navigator
+        initialRouteName="Welcome"
+        screenOptions={{
+          headerShown: false, 
+          animation: 'none', // default animations off
+        }}
+      >
         <Stack.Screen name="Welcome" component={WelcomeScreen} />
         <Stack.Screen name="MainMenu" component={MainMenu} />
       </Stack.Navigator>

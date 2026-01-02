@@ -15,6 +15,8 @@ export default function WelcomeScreen({ navigation }: Props) {
   const outerScale = useRef(new Animated.Value(0)).current;
   const textScale = useRef(new Animated.Value(0)).current;
 
+  const opacity = useRef(new Animated.Value(1)).current;
+
   useEffect(() => {
     Animated.sequence([
       // inner ring in
@@ -80,14 +82,22 @@ export default function WelcomeScreen({ navigation }: Props) {
             useNativeDriver: true,
           }),
         ]),
-    ]).start(() => {
-      navigation.replace('MainMenu');
-    });
+      ]).start(() => {
+        // fade out
+        Animated.timing(opacity, {
+          toValue: 0,
+          duration: 400, 
+          useNativeDriver: true,
+        }).start(() => {
+          navigation.replace('MainMenu');
+        });
+      });      
   }, []);
 
   
 
   return (
+  <Animated.View style={{ flex: 1, opacity }}>
     <ImageBackground
       source={require('../../assets/images/background.png')}
       style={styles.container}
@@ -153,6 +163,7 @@ export default function WelcomeScreen({ navigation }: Props) {
       </Animated.View>
 
     </ImageBackground>
+    </Animated.View>
   );
 }
 

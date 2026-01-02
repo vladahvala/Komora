@@ -1,42 +1,56 @@
-// MenuCard.tsx
-import { StyleSheet, Text, View, Image } from 'react-native';
+import { StyleSheet, Text, View, Image, Animated, Pressable } from 'react-native';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import React from 'react';
+import React, { useRef, useState } from 'react';
+
+import { Shadow } from 'react-native-shadow-2';
 
 type MenuCardProps = {
-  imageSource: any; // require('../../assets/...') або URL
+  imageSource: any;
   caption: string;
 };
 
 const MenuCard = ({ imageSource, caption }: MenuCardProps) => {
+  const [pressed, setPressed] = useState(false);
+
   return (
-    <View style={styles.cardContainer}>
-      <View style={styles.blueBox}>
-        <Image source={imageSource} style={styles.image} />
-      </View>
-      <Text style={styles.caption}>{caption}</Text>
-    </View>
+    // blue shadow for card (when pressed)
+    <Pressable
+        onPressIn={() => setPressed(true)}
+        onPressOut={() => setPressed(false)}
+        style={{ margin: 10, alignItems: 'center' }}
+    >
+    <Shadow
+      distance={pressed ? 15 : 8} // shadow power
+      startColor={pressed ? 'rgba(7, 181, 189, 0.6)' : 'rgba(0,0,0,0.3)'}
+      offset={[0, 0]}
+      radius={15}
+      containerViewStyle={{ alignSelf: 'center', alignItems: 'center' }}
+      viewStyle={{ width: hp(24), borderRadius: 15 }}
+    >
+        {/* MENU CARD */}
+      <Animated.View style={styles.cardContainer}>
+        <Image style={styles.blueBox} source={imageSource} />
+        <Text style={styles.caption}>{caption}</Text>
+      </Animated.View>
+    </Shadow>
+  </Pressable>
   );
 };
 
 export default MenuCard;
 
 const styles = StyleSheet.create({
+  // main card
   cardContainer: {
     backgroundColor: '#F6F6F6',
     borderRadius: 15,
     padding: 14,
     alignItems: 'center',
     width: hp(24),
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-    margin: 10,
   },
+
+  // image card
   blueBox: {
-    backgroundColor: '#07b5bd',
     borderRadius: 10,
     width: '100%',
     height: hp(11),
@@ -44,15 +58,14 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 10,
   },
-  image: {
-    width: hp(7),
-    height: hp(7),
-    resizeMode: 'contain',
-  },
+
+  // card title 
   caption: {
     fontSize: hp(3),
     fontWeight: '600',
     textAlign: 'center',
-    color: '#333',
+    color: '#2596be',
+    borderColor: 'black',
+    borderRadius: hp(4),
   },
 });

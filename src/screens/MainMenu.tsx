@@ -1,6 +1,5 @@
-// MainMenu.tsx
-import { StyleSheet, View, Text } from 'react-native';
-import React from 'react';
+import { StyleSheet, View, Text, Animated } from 'react-native';
+import React, { useEffect, useRef } from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation';
 import MenuCard from '../components/MenuCard';
@@ -9,13 +8,28 @@ import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 type Props = NativeStackScreenProps<RootStackParamList, 'MainMenu'>;
 
 export default function MainMenu({ navigation }: Props) {
+  const opacityAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.timing(opacityAnim, {
+      toValue: 1,
+      duration: 500,  
+      delay: 100,     
+      useNativeDriver: true,
+    }).start();
+  }, []);
+
   return (
     <View style={styles.screen}>
-    <Text style={styles.menuText}>Меню</Text>
-      <MenuCard imageSource={require('../../assets/images/icons/spoon_fork.png')} caption="Рецепти" />
-      <MenuCard imageSource={require('../../assets/images/icons/jar.png')} caption="Консервація" />
-      <MenuCard imageSource={require('../../assets/images/icons/bell.png')} caption="Нагадування" />
-      <MenuCard imageSource={require('../../assets/images/icons/bascket.png')} caption="Інші продукти" />
+      <Text style={styles.menuText}>Меню</Text>
+
+      {/* CARDS */}
+      <Animated.View style={{ opacity: opacityAnim }}>
+        <MenuCard imageSource={require('../../assets/images/консервація.jpg')} caption="Консервація" />
+        <MenuCard imageSource={require('../../assets/images/інші_продукти.jpg')} caption="Інші продукти" />
+        <MenuCard imageSource={require('../../assets/images/рецепти.jpg')} caption="Рецепти" />
+        <MenuCard imageSource={require('../../assets/images/нагадування.jpg')} caption="Нагадування" />
+      </Animated.View>
     </View>
   );
 }
@@ -27,12 +41,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'white',
   },
+
+  // title menu
   menuText: {
-    top: hp(1),
-    fontSize: hp(3),
+    fontSize: hp(4),
     fontWeight: '600',
     textAlign: 'center',
-    color: '#333',
+    color: '#2596be',
     marginBottom: hp(2),
   },
 });
