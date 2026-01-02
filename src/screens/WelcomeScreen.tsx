@@ -1,11 +1,13 @@
-import { View, Text, StyleSheet, Image, ImageBackground, Animated } from 'react-native';
+import { View, StyleSheet, Image, ImageBackground, Animated } from 'react-native';
 import { useEffect, useRef } from 'react';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { StatusBar } from 'expo-status-bar';
+import Svg, { Path, Text as SvgText, TextPath } from 'react-native-svg';
 
 export default function WelcomeScreen() {
   const innerScale = useRef(new Animated.Value(0)).current;
   const outerScale = useRef(new Animated.Value(0)).current;
+  const textScale = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     Animated.sequence([
@@ -22,12 +24,20 @@ export default function WelcomeScreen() {
         duration: 500,
         useNativeDriver: true,
       }),
+      Animated.delay(200),
+
+      // title text in
+      Animated.timing(textScale, {
+        toValue: 1,
+        duration: 400,
+        useNativeDriver: true,
+      }),
        
       // delay
-      Animated.delay(200),
+      Animated.delay(50),
   
-      // pulsayting circles
-        //  pulse up (both)
+      // pulsayting circles/title
+        //  pulse up (all)
         Animated.parallel([
           Animated.timing(innerScale, {
             toValue: 1.1,
@@ -39,9 +49,14 @@ export default function WelcomeScreen() {
             duration: 400,
             useNativeDriver: true,
           }),
+          Animated.timing(textScale, {
+            toValue: 1.2,
+            duration: 400,
+            useNativeDriver: true,
+          }),
         ]),
 
-        //  pulse down (both)
+        //  pulse down (all)
         Animated.parallel([
           Animated.timing(innerScale, {
             toValue: 1,
@@ -49,6 +64,11 @@ export default function WelcomeScreen() {
             useNativeDriver: true,
           }),
           Animated.timing(outerScale, {
+            toValue: 1,
+            duration: 400,
+            useNativeDriver: true,
+          }),
+          Animated.timing(textScale, {
             toValue: 1,
             duration: 400,
             useNativeDriver: true,
@@ -65,6 +85,41 @@ export default function WelcomeScreen() {
     >
       <View style={styles.overlay} />
       <StatusBar style="light" />
+
+      {/* TITLE */}
+      <Animated.View
+      style={[
+        styles.curvedTextWrapper,
+        { transform: [{ scale: textScale }] }, 
+        ]}
+      >
+        <Svg
+          width={hp(40)}
+          height={hp(35)}
+          viewBox="0 0 300 150"
+        >
+          <Path
+            id="curve"
+            d="M 20 120 A 130 120 0 0 1 280 120"
+            fill="none"
+          />
+          <SvgText
+            fill="white"
+            fontSize="72"
+            fontWeight="700"
+            letterSpacing="5"
+          >
+            <TextPath
+              href="#curve"
+              startOffset="18%"
+              textAnchor="middle"
+            >
+              Komora
+            </TextPath>
+          </SvgText>
+        </Svg>
+      </Animated.View>
+
 
       {/* OUTER RING */}
       <Animated.View
@@ -88,7 +143,6 @@ export default function WelcomeScreen() {
         </Animated.View>
       </Animated.View>
 
-      <Text style={styles.title}>Komora</Text>
     </ImageBackground>
   );
 }
@@ -119,6 +173,13 @@ const styles = StyleSheet.create({
     marginBottom: hp(6),
   },
 
+  // title (text)
+  curvedTextWrapper: {
+    position: 'absolute',
+    top: hp(27),   
+    zIndex: 3,
+  },
+  
    // Outer Ring
    outerRing: {
     width: hp(35),
