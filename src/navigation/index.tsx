@@ -3,10 +3,11 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import WelcomeScreen from '../screens/WelcomeScreen';
 import HomeScreen from '../screens/HomeScreen';
+import MainMenu from '../screens/MainMenu';
 
 export type RootStackParamList = {
   Welcome: undefined;
-  Home: undefined;
+  MainMenu: undefined;
   Details: { itemId: number };
 };
 
@@ -17,7 +18,7 @@ export default function AppNavigation() {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Welcome" screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Welcome" component={WelcomeScreen} />
-        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="MainMenu" component={MainMenu} />
       </Stack.Navigator>
     </NavigationContainer>
   );

@@ -3,8 +3,14 @@ import { useEffect, useRef } from 'react';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { StatusBar } from 'expo-status-bar';
 import Svg, { Path, Text as SvgText, TextPath } from 'react-native-svg';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import navigation, { RootStackParamList } from '../navigation';
 
-export default function WelcomeScreen() {
+type Props = {
+  navigation: NativeStackNavigationProp<RootStackParamList, 'Welcome'>;
+};
+
+export default function WelcomeScreen({ navigation }: Props) {
   const innerScale = useRef(new Animated.Value(0)).current;
   const outerScale = useRef(new Animated.Value(0)).current;
   const textScale = useRef(new Animated.Value(0)).current;
@@ -74,8 +80,11 @@ export default function WelcomeScreen() {
             useNativeDriver: true,
           }),
         ]),
-    ]).start();
+    ]).start(() => {
+      navigation.replace('MainMenu');
+    });
   }, []);
+
   
 
   return (
