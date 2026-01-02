@@ -1,38 +1,98 @@
+import { View, Text, StyleSheet, Image, ImageBackground, Animated } from 'react-native';
+import { useEffect, useRef } from 'react';
+import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { StatusBar } from 'expo-status-bar';
-import { View, Text, StyleSheet, Image, ImageBackground } from 'react-native';
-import {widthPercentageToDP as wp, heightPercentageToDP as hp} from 'react-native-responsive-screen';
-// import Animated, { useSharedValue, withSpring } from 'react-native-reanimated';
-import { useEffect } from 'react';
 
 export default function WelcomeScreen() {
+  const innerScale = useRef(new Animated.Value(0)).current;
+  const outerScale = useRef(new Animated.Value(0)).current;
 
+  useEffect(() => {
+    Animated.sequence([
+      // inner ring in
+      Animated.timing(innerScale, {
+        toValue: 1,
+        duration: 300,
+        useNativeDriver: true,
+      }),
+  
+      // outer ring in
+      Animated.timing(outerScale, {
+        toValue: 1,
+        duration: 500,
+        useNativeDriver: true,
+      }),
+       
+      // delay
+      Animated.delay(200),
+  
+      // pulsayting circles
+        //  pulse up (both)
+        Animated.parallel([
+          Animated.timing(innerScale, {
+            toValue: 1.1,
+            duration: 400,
+            useNativeDriver: true,
+          }),
+          Animated.timing(outerScale, {
+            toValue: 1.2,
+            duration: 400,
+            useNativeDriver: true,
+          }),
+        ]),
+
+        //  pulse down (both)
+        Animated.parallel([
+          Animated.timing(innerScale, {
+            toValue: 1,
+            duration: 400,
+            useNativeDriver: true,
+          }),
+          Animated.timing(outerScale, {
+            toValue: 1,
+            duration: 400,
+            useNativeDriver: true,
+          }),
+        ]),
+    ]).start();
+  }, []);
+  
 
   return (
     <ImageBackground
-      source={require('../../assets/images/background.png')} // твоя фонове зображення
+      source={require('../../assets/images/background.png')}
       style={styles.container}
     >
-      {/* Dark overlay for the background image */}
       <View style={styles.overlay} />
+      <StatusBar style="light" />
 
-      
-      <StatusBar style="light"/>
-
-      {/* logo image with all the rings */}
-      <View style={styles.outerRing}>
-        <View style={styles.innerRing}>
-        <Image
+      {/* OUTER RING */}
+      <Animated.View
+        style={[
+          styles.outerRing,
+          { transform: [{ scale: outerScale }] },
+        ]}
+      >
+        {/* INNER RING */}
+        <Animated.View
+          style={[
+            styles.innerRing,
+            { transform: [{ scale: innerScale }] },
+          ]}
+        >
+          {/* LOG IMAGE */}
+          <Image
             source={require('../../assets/images/welcome.png')}
             style={{ width: hp(20), height: hp(20) }}
-        />
-        </View>
-      </View>
+          />
+        </Animated.View>
+      </Animated.View>
 
-      {/* app name */}
       <Text style={styles.title}>Komora</Text>
     </ImageBackground>
   );
 }
+
 
 const styles = StyleSheet.create({
   // main container   
