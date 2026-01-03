@@ -3,7 +3,7 @@ import { View, Text, Image, Pressable, TouchableNativeFeedback, StyleSheet, Dime
 import { Shadow } from 'react-native-shadow-2';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
-const CARD_WIDTH = Dimensions.get('window').width / 2 - 24;
+const CARD_WIDTH = Dimensions.get('window').width / 2 - 40;
 
 const ConsMenuCard = ({ item, index }) => {
   const [pressed, setPressed] = useState(false);
