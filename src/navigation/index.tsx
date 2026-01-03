@@ -3,7 +3,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import WelcomeScreen from '../screens/WelcomeScreen';
 import MainMenu from '../screens/MainMenu';
-import ConservationNavigation from '../screens/ConservationNavigation';
+import ConservationNavigation from '../screens/Conservation/ConservationNavigation';
 
 export type RootStackParamList = {
   Welcome: undefined;

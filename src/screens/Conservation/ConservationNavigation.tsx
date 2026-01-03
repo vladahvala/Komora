@@ -38,8 +38,8 @@ export default function ConservationNavigation() {
               focused={focused}
               source={
                 focused
-                  ? require('../../assets/icons/home_black.png')
-                  : require('../../assets/icons/home.png')
+                  ? require('../../../assets/icons/home_black.png')
+                  : require('../../../assets/icons/home.png')
               }
             />
           ),
@@ -54,8 +54,8 @@ export default function ConservationNavigation() {
               focused={focused}
               source={
                 focused
-                  ? require('../../assets/icons/bookmark_black.png')
-                  : require('../../assets/icons/bookmark.png')
+                  ? require('../../../assets/icons/bookmark_black.png')
+                  : require('../../../assets/icons/bookmark.png')
               }
             />
           ),
@@ -70,8 +70,8 @@ export default function ConservationNavigation() {
               focused={focused}
               source={
                 focused
-                  ? require('../../assets/icons/add_black.png')
-                  : require('../../assets/icons/add.png')
+                  ? require('../../../assets/icons/add_black.png')
+                  : require('../../../assets/icons/add.png')
               }
             />
           ),
@@ -87,8 +87,8 @@ export default function ConservationNavigation() {
               style={styles.jarIcon}
               source={
                 focused
-                  ? require('../../assets/icons/jar_black.png')
-                  : require('../../assets/icons/jar.png')
+                  ? require('../../../assets/icons/jar_black.png')
+                  : require('../../../assets/icons/jar.png')
               }
             />
           ),
