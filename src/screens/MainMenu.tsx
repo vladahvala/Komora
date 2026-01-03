@@ -25,7 +25,11 @@ export default function MainMenu({ navigation }: Props) {
 
       {/* CARDS */}
       <Animated.View style={{ opacity: opacityAnim }}>
-        <MenuCard imageSource={require('../../assets/images/консервація.jpg')} caption="Консервація" />
+      <MenuCard
+        imageSource={require('../../assets/images/консервація.jpg')}
+        caption="Консервація"
+        onPress={() => navigation.navigate('ConservationNavigation', { screen: 'HomeTab' })}
+      />
         <MenuCard imageSource={require('../../assets/images/інші_продукти.jpg')} caption="Інші продукти" />
         <MenuCard imageSource={require('../../assets/images/рецепти.jpg')} caption="Рецепти" />
         <MenuCard imageSource={require('../../assets/images/нагадування.jpg')} caption="Нагадування" />

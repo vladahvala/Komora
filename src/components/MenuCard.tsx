@@ -7,14 +7,16 @@ import { Shadow } from 'react-native-shadow-2';
 type MenuCardProps = {
   imageSource: any;
   caption: string;
+  onPress?: () => void; 
 };
 
-const MenuCard = ({ imageSource, caption }: MenuCardProps) => {
+const MenuCard = ({ imageSource, caption, onPress }: MenuCardProps) => {
   const [pressed, setPressed] = useState(false);
 
   return (
     // blue shadow for card (when pressed)
     <Pressable
+        onPress={onPress}  
         onPressIn={() => setPressed(true)}
         onPressOut={() => setPressed(false)}
         style={{ margin: 10, alignItems: 'center' }}

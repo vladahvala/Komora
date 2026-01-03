@@ -32,66 +32,41 @@ export default function WelcomeScreen({ navigation }: Props) {
         duration: 500,
         useNativeDriver: true,
       }),
+  
       Animated.delay(200),
-
+  
       // title text in
       Animated.timing(textScale, {
         toValue: 1,
         duration: 400,
         useNativeDriver: true,
       }),
-       
-      // delay
-      Animated.delay(50),
   
-      // pulsayting circles/title
-        //  pulse up (all)
-        Animated.parallel([
-          Animated.timing(innerScale, {
-            toValue: 1.1,
-            duration: 400,
-            useNativeDriver: true,
-          }),
-          Animated.timing(outerScale, {
-            toValue: 1.2,
-            duration: 400,
-            useNativeDriver: true,
-          }),
-          Animated.timing(textScale, {
-            toValue: 1.2,
-            duration: 400,
-            useNativeDriver: true,
-          }),
-        ]),
-
-        //  pulse down (all)
-        Animated.parallel([
-          Animated.timing(innerScale, {
-            toValue: 1,
-            duration: 400,
-            useNativeDriver: true,
-          }),
-          Animated.timing(outerScale, {
-            toValue: 1,
-            duration: 400,
-            useNativeDriver: true,
-          }),
-          Animated.timing(textScale, {
-            toValue: 1,
-            duration: 400,
-            useNativeDriver: true,
-          }),
-        ]),
-      ]).start(() => {
-        // fade out
-        Animated.timing(opacity, {
-          toValue: 0,
-          duration: 400, 
-          useNativeDriver: true,
-        }).start(() => {
-          navigation.replace('MainMenu');
-        });
-      });      
+      Animated.delay(600),
+  
+      // pulse up
+      Animated.parallel([
+        Animated.timing(innerScale, { toValue: 1.1, duration: 400, useNativeDriver: true }),
+        Animated.timing(outerScale, { toValue: 1.2, duration: 400, useNativeDriver: true }),
+        Animated.timing(textScale, { toValue: 1.2, duration: 400, useNativeDriver: true }),
+      ]),
+  
+      // pulse down
+      Animated.parallel([
+        Animated.timing(innerScale, { toValue: 1, duration: 400, useNativeDriver: true }),
+        Animated.timing(outerScale, { toValue: 1, duration: 400, useNativeDriver: true }),
+        Animated.timing(textScale, { toValue: 1, duration: 400, useNativeDriver: true }),
+      ]),
+  
+      // fade out
+      Animated.timing(opacity, {
+        toValue: 0,
+        duration: 400,
+        useNativeDriver: true,
+      }),
+    ]).start(() => {
+      navigation.replace('MainMenu');
+    });
   }, []);
 
   
@@ -182,7 +157,7 @@ const styles = StyleSheet.create({
   // overlay for background image
   overlay: {
     ...StyleSheet.absoluteFillObject, 
-    backgroundColor: 'rgba(0,0,0,0.7)', 
+    backgroundColor: 'rgba(0,0,0,0.4)', 
   },
 
   // app name 
