@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, Text, Image, StyleSheet, Pressable } from 'react-native';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { Shadow } from 'react-native-shadow-2';
 
 type ConsMenuCardSmallProps = {
   item: {
@@ -12,28 +13,42 @@ type ConsMenuCardSmallProps = {
 };
 
 const ConsMenuCardSmall = ({ item, onPress }: ConsMenuCardSmallProps) => {
+    const [pressed, setPressed] = useState(false);
   return (
-    <Pressable style={styles.cardContainer} onPress={onPress}>
-      {/* Зображення зліва */}
-      <Image source={item.image} style={styles.image} />
-
-      {/* Текстова частина справа */}
-      <View style={styles.textContainer}>
-      
-      <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">
-        {item.name}
-        </Text>
-           {/* Рядок з кількістю банок та іконкою */}
-           <View style={styles.subtitleRow}>
-          <Text style={styles.subtitle}>{item.num}</Text>
-          <Image
-            source={require('../../assets/icons/jar.png')}
-            style={styles.jarIcon}
-          />
-          <Text style={styles.subtitle}> Банок</Text>
+    <Pressable
+    style={{ marginBottom: hp(2) }}
+    onPress={onPress}
+    onPressIn={() => setPressed(true)}
+    onPressOut={() => setPressed(false)}
+  >
+    <Shadow
+      distance={pressed ? 15 : 7}
+      startColor={pressed ? 'rgba(7,181,189,0.6)' : 'rgba(0,0,0,0.3)'}
+      radius={12}
+      offset={[0, 0]}
+      viewStyle={{ width: '100%', borderRadius: 12, backgroundColor: '#fff' }}
+    >
+      {/* Один контейнер всередині Shadow */}
+      <View style={styles.cardContainer}>
+        <Image source={item.image} style={styles.image} />
+  
+        <View style={styles.textContainer}>
+          <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">
+            {item.name}
+          </Text>
+          <View style={styles.subtitleRow}>
+            <Text style={styles.subtitle}>{item.cansCount}</Text>
+            <Image
+              source={require('../../assets/icons/jar.png')}
+              style={styles.jarIcon}
+            />
+            <Text style={styles.subtitle}> Банок</Text>
+          </View>
         </View>
       </View>
-    </Pressable>
+    </Shadow>
+  </Pressable>
+  
   );
 };
 
@@ -45,7 +60,6 @@ const styles = StyleSheet.create({
       width: '100%',
       backgroundColor: '#fff',
       borderRadius: 12,
-      marginBottom: hp(2),
       padding: 12,
       alignItems: 'center',
       shadowColor: '#000',
