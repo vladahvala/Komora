@@ -6,15 +6,19 @@ import ConsMenuCardSmall from '../../components/ConsMenuCardSmall';
 import data from '../../../data/data';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
-import navigation, { RootStackParamList } from '../../navigation';
+import { RootStackParamList } from '../../navigation';
 
 const ConservationMain = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
+  // search bar
   const [searchText, setSearchText] = useState('');
-  const [isBigIcon, setIsBigIcon] = useState(true); // 'big' або 'small'
   const filteredData = data.filter(item =>
     item.name.toLowerCase().includes(searchText.toLowerCase())
   );
+
+  // cards style
+  const [isBigIcon, setIsBigIcon] = useState(true); // 'big' або 'small'
   const toggleIcon = () => {
     setIsBigIcon(prev => !prev);
   };
@@ -29,27 +33,28 @@ const ConservationMain = () => {
     >
       <SafeAreaProvider style={styles.container}>
         <FlatList
-           key={isBigIcon ? 'big' : 'small'} // <- ключ змінюється, FlatList перерендериться повністю
-           data={filteredData}
-           renderItem={({ item, index }) =>
-             isBigIcon ? (
-               <ConsMenuCard item={item} index={index} />
-             ) : (
-               <ConsMenuCardSmall item={item} index={index} />
-             )
-           }
-           numColumns={isBigIcon ? 2 : 1}  // кількість колонок
-           columnWrapperStyle={
-             isBigIcon
-               ? { justifyContent: 'space-between', marginBottom: 25 }
-               : undefined
-           }
-           contentContainerStyle={{
-             paddingHorizontal: 27,
-           }}
+          // card style change
+          key={isBigIcon ? 'big' : 'small'} 
+          data={filteredData}
+          renderItem={({ item, index }) =>
+            isBigIcon ? (
+              <ConsMenuCard item={item} index={index} />
+            ) : (
+              <ConsMenuCardSmall item={item} index={index} />
+            )
+          }
+          numColumns={isBigIcon ? 2 : 1}  // column num
+          columnWrapperStyle={
+            isBigIcon
+              ? { justifyContent: 'space-between', marginBottom: 25 }
+              : undefined
+          }
+          contentContainerStyle={{
+            paddingHorizontal: 27,
+          }}
           ListHeaderComponent={
             <View style={styles.headerContainer}>
-              {/* Стрілка зверху зліва */}
+              {/* ARROW TO MAIN MENU */}
               <TouchableOpacity 
                 onPress={() => navigation.navigate('MainMenu')} 
                 style={styles.arrowWrapper}
@@ -63,12 +68,15 @@ const ConservationMain = () => {
                 </View>
               </TouchableOpacity>
               
-              {/* Текст “Меню” під стрілкою */}
+              {/* TITLE TEXT */}
               <Text style={styles.menuTitle}>Консервація</Text>
               <Text style={styles.menuTextMain}>Хочете знайти потрібну консервацію?</Text>
               <Text style={styles.menuTextSecondary}>Скористайтесь полем пошуку</Text>
 
+              {/* SEARCH & CARD STYLE CHANGE ROW */}
               <View style={styles.searchRow}>
+
+                {/* SEARCH BAR */}
                 <View style={styles.searchContainer}>
                   <Image
                     source={require('../../../assets/icons/search.png')}
@@ -84,7 +92,7 @@ const ConservationMain = () => {
                   />
                 </View>
                 
-                {/* Квадрат із іконкою всередині */}
+                {/* CARD STYLE CHANGE */}
                 <Pressable onPress={toggleIcon} style={styles.bigIconContainer}>
                   <Image
                     source={
@@ -96,7 +104,6 @@ const ConservationMain = () => {
                   />
                 </Pressable>
               </View>
-
             </View>
           }
         />
@@ -108,28 +115,34 @@ const ConservationMain = () => {
 export default ConservationMain;
 
 const styles = StyleSheet.create({
+  // main container
   container: { 
     flex: 1, 
     backgroundColor: '#F7F9FD' 
   },
+  // header container
   headerContainer: { 
     paddingTop: hp(5), 
     marginBottom: hp(2), 
-    paddingHorizontal: 1 
+    paddingHorizontal: hp(1), 
   },
+
+  // arrow style
   arrowWrapper: {
     alignSelf: 'flex-start',
-    marginBottom: 8,
+    marginBottom: hp(1),
   },
   arrowTouchArea: {
-    padding: 10,          
+    padding: hp(1.2),          
     justifyContent: 'center',
     alignItems: 'center',
   },
   arrowIcon: { 
-    width: 26, 
-    height: 24,
+    width: hp(3.2), 
+    height: hp(3),
   },  
+
+  // menu text
   menuTitle: { 
     fontSize: hp(3.5), 
     marginBottom: hp(3), 
@@ -150,6 +163,8 @@ const styles = StyleSheet.create({
     color: 'grey', 
     textAlign: 'left' 
   },
+
+  // search bar styles
   searchRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -158,39 +173,40 @@ const styles = StyleSheet.create({
   },
   searchContainer: {
     flex: 1,
+    marginLeft: -hp(1), 
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#F1F1F1',
     borderColor: '#00B4BF',
-    borderWidth: 1,
-    borderRadius: 12,
-    paddingHorizontal: 12,
+    borderWidth: hp(0.15),
+    borderRadius: hp(1.5),
+    paddingHorizontal: hp(1.5),
     height: hp(6),
   },
   searchIcon: {
-    width: 20,
-    height: 20,
-    marginRight: 10,
+    width: hp(2.2),
+    height: hp(2.2),
+    marginRight: hp(1),
   },
   searchInput: {
     flex: 1,
     fontSize: hp(2.2),
     color: '#000',
   },
+
+  // cards style change styles
   bigIconContainer: {
     width: hp(6),
     height: hp(6),
-    marginLeft: 20,             // відстань від поля пошуку
+    marginLeft: hp(2),         
     backgroundColor: '#00B4BF66',
-    borderRadius: 12,
+    borderRadius: hp(1.5),
     justifyContent: 'center',
     alignItems: 'center',
   },
   bigIconImage: {
-    width: hp(3),               // іконка менша за квадрат
+    width: hp(3),           
     height: hp(3),
     resizeMode: 'contain',
   },
-  
-  
 });

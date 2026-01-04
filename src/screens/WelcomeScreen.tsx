@@ -4,7 +4,7 @@ import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { StatusBar } from 'expo-status-bar';
 import Svg, { Path, Text as SvgText, TextPath } from 'react-native-svg';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import navigation, { RootStackParamList } from '../navigation';
+import { RootStackParamList } from '../navigation';
 
 type Props = {
   navigation: NativeStackNavigationProp<RootStackParamList, 'Welcome'>;
@@ -73,10 +73,10 @@ export default function WelcomeScreen({ navigation }: Props) {
 
   return (
   <Animated.View style={{ flex: 1, opacity }}>
-    <ImageBackground
-      source={require('../../assets/images/background.png')}
-      style={styles.container}
-    >
+      <ImageBackground
+        source={require('../../assets/images/background.png')}
+        style={styles.container}
+      >
       <View style={styles.overlay} />
       <StatusBar style="light" />
 
@@ -142,7 +142,6 @@ export default function WelcomeScreen({ navigation }: Props) {
   );
 }
 
-
 const styles = StyleSheet.create({
   // main container   
   container: {
@@ -151,7 +150,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: hp(2), 
     backgroundColor: '#f59e0b', 
-    padding: 1,
   },
 
   // overlay for background image
@@ -175,8 +173,8 @@ const styles = StyleSheet.create({
     zIndex: 3,
   },
   
-   // Outer Ring
-   outerRing: {
+  // Outer Ring
+  outerRing: {
     width: hp(35),
     height: hp(35),
     borderRadius: hp(35) / 2, // half of the height
