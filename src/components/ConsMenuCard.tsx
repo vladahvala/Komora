@@ -24,8 +24,22 @@ const ConsMenuCard = ({ item, index }) => {
                 <View style={styles.imageContainer}>
                     <Image source={item.image} style={styles.image} />
                 </View>
-                <Text style={styles.nameText}>{item.name}</Text>
-                <Text style={styles.priceText}>{item.price}</Text>
+                <Text
+                  style={styles.nameText}
+                  numberOfLines={1}
+                  ellipsizeMode="tail"
+                >
+                  {item.name}
+                </Text>
+
+                <View style={styles.jarsRow}>
+                  <Text style={styles.jarText}>{item.num}</Text>
+                  <Image
+                    source={require('../../assets/icons/jar.png')}
+                    style={styles.jarIcon}
+                  />
+                  <Text style={styles.jarText}> Банок</Text>
+                </View>      
             </View>
         </Shadow>
     </Pressable>
@@ -37,28 +51,50 @@ export default ConsMenuCard;
 const styles = StyleSheet.create({
     listContainer: {
       backgroundColor: 'white',
-      paddingBottom: 12, 
+      paddingBottom: 12,
       borderRadius: 20,
+      height: hp(25),   // ⬅️ ФІКСОВАНА ВИСОТА КАРТКИ
     },
     imageContainer: {
-      margin: 15,
-      borderRadius: 10,
+      marginLeft: 15,
+      marginRight: 15,
+      marginTop: 5,
       overflow: 'hidden',
+      // marginBottom: hp(0.8),
     },
     image: {
-      width: '100%',
+      width: '100%',        // залишаємо ширину повною
       height: undefined,
-      aspectRatio: 1,
+      aspectRatio: 1,       // щоб картинка залишалась квадратною
+      transform: [{ scaleY: 0.85 }], // зменшення тільки по висоті
+      borderRadius: 10,
     },
     nameText: {
       color: 'black',
       fontWeight: 'bold',
       marginLeft: 15,
-    },
-    priceText: {
-      color: 'orange',
-      fontWeight: 'bold',
+      marginRight: 15,
+      lineHeight: hp(1.5),   // висота одного рядка
+      height: hp(1.8),       // 2 рядки × lineHeight
+      fontSize: hp(1.8),
+      marginTop: hp(0.5),
+    },     
+    jarsRow: {
+      flexDirection: 'row',
+      alignItems: 'center',
       marginLeft: 15,
-      marginTop: 10,
+      marginTop: hp(2), // ⬅️ відступ від назви
     },
+    jarText: {
+      color: 'grey',
+      fontWeight: 'bold',
+      fontSize: hp(1.2),
+    },
+    jarIcon: {
+      width: hp(2.2),
+      height: hp(2.2),
+      marginHorizontal: 4,
+      resizeMode: 'contain',
+    },
+    
   })
