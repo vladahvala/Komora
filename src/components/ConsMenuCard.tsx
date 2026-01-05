@@ -59,7 +59,7 @@ export default ConsMenuCard;
 const styles = StyleSheet.create({
   // main container
   listContainer: {
-    backgroundColor: 'white',
+    backgroundColor: '#F6F6F6',
     paddingBottom: hp(2),    
     borderRadius: hp(2.5),
     height: hp(25),   
