@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     paddingBottom: hp(1),     
     alignItems: 'center',      
   },
-
+  
   // arrow styles
   arrowWrapper: {
     position: 'absolute',      
@@ -96,5 +96,6 @@ const styles = StyleSheet.create({
     color: 'black',
     textAlign: 'center',
     marginTop: hp(6),
+    width: '100%',
   }
 });

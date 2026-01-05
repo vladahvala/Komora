@@ -11,16 +11,16 @@ const CatCard = ({ item, onPress }) => {
       onPress={onPress}
       onPressIn={() => setPressed(true)}
       onPressOut={() => setPressed(false)}
-      style={{  marginBottom: hp(2.5) }}
+      style={{ marginBottom: hp(2.5) }}
     >
 
       {/* GLOWING SHADOW */}
       <Shadow
-        distance={pressed ? 15 : 7}
+        distance={pressed ? hp(2) : hp(1)}  
         startColor={pressed ? 'rgba(7,181,189,0.6)' : 'rgba(0,0,0,0.3)'}
         offset={[0,0]}
-        radius={15}
-        viewStyle={{ width: '95%', borderRadius: 15, alignSelf: 'center' }} 
+        radius={hp(2)}
+        viewStyle={{ width: '95%', borderRadius: hp(2), alignSelf: 'center' }}
       > 
 
         {/* CARDS */}
@@ -39,6 +39,7 @@ const CatCard = ({ item, onPress }) => {
 };
 
 export default CatCard;
+
 const styles = StyleSheet.create({
   // main container
   cardContainer: {
@@ -46,7 +47,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     backgroundColor: 'white',
-    borderRadius: 15,
+    borderRadius: hp(2),
     padding: hp(1.7),
     width: '100%',
   },
@@ -55,8 +56,8 @@ const styles = StyleSheet.create({
   image: {
     width: hp(4.3),
     height: hp(4.3),
-    marginLeft: hp(2), 
-    resizeMode: 'contain', 
+    marginLeft: hp(2),
+    resizeMode: 'contain',
   },
   textContainer: {
     flex: 1,
@@ -65,7 +66,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: hp(2.7),
     fontWeight: '600',
-    marginLeft: hp(1), 
+    marginLeft: hp(1),
     color: '#000',
   },
 });
