@@ -5,7 +5,7 @@ import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import ConservationMain from './ConservationMain';
 import CategoryConservation from './CategoryConservation';
 import AddConservation from './AddConservation';
-import JarConservation from './JarConservation';
+import JarConservation from './EmptyJarsConservation';
 
 const Tab = createBottomTabNavigator();
 
