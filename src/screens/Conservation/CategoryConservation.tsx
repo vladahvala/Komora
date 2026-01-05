@@ -68,15 +68,18 @@ const styles = StyleSheet.create({
 
   // header
   headerContainer: {
-    marginBottom: hp(2),
+    marginBottom: hp(2), 
+    paddingBottom: hp(1),     
+    alignItems: 'center',      
   },
+
   // arrow styles
   arrowWrapper: {
-    alignSelf: 'flex-start',
-    marginLeft: -hp(1.5),
+    position: 'absolute',      
+    left: 0,
   },
   arrowTouchArea: {
-    padding: hp(2),
+    padding: hp(1),
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -92,6 +95,6 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     color: 'black',
     textAlign: 'center',
-    marginBottom: hp(2),
-  },
+    marginTop: hp(6),
+  }
 });
