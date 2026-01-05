@@ -18,7 +18,7 @@ const ConservationMain = () => {
   );
 
   // cards style
-  const [isBigIcon, setIsBigIcon] = useState(true); // 'big' або 'small'
+  const [isBigIcon, setIsBigIcon] = useState(true); 
   const toggleIcon = () => {
     setIsBigIcon(prev => !prev);
   };
@@ -131,6 +131,7 @@ const styles = StyleSheet.create({
   arrowWrapper: {
     alignSelf: 'flex-start',
     marginBottom: hp(1),
+    marginLeft: -hp(1),
   },
   arrowTouchArea: {
     padding: hp(1.2),          
@@ -140,6 +141,7 @@ const styles = StyleSheet.create({
   arrowIcon: { 
     width: hp(3.2), 
     height: hp(3),
+    resizeMode: 'contain', 
   },  
 
   // menu text
