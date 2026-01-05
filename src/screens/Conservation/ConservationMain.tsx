@@ -141,7 +141,7 @@ const styles = StyleSheet.create({
   arrowIcon: { 
     width: hp(3.2), 
     height: hp(3),
-    resizeMode: 'contain', 
+    resizeMode: 'contain',
   },  
 
   // menu text

@@ -1,14 +1,265 @@
-import { StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import React, { useState } from 'react';
+import { View, Text, TouchableOpacity, Image, StyleSheet, TextInput, Pressable, ScrollView } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
+import { RootStackParamList } from '../../navigation';
+import JarNumCard from '../../components/JarNumCard';
 
 const AddConservation = () => {
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
+  // active name field
+  const [isNameFocused, setIsNameFocused] = useState(false);
+
+  // active category field
+  const [isCategoryFocused, setIsCategoryFocused] = useState(false);
+
   return (
-    <View>
-      <Text>AddConservation</Text>
-    </View>
-  )
-}
+    // MAIN CONTAINER
+    <SafeAreaProvider style={styles.container}>
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.headerContainer}>
+          {/* ARROW TO MAIN MENU */}
+          <TouchableOpacity 
+            onPress={() => navigation.navigate('MainMenu')} 
+            style={styles.arrowWrapper}
+            activeOpacity={1}  
+          >
+            <View style={styles.arrowTouchArea}>
+              <Image
+                source={require('../../../assets/icons/arrow.png')}
+                style={styles.arrowIcon}
+              />
+            </View>
+          </TouchableOpacity>
 
-export default AddConservation
+          {/* TITLE TEXT */}
+          <Text style={styles.menuTitle}>Нова консервація</Text>
 
-const styles = StyleSheet.create({})
+          {/* FIRST INPUT WITH LABEL */}
+          <View style={{ marginTop: hp(2) }}>
+            <Text style={styles.label}>Назва</Text>
+            <View style={[
+              styles.searchContainer,
+              { borderColor: isNameFocused ? '#00B4BF' : '#AEAEAE' }
+            ]}>
+              <TextInput
+                style={styles.searchInput}
+                onFocus={() => setIsNameFocused(true)}
+                onBlur={() => setIsNameFocused(false)}
+              />
+            </View>
+          </View>
+
+          {/* SECOND INPUT WITH LABEL */}
+          <View style={{ marginTop: hp(2) }}>
+            <Text style={styles.label}>Категорія</Text>
+            <View style={[
+              styles.searchContainer,
+              { borderColor: isCategoryFocused ? '#00B4BF' : '#AEAEAE' }
+            ]}>
+              <TextInput
+                style={styles.searchInput}
+                onFocus={() => setIsCategoryFocused(true)}
+                onBlur={() => setIsCategoryFocused(false)}
+              />
+            </View>
+          </View>
+
+          {/* CONSERVATION TIME */}
+          <View style={styles.timeRow}> 
+            <Text style={styles.timeTitle}>Час консервації:</Text>
+            <Pressable style={styles.bigIconContainer}>
+              <Text style={styles.timeTitle}>2021</Text>
+              <Image
+                source={require('../../../assets/icons/frame_down.png')}
+                style={styles.arrowDownIcon}
+              />
+            </Pressable>
+          </View>
+
+          {/* JAR NUM */}
+          <Text style={styles.jarNumTitle}>Кількість банок</Text>
+
+          <View style={styles.leftCol}>
+            {/* LEFT COLUMN 3 CARDS */}
+            <View style={{ paddingHorizontal: hp(3.2), justifyContent: 'flex-start' }}>
+              <View style={{ justifyContent: 'flex-start' }}>
+                <JarNumCard 
+                  image={require('../../../assets/jar_icons/empty_jar.png')} 
+                  style={{ marginBottom: hp(4) }} 
+                  label="2"             // card center text 
+                  circleLabel="3л"        // text in jar
+                />
+                <JarNumCard 
+                  image={require('../../../assets/jar_icons/empty_jar.png')}
+                  style={{ marginBottom: hp(4) }}
+                  label="4" 
+                  circleLabel={'2л'}  
+                />
+                <JarNumCard 
+                  image={require('../../../assets/jar_icons/empty_jar.png')}
+                  label="7" 
+                  style={undefined} 
+                  circleLabel={'1.5л'}
+                />
+              </View>
+            </View>
+
+            {/* RIGHT COLUMN 2 CARDS */}
+            <View style={{ justifyContent: 'center' }}>
+              <JarNumCard 
+                image={require('../../../assets/jar_icons/empty_jar.png')} 
+                style={{ marginBottom: hp(4) }} 
+                label={2} 
+                circleLabel={'1л'} 
+              />
+              <JarNumCard 
+                image={require('../../../assets/jar_icons/empty_jar.png')} 
+                style={undefined} 
+                label={1} 
+                circleLabel={'0.5л'} 
+              />
+            </View>
+          </View>
+
+          {/* ADD CONSERVATION BUTTON */}
+          <Pressable style={styles.addButton}>
+            <Text style={styles.addButtonText}>Додати консервацію</Text>
+          </Pressable>
+        </View>
+      </ScrollView>
+    </SafeAreaProvider>
+  );
+};
+
+export default AddConservation;
+
+const styles = StyleSheet.create({
+  // main cintainer
+  container: { 
+    flex: 1, 
+    backgroundColor: '#F7F9FD',
+    paddingHorizontal: hp(3.2),
+  },
+  scrollContent: {
+    paddingBottom: hp(4), 
+  },
+  headerContainer: { 
+    paddingTop: hp(5), 
+    marginBottom: hp(2), 
+    paddingHorizontal: hp(1), 
+  },
+
+  // arrow styles
+  arrowWrapper: {
+    alignSelf: 'flex-start',
+    marginBottom: hp(1),
+    marginLeft: -hp(1),
+  },
+  arrowTouchArea: {
+    padding: hp(1.2),          
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  arrowIcon: { 
+    width: hp(3.2), 
+    height: hp(3),
+    resizeMode: 'contain', 
+  },  
+
+  // title text
+  menuTitle: { 
+    fontSize: hp(3.5), 
+    fontWeight: '600', 
+    color: 'black', 
+    textAlign: 'center',
+  },
+
+  // input fields
+  label: {
+    fontSize: hp(2.2),
+    fontWeight: '500',
+    color: '#333',
+    marginBottom: hp(0.5),
+  },
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F1F1F1',
+    borderWidth: hp(0.25),
+    borderRadius: hp(1.5),
+    paddingHorizontal: hp(1.5),
+    height: hp(6),
+  },
+  searchInput: {
+    flex: 1,
+    fontSize: hp(2.2),
+    color: '#000',
+  },
+
+  // time row styles
+  timeRow: {
+    flexDirection: 'row',     
+    alignItems: 'center', 
+    marginTop: hp(3),    
+  },
+  timeTitle: {
+    fontSize: hp(3.2), 
+    fontWeight: '600', 
+    color: 'black', 
+  },
+  bigIconContainer: {
+    flexDirection: 'row',    
+    alignItems: 'center',      
+    paddingHorizontal: hp(1.5),
+    height: hp(6),
+    marginLeft: hp(2),         
+    backgroundColor: '#00B4BF66',
+    borderRadius: hp(1.5),
+    justifyContent: 'center',
+  },
+  arrowDownIcon: {
+    width: hp(2.5),
+    height: hp(2.5),
+    resizeMode: 'contain',
+    marginLeft: hp(1), 
+  },
+
+  // jar num title 
+  jarNumTitle: {
+    fontSize: hp(3.5), 
+    fontWeight: '600', 
+    color: 'black', 
+    textAlign: 'center', 
+    marginTop: hp(3),  
+  },
+
+  // left column
+  leftCol: { 
+    flexDirection: 'row', 
+    justifyContent: 'space-between', 
+    marginTop: hp(4) 
+  },
+
+  // button styles
+  addButton: {
+    marginTop: hp(4),
+    paddingHorizontal: hp(2),  
+    height: hp(6.5),
+    borderRadius: hp(3.25),
+    backgroundColor: '#00B4BF',
+    justifyContent: 'center',
+    alignItems: 'center',
+    alignSelf: 'center',       
+  },  
+  addButtonText: {
+    fontSize: hp(2.6),
+    fontWeight: '700',
+    color: 'black',
+  },
+});
