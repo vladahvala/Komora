@@ -2,17 +2,34 @@ import React, { useState } from 'react';
 import { View, Text, Image, Pressable, StyleSheet, Dimensions } from 'react-native';
 import { Shadow } from 'react-native-shadow-2';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
+import { RootStackParamList } from '../navigation'; // твій стек навігації
 
 // fixed card width
 const CARD_WIDTH = Dimensions.get('window').width / 2 - 40;
 
-const ConsMenuCard = ({ item, index }) => {
+type ConsMenuCardProps = {
+  item: {
+    name: string;
+    image: any;
+    cansCount: number;
+  };
+  index: number;
+};
+
+const ConsMenuCard = ({ item, index }: ConsMenuCardProps) => {
   // shadow glowing efect
   const [pressed, setPressed] = useState(false);
 
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
+  const handlePress = () => {
+    navigation.navigate('CardPage', { item });
+  };
+
   return (
     <Pressable
-      onPress={() => console.log('CARD PRESS', index)}
+      onPress={handlePress}
       onPressIn={() => setPressed(true)}
       onPressOut={() => setPressed(false)}
       style={{ width: CARD_WIDTH }}>
