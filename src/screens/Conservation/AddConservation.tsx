@@ -5,11 +5,14 @@ import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigation';
 import JarNumCard from '../../components/JarNumCard';
+import AlertModal from '../../components/AlertModal';
 
 const AddConservation = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
-  // active name field
+  // name field
+  const [name, setName] = useState('');
+  // active 
   const [isNameFocused, setIsNameFocused] = useState(false);
 
   // active category field
@@ -26,7 +29,29 @@ const AddConservation = () => {
   const [selectedYear, setSelectedYear] = useState<string | null>(null);
   // years list
   const years = ['2021', '2022', '2023', '2024', '2025', '2026'];
- 
+
+  // alerts 
+  const [modalVisible, setModalVisible] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
+
+  const handleAddConservation = () => {
+    if (!name) {
+      setModalMessage('Введіть назву консервації!');
+      setModalVisible(true);
+      return;
+    }
+    if (!selectedCategory) {
+      setModalMessage('Оберіть категорію!');
+      setModalVisible(true);
+      return;
+    }
+    if (!selectedYear) {
+      setModalMessage('Оберіть рік консервації!');
+      setModalVisible(true);
+      return;
+    }
+  };
+
   return (
     // MAIN CONTAINER
     <SafeAreaProvider style={styles.container}>
@@ -68,6 +93,8 @@ const AddConservation = () => {
                 { borderColor: isNameFocused ? '#00B4BF' : '#AEAEAE' }
               ]}>
                 <TextInput
+                  value={name}                 
+                  onChangeText={text => setName(text)}
                   style={styles.searchInput}
                   onFocus={() => setIsNameFocused(true)}
                   onBlur={() => setIsNameFocused(false)}
@@ -133,7 +160,7 @@ const AddConservation = () => {
                     style={styles.arrowDownIcon}
                   />
                 </Pressable>
-                
+
                 {/* Dropdown */}
                 {isYearsModalVisible && (
                   <View style={styles.yearsDropdownContainer}>
@@ -199,10 +226,18 @@ const AddConservation = () => {
               </View>
             </View>
 
+            {/* ALERTS MODALS (required fields empty) */}
+            <AlertModal
+              visible={modalVisible}
+              message={modalMessage}
+              onClose={() => setModalVisible(false)}
+            />
+
             {/* ADD CONSERVATION BUTTON */}
-            <Pressable style={styles.addButton}>
+            <Pressable style={styles.addButton} onPress={handleAddConservation}>
               <Text style={styles.addButtonText}>Додати консервацію</Text>
             </Pressable>
+
           </View>
         </ScrollView>
       </Pressable>
