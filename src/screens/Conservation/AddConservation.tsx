@@ -6,9 +6,13 @@ import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigation';
 import JarNumCard from '../../components/JarNumCard';
 import AlertModal from '../../components/AlertModal';
+import { launchImageLibrary } from 'react-native-image-picker';
 
 const AddConservation = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
+  // image field
+  const [imageUri, setImageUri] = useState<string | null>(null);
 
   // name field
   const [name, setName] = useState('');
@@ -95,6 +99,29 @@ const AddConservation = () => {
 
             {/* TITLE TEXT */}
             <Text style={styles.menuTitle}>Нова консервація</Text>
+
+            <View style={{ marginTop: hp(2) }}>
+              <Text style={styles.label}>Фото консервації</Text>
+              <Pressable
+                style={[styles.imagePicker, { borderColor: imageUri ? '#00B4BF' : '#AEAEAE' }]}
+                onPress={() => {
+                  launchImageLibrary(
+                    { mediaType: 'photo', quality: 0.7 },
+                    (response) => {
+                      if (response.assets && response.assets.length > 0) {
+                        setImageUri(response.assets[0].uri);
+                      }
+                    }
+                  );
+                }}
+              >
+                {imageUri ? (
+                  <Image source={{ uri: imageUri }} style={styles.selectedImage} />
+                ) : (
+                  <Text style={styles.imagePickerText}>Оберіть фото</Text>
+                )}
+              </Pressable>
+            </View>
 
             {/* FIRST INPUT WITH LABEL */}
             <View style={{ marginTop: hp(2) }}>
@@ -307,6 +334,26 @@ const styles = StyleSheet.create({
     fontWeight: '600', 
     color: 'black', 
     textAlign: 'center',
+  },
+
+  // image field
+  imagePicker: {
+    height: hp(15),
+    borderWidth: hp(0.25),
+    borderRadius: hp(1.5),
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F1F1F1',
+  },
+  imagePickerText: {
+    fontSize: hp(2.2),
+    color: '#666',
+  },
+  selectedImage: {
+    width: '100%',
+    height: '100%',
+    borderRadius: hp(1.5),
+    resizeMode: 'cover',
   },
 
   // input fields
