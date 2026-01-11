@@ -54,8 +54,10 @@ const AddConservation = () => {
       setModalVisible(true);
       return;
     }
-    if (!selectedYear) {
-      setModalMessage('Оберіть рік консервації!');
+
+    const totalJars = Object.values(jarCounts).reduce((sum, val) => sum + val, 0);
+    if (totalJars === 0) {
+      setModalMessage('Додайте хоча б одну банку!');
       setModalVisible(true);
       return;
     }
