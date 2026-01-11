@@ -18,7 +18,7 @@ const JarNumCard: React.FC<JarNumCardProps> = ({ image, style, label, circleLabe
         // deleting every char except nums
         let num = parseInt(text.replace(/[^0-9]/g, ''), 10);
         if (isNaN(num)) num = 0;
-        if (num > 999) num = 999; // max = 999
+        if (num > 99) num = 99; // max = 99
         onChange(num);
     };
  
@@ -91,7 +91,7 @@ const JarNumCard: React.FC<JarNumCardProps> = ({ image, style, label, circleLabe
                     keyboardType="number-pad"
                     value={count.toString()}
                     onChangeText={handleTextChange}
-                    maxLength={3} 
+                    maxLength={2} 
                     textAlign="center"
                 />
             </View>

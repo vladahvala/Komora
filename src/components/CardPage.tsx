@@ -13,88 +13,168 @@ type CardPageRouteProp = RouteProp<RootStackParamList, 'CardPage'>;
 const CardPage = () => {
   const route = useRoute<CardPageRouteProp>();
   const { item } = route.params;  // card ConsMenuCard
-
-  // jars count
-  const [jarCounts, setJarCounts] = useState({
-    jar2_3l: 0,
-    jar4_2l: 0,
-    jar7_15l: 0,
-    jar2_1l: 0,
-    jar1_05l: 0,
-  });
-  
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
+  // Історія банок за роками
+  const [history, setHistory] = useState<{ [year: string]: Record<string, number> }>({
+    2021: { jar2_3l: 2, jar4_2l: 1, jar7_15l: 0, jar2_1l: 1, jar1_05l: 3 },
+    2022: { jar2_3l: 0, jar4_2l: 2, jar7_15l: 1, jar2_1l: 0, jar1_05l: 1 },
+  });
+
+  // Десь разом із іншими useState
+const [dropdownVisible, setDropdownVisible] = useState(false);
+
+
+  // Всі доступні роки
+  const availableYears = Object.keys(history);
+
+  // Обраний рік
+  const [selectedYear, setSelectedYear] = useState(availableYears[0]);
+
+  // Кількість банок для поточного року
+  const [jarCounts, setJarCounts] = useState(history[selectedYear]);
+
+  // При зміні року
+  const handleYearChange = (year: string) => {
+    setSelectedYear(year);
+    setJarCounts(history[year]);
+  };
+
+  // При зміні кількості банок
+  const updateJarCount = (key: string, newCount: number) => {
+    const newJarCounts = { ...jarCounts, [key]: newCount };
+    setJarCounts(newJarCounts);
+
+    setHistory(prev => ({
+      ...prev,
+      [selectedYear]: newJarCounts,
+    }));
+  };
+
+  // Підсумок банок за поточний рік
+  const totalJars = Object.values(jarCounts).reduce((sum, val) => sum + val, 0);
+
+  // Сума банок за всі роки
+const totalJarsAllYears = Object.values(history).reduce((sum, yearData) => {
+  return sum + Object.values(yearData).reduce((s, val) => s + val, 0);
+}, 0);
+
+  
   return (
     // MAIN CONTAINER
     <SafeAreaProvider style={styles.container}>
-      <ScrollView
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
+      <Pressable 
+        style={{ flex: 1 }} 
+        onPress={() => dropdownVisible && setDropdownVisible(false)}
       >
-        <View style={styles.headerContainer}>
-          {/* ARROW TO MAIN MENU */}
-          <TouchableOpacity 
-            onPress={() => navigation.navigate('ConservationNavigation')} 
-            style={styles.arrowWrapper}
-            activeOpacity={1}  
-          >
-            <View style={styles.arrowTouchArea}>
-              <Image
-                source={require('../../assets/icons/arrow.png')}
-                style={styles.arrowIcon}
-              />
-            </View>
-          </TouchableOpacity>
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.headerContainer}>
+            {/* ARROW TO MAIN MENU */}
+            <TouchableOpacity 
+              onPress={() => navigation.navigate('ConservationNavigation')} 
+              style={styles.arrowWrapper}
+              activeOpacity={1}  
+            >
+              <View style={styles.arrowTouchArea}>
+                <Image
+                  source={require('../../assets/icons/arrow.png')}
+                  style={styles.arrowIcon}
+                />
+              </View>
+            </TouchableOpacity>
 
-          {/* TITLE TEXT */}
-          <View style={styles.titleRow}>
-            {/* Ліва частина — текст */}
-            <View style={styles.titleLeft}>
-                <Text style={styles.menuTitle}>{item.name}</Text>
-            </View>
+            {/* TITLE TEXT */}
+            <View style={styles.titleRow}>
+              {/* Ліва частина — текст */}
+              <View style={styles.titleLeft}>
+                  <Text style={styles.menuTitle}>{item.name}</Text>
+              </View>
 
-            {/* Права частина — картинка */}
-            <View style={styles.titleImageWrapper}>
-              <Image
-                source={
-                  item.imageUri
-                    ? { uri: item.imageUri }   // якщо користувач вибрав фото
-                    : require('../../assets/images/default_conservation.png') // fallback
-                }
-                style={styles.titleImage}
-              />
-            </View>
+              {/* Права частина — картинка */}
+              <View style={styles.titleImageWrapper}>
+                <Image
+                  source={
+                    item.imageUri
+                      ? { uri: item.imageUri }   // якщо користувач вибрав фото
+                      : require('../../assets/images/default_conservation.png') // fallback
+                  }
+                  style={styles.titleImage}
+                />
+              </View>
 
-        </View>
-
-
-
-        <View style={styles.timeRow}> 
-            <Text style={styles.timeTitle}>Загальна к-ть банок:</Text>
-            <View style={styles.bigIconContainer}>
-              <Text style={styles.timeTitle}>7</Text>
-            </View>
-        </View>
-
-          {/* CONSERVATION TIME */}
-          <View style={styles.timeRow}> 
-            <Text style={styles.timeTitle}>Час консервації:</Text>
-            <Pressable style={styles.bigIconContainer}>
-              <Text style={styles.timeTitle}>2021</Text>
-            </Pressable>
           </View>
 
-          <View style={styles.leftCol}>
-            {/* LEFT COLUMN 3 CARDS */}
-            <View style={{ paddingHorizontal: hp(3.2), justifyContent: 'flex-start' }}>
-              <View style={{ justifyContent: 'flex-start' }}>
-              <JarNumCard 
+
+
+          <View style={styles.timeRow}> 
+              <Text style={styles.timeTitle}>Загальна к-ть банок:</Text>
+              <View style={styles.bigIconContainer}>
+                <Text style={styles.timeTitle}>{totalJarsAllYears}</Text>
+              </View>
+          </View>
+
+            {/* CONSERVATION TIME */}
+            {/* <View style={styles.timeRow}> 
+              <Text style={styles.timeTitle}>Час консервації:</Text>
+              <Pressable style={styles.bigIconContainer}>
+                <Text style={styles.timeTitle}>2021</Text>
+              </Pressable>
+            </View> */}
+
+  {/* Вибір року */}
+  <View style={{ marginTop: hp(2), flexDirection: 'row', alignItems: 'center' }}>
+    <Text style={[styles.timeTitle, { marginRight: hp(2) }]}>Обрати рік:</Text>
+
+    <View style={styles.yearDropdownWrapper}>
+      <Pressable
+        style={styles.bigIconContainer}
+        onPress={() => setDropdownVisible(prev => !prev)}
+      >
+        <Text style={styles.timeTitle}>{selectedYear}</Text>
+        <Image
+          source={require('../../assets/icons/frame_down.png')}
+          style={styles.arrowDownIcon}
+        />
+      </Pressable>
+
+      {/* Dropdown */}
+      {dropdownVisible && (
+        <View style={styles.yearsDropdownContainer}>
+          {availableYears.map((year) => (
+            <Pressable
+              key={year}
+              style={styles.dropdownItem}
+              onPress={() => {
+                handleYearChange(year);
+                setDropdownVisible(false);
+              }}
+            >
+              <Text style={styles.dropdownItemText}>{year}</Text>
+            </Pressable>
+          ))}
+        </View>
+      )}
+    </View>
+  </View>
+
+
+
+
+
+            <View style={styles.leftCol}>
+              {/* LEFT COLUMN 3 CARDS */}
+              <View style={{ paddingHorizontal: hp(3.2), justifyContent: 'flex-start' }}>
+                <View style={{ justifyContent: 'flex-start' }}>
+                <JarNumCard 
                 image={require('../../assets/jar_icons/empty_jar.png')} 
                 style={{ marginBottom: hp(4) }} 
                 label="2"             
                 circleLabel="3л"        
                 count={jarCounts.jar2_3l}
-                onChange={(newCount) => setJarCounts(prev => ({ ...prev, jar2_3l: newCount }))}
+                onChange={(newCount) => updateJarCount('jar2_3l', newCount)}
               />
               <JarNumCard 
                 image={require('../../assets/jar_icons/empty_jar.png')}
@@ -102,55 +182,54 @@ const CardPage = () => {
                 label="4" 
                 circleLabel="2л"  
                 count={jarCounts.jar4_2l}
-                onChange={(newCount) => setJarCounts(prev => ({ ...prev, jar4_2l: newCount }))}
+                onChange={(newCount) => updateJarCount('jar4_2l', newCount)}
               />
               <JarNumCard 
                 image={require('../../assets/jar_icons/empty_jar.png')}
                 label="7" 
-                style={undefined} 
                 circleLabel="1.5л"
                 count={jarCounts.jar7_15l}
-                onChange={(newCount) => setJarCounts(prev => ({ ...prev, jar7_15l: newCount }))}
+                onChange={(newCount) => updateJarCount('jar7_15l', newCount)}
+              />
+                </View>
+              </View>
+
+              {/* RIGHT COLUMN 2 CARDS */}
+              <View style={{ justifyContent: 'center' }}>
+              <JarNumCard 
+                image={require('../../assets/jar_icons/empty_jar.png')} 
+                style={{ marginBottom: hp(4) }} 
+                label="2" 
+                circleLabel="1л" 
+                count={jarCounts.jar2_1l}
+                onChange={(newCount) => updateJarCount('jar2_1l', newCount)}
+              />
+              <JarNumCard 
+                image={require('../../assets/jar_icons/empty_jar.png')} 
+                label="1" 
+                circleLabel="0.5л" 
+                count={jarCounts.jar1_05l}
+                onChange={(newCount) => updateJarCount('jar1_05l', newCount)}
               />
               </View>
             </View>
 
-            {/* RIGHT COLUMN 2 CARDS */}
-            <View style={{ justifyContent: 'center' }}>
-            <JarNumCard 
-              image={require('../../assets/jar_icons/empty_jar.png')} 
-              style={{ marginBottom: hp(4) }} 
-              label={2} 
-              circleLabel="1л" 
-              count={jarCounts.jar2_1l}
-              onChange={(newCount) => setJarCounts(prev => ({ ...prev, jar2_1l: newCount }))}
-            />
-            <JarNumCard 
-              image={require('../../assets/jar_icons/empty_jar.png')} 
-              style={undefined} 
-              label={1} 
-              circleLabel="0.5л" 
-              count={jarCounts.jar1_05l}
-              onChange={(newCount) => setJarCounts(prev => ({ ...prev, jar1_05l: newCount }))}
-            />
+            {/* ADD CONSERVATION BUTTON */}
+            <Pressable style={styles.addButton}>
+              <Text style={styles.addButtonText}>Зберегти зміни</Text>
+            </Pressable>
+
+            <View style={styles.timeRow}> 
+            <Text style={styles.timeTitle}>К-ть банок за рік {selectedYear}:</Text>
+            <View style={styles.bigIconContainer}>
+              <Text style={styles.timeTitleNum}>{totalJars}</Text>
             </View>
           </View>
+          </View>
 
-          {/* ADD CONSERVATION BUTTON */}
-          <Pressable style={styles.addButton}>
-            <Text style={styles.addButtonText}>Зберегти зміни</Text>
-          </Pressable>
-
-          <View style={styles.timeRow}> 
-            <Text style={styles.timeTitle}>К-ть банок за рік 2021:</Text>
-            <View style={styles.bigIconContainer}>
-              <Text style={styles.timeTitle}>7</Text>
-            </View>
-            </View>
-        </View>
-
-        
-      </ScrollView>
+          
+        </ScrollView>
+      </Pressable>
     </SafeAreaProvider>
   );
 };
@@ -260,9 +339,14 @@ const styles = StyleSheet.create({
     marginTop: hp(3),    
   },
   timeTitle: {
-    fontSize: hp(3.2), 
+    fontSize: hp(3), 
     fontWeight: '600', 
     color: 'black', 
+  },
+  timeTitleNum: {
+    fontSize: hp(2.7), 
+    fontWeight: '600', 
+    color: 'black',
   },
   bigIconContainer: {
     flexDirection: 'row',    
@@ -275,6 +359,45 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
 
+// DROPDOWN
+yearDropdownWrapper: {
+  position: 'relative', 
+},
+yearsDropdownContainer: {
+  position: 'absolute',
+  top: '100%',
+  left: 0,
+  width: '90%',          
+  backgroundColor: '#F6F6F6',
+  borderWidth: 1,
+  borderColor: '#AEAEAE',
+  borderRadius: hp(1.5),
+  marginLeft: hp(2),
+  marginTop: hp(0.5),
+  zIndex: 100,
+  shadowColor: '#000',
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.2,
+  shadowRadius: 2,
+  elevation: 5,
+},
+dropdownItem: {
+  paddingVertical: hp(1.5),
+  paddingHorizontal: hp(2),
+  borderBottomWidth: 1,
+  borderBottomColor: '#eee',
+},
+dropdownItemText: {
+  fontSize: hp(2.2),
+  color: '#333',
+  textAlign: 'center',
+},
+arrowDownIcon: {
+  width: hp(2.5),
+  height: hp(2.5),
+  resizeMode: 'contain',
+  marginLeft: hp(1), 
+},
 
 
   // left column

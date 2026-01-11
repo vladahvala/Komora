@@ -16,9 +16,9 @@ const ConservationMain = () => {
 
   // search bar
   const [searchText, setSearchText] = useState('');
-  const filteredData = conservations.filter(item =>
-    item.name.toLowerCase().includes(searchText.toLowerCase())
-  );
+ const filteredData = conservations.filter(item =>
+  item.name.toLowerCase().includes(searchText.toLowerCase())
+);
   // cards style
   const [isBigIcon, setIsBigIcon] = useState(true); 
   const toggleIcon = () => {

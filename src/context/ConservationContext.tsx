@@ -5,16 +5,18 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export type ConservationItem = {
   name: string;
   category: string;
-  year: string;
   imageUri: string | null;
-  jarCounts: {
-    jar2_3l: number;
-    jar4_2l: number;
-    jar7_15l: number;
-    jar2_1l: number;
-    jar1_05l: number;
+  history: {
+    [year: string]: {
+      jar2_3l: number;
+      jar4_2l: number;
+      jar7_15l: number;
+      jar2_1l: number;
+      jar1_05l: number;
+    };
   };
 };
+
 
 // Тип контексту
 export type ConservationContextType = {
