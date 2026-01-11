@@ -15,20 +15,27 @@ const AddConservation = () => {
   // active category field
   const [isCategoryFocused, setIsCategoryFocused] = useState(false);
 
-
   // categories dropdown menu
   const [isCategoryModalVisible, setCategoryModalVisible] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   // category list
   const categories = ['Мариновані', 'Солені', 'Квашені', 'Варення / Джеми', 'Компоти', 'Соуси / Кетчупи', ' Консерви в олії / жирі'];
 
-
+  // years dropdown menu
+  const [isYearsModalVisible, setYearsModalVisible] = useState(false);
+  const [selectedYear, setSelectedYear] = useState<string | null>(null);
+  // years list
+  const years = ['2021', '2022', '2023', '2024', '2025', '2026'];
+ 
   return (
     // MAIN CONTAINER
     <SafeAreaProvider style={styles.container}>
       <Pressable
         style={{ flex: 1 }}
-        onPress={() => setCategoryModalVisible(false)}
+        onPress={() => {
+          setCategoryModalVisible(false);
+          setYearsModalVisible(false);
+        }}        
         pointerEvents="box-none" // allows pressing buttons
       >
         <ScrollView
@@ -72,7 +79,10 @@ const AddConservation = () => {
             <View style={{ marginTop: hp(2) }}>
               <Text style={styles.label}>Категорія</Text>
               <Pressable
-                onPress={() => setCategoryModalVisible(prev => !prev)}
+                onPress={() => {
+                  setCategoryModalVisible(prev => !prev);
+                  setYearsModalVisible(false); 
+                }}
                 style={[
                   styles.searchContainer,
                   { borderColor: isCategoryFocused ? '#00B4BF' : '#AEAEAE' }
@@ -89,7 +99,7 @@ const AddConservation = () => {
 
               {/* Dropdown */}
               {isCategoryModalVisible && (
-                <View style={styles.dropdownContainer}>
+                <View style={styles.catdropdownContainer}>
                   {categories.map((cat, index) => (
                     <Pressable
                       key={index}
@@ -109,13 +119,39 @@ const AddConservation = () => {
             {/* CONSERVATION TIME */}
             <View style={styles.timeRow}> 
               <Text style={styles.timeTitle}>Час консервації:</Text>
-              <Pressable style={styles.bigIconContainer}>
-                <Text style={styles.timeTitle}>2021</Text>
-                <Image
-                  source={require('../../../assets/icons/frame_down.png')}
-                  style={styles.arrowDownIcon}
-                />
-              </Pressable>
+              <View style={styles.yearDropdownWrapper}>
+                <Pressable
+                  style={styles.bigIconContainer}
+                  onPress={() => {
+                    setYearsModalVisible(prev => !prev);
+                    setCategoryModalVisible(false); 
+                  }}
+                >
+                  <Text style={styles.timeTitle}>{selectedYear || '2021'}</Text>
+                  <Image
+                    source={require('../../../assets/icons/frame_down.png')}
+                    style={styles.arrowDownIcon}
+                  />
+                </Pressable>
+                
+                {/* Dropdown */}
+                {isYearsModalVisible && (
+                  <View style={styles.yearsDropdownContainer}>
+                    {years.map((year, index) => (
+                      <Pressable
+                        key={index}
+                        style={styles.dropdownItem}
+                        onPress={() => {
+                          setSelectedYear(year);
+                          setYearsModalVisible(false);
+                        }}
+                      >
+                        <Text style={styles.dropdownItemText}>{year}</Text>
+                      </Pressable>
+                    ))}
+                  </View>
+                )}
+              </View>
             </View>
 
             {/* JAR NUM */}
@@ -239,8 +275,9 @@ const styles = StyleSheet.create({
     color: '#000',
   },
 
-  // categories dropdown
-  dropdownContainer: {
+  // DROPDOWNS
+  // categories
+  catdropdownContainer: {
     position: 'absolute',  
     top: hp(10),            
     width: '100%',
@@ -255,6 +292,29 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     elevation: 5,         
   },
+  // years
+  yearDropdownWrapper: {
+    position: 'relative', 
+    flex: 1,
+  },
+  yearsDropdownContainer: {
+    position: 'absolute',
+    marginLeft: hp(2), 
+    marginTop: hp(0.5), 
+    top: '100%',         
+    left: 0,
+    width: '90%',          
+    backgroundColor: '#F6F6F6',
+    borderWidth: 1,
+    borderColor: '#AEAEAE',
+    borderRadius: hp(1.5),
+    zIndex: 100,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 5,
+  },
   dropdownItem: {
     paddingVertical: hp(1.5),
     paddingHorizontal: hp(2),
@@ -264,13 +324,15 @@ const styles = StyleSheet.create({
   dropdownItemText: {
     fontSize: hp(2.2),
     color: '#333',
+    textAlign: 'center',
   },
 
   // time row styles
   timeRow: {
     flexDirection: 'row',     
     alignItems: 'center', 
-    marginTop: hp(3),    
+    marginTop: hp(3),
+    position: 'relative',    
   },
   timeTitle: {
     fontSize: hp(3.2), 
