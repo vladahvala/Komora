@@ -4,16 +4,13 @@ import { Shadow } from 'react-native-shadow-2';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../navigation'; // твій стек навігації
+import { ConservationItem } from '../context/ConservationContext';
 
 // fixed card width
 const CARD_WIDTH = Dimensions.get('window').width / 2 - 40;
 
 type ConsMenuCardProps = {
-  item: {
-    name: string;
-    image: any;
-    cansCount: number;
-  };
+  item: ConservationItem; // беремо тип прямо з контексту
   index: number;
 };
 
@@ -26,6 +23,9 @@ const ConsMenuCard = ({ item, index }: ConsMenuCardProps) => {
   const handlePress = () => {
     navigation.navigate('CardPage', { item });
   };
+
+   // підрахунок банок
+   const totalJars = Object.values(item.jarCounts).reduce((sum, val) => sum + val, 0);
 
   return (
     <Pressable
@@ -46,7 +46,14 @@ const ConsMenuCard = ({ item, index }: ConsMenuCardProps) => {
           <View style={styles.listContainer}>
             {/* CARD IMG */}
             <View style={styles.imageContainer}>
-                <Image source={item.image} style={styles.image} />
+            <Image
+              source={
+                item.imageUri
+                  ? { uri: item.imageUri } // якщо користувач вибрав фото
+                  : require('../../assets/images/default_conservation.png') // fallback
+              }
+              style={styles.image}
+            />
             </View>
             <Text
               style={styles.nameText}
@@ -58,7 +65,7 @@ const ConsMenuCard = ({ item, index }: ConsMenuCardProps) => {
 
             {/* CARD INFO */}
             <View style={styles.jarsRow}>
-              <Text style={styles.jarText}>{item.cansCount}</Text>
+              <Text style={styles.jarText}>{totalJars}</Text>
               <Image
                 source={require('../../assets/icons/jar.png')}
                 style={styles.jarIcon}

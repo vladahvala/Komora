@@ -7,9 +7,12 @@ import { RootStackParamList } from '../../navigation';
 import JarNumCard from '../../components/JarNumCard';
 import AlertModal from '../../components/AlertModal';
 import { launchImageLibrary } from 'react-native-image-picker';
+import { ConservationContext } from '../../context/ConservationContext';
+import { useContext } from 'react';
 
 const AddConservation = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const { addConservation } = useContext(ConservationContext);
 
   // image field
   const [imageUri, setImageUri] = useState<string | null>(null);
@@ -65,6 +68,34 @@ const AddConservation = () => {
       setModalVisible(true);
       return;
     }
+
+    // створюємо об’єкт
+  const newItem = {
+    name,
+    category: selectedCategory!,
+    year: selectedYear || '2021',
+    imageUri,
+    jarCounts,
+  };
+
+  // додаємо через контекст
+  addConservation(newItem);
+
+  // опціонально очистити поля
+  setName('');
+  setSelectedCategory(null);
+  setSelectedYear('2021');
+  setJarCounts({
+    jar2_3l: 0,
+    jar4_2l: 0,
+    jar7_15l: 0,
+    jar2_1l: 0,
+    jar1_05l: 0,
+  });
+  setImageUri(null);
+
+  // повертатися до списку
+  navigation.goBack();
   };
 
   return (

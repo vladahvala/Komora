@@ -55,7 +55,14 @@ const CardPage = () => {
 
             {/* Права частина — картинка */}
             <View style={styles.titleImageWrapper}>
-                <Image source={item.image} style={styles.titleImage} />
+              <Image
+                source={
+                  item.imageUri
+                    ? { uri: item.imageUri }   // якщо користувач вибрав фото
+                    : require('../../assets/images/default_conservation.png') // fallback
+                }
+                style={styles.titleImage}
+              />
             </View>
 
         </View>

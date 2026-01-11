@@ -7,16 +7,18 @@ import data from '../../../data/data';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigation';
+import { ConservationContext } from '../../context/ConservationContext';
+import { useContext, useEffect } from 'react';
 
 const ConservationMain = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const { conservations } = useContext(ConservationContext);
 
   // search bar
   const [searchText, setSearchText] = useState('');
-  const filteredData = data.filter(item =>
+  const filteredData = conservations.filter(item =>
     item.name.toLowerCase().includes(searchText.toLowerCase())
   );
-
   // cards style
   const [isBigIcon, setIsBigIcon] = useState(true); 
   const toggleIcon = () => {
