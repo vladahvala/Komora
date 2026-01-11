@@ -30,6 +30,15 @@ const AddConservation = () => {
   // years list
   const years = ['2021', '2022', '2023', '2024', '2025', '2026'];
 
+  // jars count
+   const [jarCounts, setJarCounts] = useState({
+    jar2_3l: 0,
+    jar4_2l: 0,
+    jar7_15l: 0,
+    jar2_1l: 0,
+    jar1_05l: 0,
+  });
+
   // alerts 
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
@@ -193,18 +202,24 @@ const AddConservation = () => {
                     style={{ marginBottom: hp(4) }} 
                     label="2"             // card center text 
                     circleLabel="3л"        // text in jar
+                    count={jarCounts.jar2_3l}
+                    onChange={(newCount) => setJarCounts(prev => ({ ...prev, jar2_3l: newCount }))}
                   />
                   <JarNumCard 
                     image={require('../../../assets/jar_icons/empty_jar.png')}
                     style={{ marginBottom: hp(4) }}
                     label="4" 
                     circleLabel={'2л'}  
+                    count={jarCounts.jar4_2l}
+                    onChange={(newCount) => setJarCounts(prev => ({ ...prev, jar4_2l: newCount }))}
                   />
                   <JarNumCard 
                     image={require('../../../assets/jar_icons/empty_jar.png')}
                     label="7" 
                     style={undefined} 
                     circleLabel={'1.5л'}
+                    count={jarCounts.jar7_15l}
+                    onChange={(newCount) => setJarCounts(prev => ({ ...prev, jar7_15l: newCount }))}
                   />
                 </View>
               </View>
@@ -216,12 +231,16 @@ const AddConservation = () => {
                   style={{ marginBottom: hp(4) }} 
                   label={2} 
                   circleLabel={'1л'} 
+                  count={jarCounts.jar2_1l}
+                  onChange={(newCount) => setJarCounts(prev => ({ ...prev, jar2_1l: newCount }))}
                 />
                 <JarNumCard 
                   image={require('../../../assets/jar_icons/empty_jar.png')} 
                   style={undefined} 
                   label={1} 
                   circleLabel={'0.5л'} 
+                  count={jarCounts.jar1_05l}
+                  onChange={(newCount) => setJarCounts(prev => ({ ...prev, jar1_05l: newCount }))}
                 />
               </View>
             </View>

@@ -9,6 +9,15 @@ import JarNumCard from '../../components/JarNumCard';
 const EmptyJarsConservation = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
+  // jars count
+  const [jarCounts, setJarCounts] = useState({
+    jar2_3l: 0,
+    jar4_2l: 0,
+    jar7_15l: 0,
+    jar2_1l: 0,
+    jar1_05l: 0,
+  });
+
   return (
     // MAIN CONTAINER
     <SafeAreaProvider style={styles.container}>
@@ -32,7 +41,7 @@ const EmptyJarsConservation = () => {
           </TouchableOpacity>
 
           {/* TITLE TEXT */}
-          <Text style={styles.menuTitle}>Нова консервація</Text>
+          <Text style={styles.menuTitle}>Кількість порожніх банок</Text>
 
           {/* JAR CARDS */}
           <View style={styles.cardsContainer}>
@@ -41,36 +50,46 @@ const EmptyJarsConservation = () => {
               label="2"
               circleLabel="3л"
               style={styles.jarCard}
+              count={jarCounts.jar2_3l}
+              onChange={(newCount) => setJarCounts(prev => ({ ...prev, jar2_3l: newCount }))}
             />
             <JarNumCard 
               image={require('../../../assets/jar_icons/empty_jar.png')}
               label="4" 
               circleLabel="2л"
               style={styles.jarCard}
+              count={jarCounts.jar4_2l}
+              onChange={(newCount) => setJarCounts(prev => ({ ...prev, jar4_2l: newCount }))}
             />
             <JarNumCard 
               image={require('../../../assets/jar_icons/empty_jar.png')}
               label="7" 
               circleLabel="1.5л"
               style={styles.jarCard}
+              count={jarCounts.jar7_15l}
+              onChange={(newCount) => setJarCounts(prev => ({ ...prev, jar7_15l: newCount }))}
             />
             <JarNumCard 
               image={require('../../../assets/jar_icons/empty_jar.png')}
               label="2" 
               circleLabel="1л"
               style={styles.jarCard}
+              count={jarCounts.jar2_1l}
+              onChange={(newCount) => setJarCounts(prev => ({ ...prev, jar2_1l: newCount }))}
             />
             <JarNumCard 
               image={require('../../../assets/jar_icons/empty_jar.png')}
               label="1" 
               circleLabel="0.5л"
               style={styles.jarCard}
+              count={jarCounts.jar1_05l}
+              onChange={(newCount) => setJarCounts(prev => ({ ...prev, jar1_05l: newCount }))}
             />
           </View>
 
           {/* ADD CONSERVATION BUTTON */}
           <Pressable style={styles.addButton}>
-            <Text style={styles.addButtonText}>Додати консервацію</Text>
+            <Text style={styles.addButtonText}>Зберегти зміни</Text>
           </Pressable>
         </View>
       </ScrollView>
@@ -115,7 +134,7 @@ const styles = StyleSheet.create({
   
   // title text
   menuTitle: { 
-    fontSize: hp(3.5), 
+    fontSize: hp(3.3), 
     fontWeight: '600', 
     color: 'black', 
     textAlign: 'center',

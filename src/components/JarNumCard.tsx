@@ -1,10 +1,28 @@
 import React from 'react';
-import { View, Image, StyleSheet, Text } from 'react-native';
+import { View, Image, StyleSheet, Text, Pressable, TextInput } from 'react-native';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Shadow } from 'react-native-shadow-2';
 
-const JarNumCard = ({ image, style, label, circleLabel }) => {
-  return (
+interface JarNumCardProps {
+    image: any;
+    style?: any;
+    label: string | number;
+    circleLabel: string;
+    count: number; 
+    onChange: (newCount: number) => void; 
+  }
+
+const JarNumCard: React.FC<JarNumCardProps> = ({ image, style, label, circleLabel, count, onChange }) => {
+    // handle nums
+    const handleTextChange = (text: string) => {
+        // deleting every char except nums
+        let num = parseInt(text.replace(/[^0-9]/g, ''), 10);
+        if (isNaN(num)) num = 0;
+        if (num > 999) num = 999; // max = 999
+        onChange(num);
+    };
+ 
+    return (
     <View
       style={style}  
     >
@@ -23,12 +41,15 @@ const JarNumCard = ({ image, style, label, circleLabel }) => {
                 <View style={styles.circle}>
 
                     {/* SMALL BLACK CIRCLE (MINUS) */}
-                    <View style={[styles.smallDot, styles.leftDot]}>
+                    <Pressable
+                        style={[styles.smallDot, styles.leftDot]}
+                        onPress={() => onChange(Math.max(count - 1, 0))}
+                    >
                         <Image
                             source={require('../../assets/jar_icons/minus.png')}
                             style={styles.dotIcon}
                         />
-                    </View>
+                    </Pressable>
 
                     {/* JAR IMAGE */}
                     <Image source={image} style={styles.icon} />
@@ -53,18 +74,26 @@ const JarNumCard = ({ image, style, label, circleLabel }) => {
 
 
                     {/* SMALL BLACK CIRCLE (PLUS) */}
-                    <View style={[styles.smallDot, styles.rightDot]}>
+                    <Pressable
+                        style={[styles.smallDot, styles.rightDot]}
+                        onPress={() => onChange(count + 1)}
+                    >
                         <Image
                             source={require('../../assets/jar_icons/plus.png')}
                             style={styles.dotIcon}
                         />
-                    </View>
+                    </Pressable>
                 </View>
 
                 {/* CARD TEXT */}
-                {label && (
-                    <Text style={styles.labelText}>{label}</Text>
-                )}
+                <TextInput
+                    style={styles.input}
+                    keyboardType="number-pad"
+                    value={count.toString()}
+                    onChangeText={handleTextChange}
+                    maxLength={3} 
+                    textAlign="center"
+                />
             </View>
         </Shadow>
     </View>
@@ -111,14 +140,6 @@ const styles = StyleSheet.create({
         fontWeight: '900',
         textAlign: 'center',
     },
-    // card text
-    labelText: {
-        fontSize: hp(2.5),
-        fontWeight: '600',
-        color: '#333',
-        textAlign: 'center',
-        marginLeft: hp(2),
-    },
    
     // black circle
     smallDot: {
@@ -149,5 +170,13 @@ const styles = StyleSheet.create({
         height: hp(2.5),
         resizeMode: 'contain',
         tintColor: '#fff', 
+    },
+    // text input
+    input: {
+        fontSize: hp(2.5),
+        fontWeight: '600',
+        color: '#333',
+        textAlign: 'center',
+        marginLeft: hp(2),
     },
 });

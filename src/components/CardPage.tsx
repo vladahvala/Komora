@@ -12,8 +12,17 @@ type CardPageRouteProp = RouteProp<RootStackParamList, 'CardPage'>;
 
 const CardPage = () => {
   const route = useRoute<CardPageRouteProp>();
-  const { item } = route.params;  // тут твоя картка з ConsMenuCard
+  const { item } = route.params;  // card ConsMenuCard
 
+  // jars count
+  const [jarCounts, setJarCounts] = useState({
+    jar2_3l: 0,
+    jar4_2l: 0,
+    jar7_15l: 0,
+    jar2_1l: 0,
+    jar1_05l: 0,
+  });
+  
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   return (
     // MAIN CONTAINER
@@ -72,41 +81,51 @@ const CardPage = () => {
             {/* LEFT COLUMN 3 CARDS */}
             <View style={{ paddingHorizontal: hp(3.2), justifyContent: 'flex-start' }}>
               <View style={{ justifyContent: 'flex-start' }}>
-                <JarNumCard 
-                  image={require('../../assets/jar_icons/empty_jar.png')} 
-                  style={{ marginBottom: hp(4) }} 
-                  label="2"             // card center text 
-                  circleLabel="3л"        // text in jar
-                />
-                <JarNumCard 
-                  image={require('../../assets/jar_icons/empty_jar.png')}
-                  style={{ marginBottom: hp(4) }}
-                  label="4" 
-                  circleLabel={'2л'}  
-                />
-                <JarNumCard 
-                  image={require('../../assets/jar_icons/empty_jar.png')}
-                  label="7" 
-                  style={undefined} 
-                  circleLabel={'1.5л'}
-                />
+              <JarNumCard 
+                image={require('../../assets/jar_icons/empty_jar.png')} 
+                style={{ marginBottom: hp(4) }} 
+                label="2"             
+                circleLabel="3л"        
+                count={jarCounts.jar2_3l}
+                onChange={(newCount) => setJarCounts(prev => ({ ...prev, jar2_3l: newCount }))}
+              />
+              <JarNumCard 
+                image={require('../../assets/jar_icons/empty_jar.png')}
+                style={{ marginBottom: hp(4) }}
+                label="4" 
+                circleLabel="2л"  
+                count={jarCounts.jar4_2l}
+                onChange={(newCount) => setJarCounts(prev => ({ ...prev, jar4_2l: newCount }))}
+              />
+              <JarNumCard 
+                image={require('../../assets/jar_icons/empty_jar.png')}
+                label="7" 
+                style={undefined} 
+                circleLabel="1.5л"
+                count={jarCounts.jar7_15l}
+                onChange={(newCount) => setJarCounts(prev => ({ ...prev, jar7_15l: newCount }))}
+              />
               </View>
             </View>
 
             {/* RIGHT COLUMN 2 CARDS */}
             <View style={{ justifyContent: 'center' }}>
-              <JarNumCard 
-                image={require('../../assets/jar_icons/empty_jar.png')} 
-                style={{ marginBottom: hp(4) }} 
-                label={2} 
-                circleLabel={'1л'} 
-              />
-              <JarNumCard 
-                image={require('../../assets/jar_icons/empty_jar.png')} 
-                style={undefined} 
-                label={1} 
-                circleLabel={'0.5л'} 
-              />
+            <JarNumCard 
+              image={require('../../assets/jar_icons/empty_jar.png')} 
+              style={{ marginBottom: hp(4) }} 
+              label={2} 
+              circleLabel="1л" 
+              count={jarCounts.jar2_1l}
+              onChange={(newCount) => setJarCounts(prev => ({ ...prev, jar2_1l: newCount }))}
+            />
+            <JarNumCard 
+              image={require('../../assets/jar_icons/empty_jar.png')} 
+              style={undefined} 
+              label={1} 
+              circleLabel="0.5л" 
+              count={jarCounts.jar1_05l}
+              onChange={(newCount) => setJarCounts(prev => ({ ...prev, jar1_05l: newCount }))}
+            />
             </View>
           </View>
 
