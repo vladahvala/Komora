@@ -15,124 +15,161 @@ const AddConservation = () => {
   // active category field
   const [isCategoryFocused, setIsCategoryFocused] = useState(false);
 
+
+  // categories dropdown menu
+  const [isCategoryModalVisible, setCategoryModalVisible] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  // category list
+  const categories = ['Мариновані', 'Солені', 'Квашені', 'Варення / Джеми', 'Компоти', 'Соуси / Кетчупи', ' Консерви в олії / жирі'];
+
+
   return (
     // MAIN CONTAINER
     <SafeAreaProvider style={styles.container}>
-      <ScrollView
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
+      <Pressable
+        style={{ flex: 1 }}
+        onPress={() => setCategoryModalVisible(false)}
+        pointerEvents="box-none" // allows pressing buttons
       >
-        <View style={styles.headerContainer}>
-          {/* ARROW TO MAIN MENU */}
-          <TouchableOpacity 
-            onPress={() => navigation.navigate('MainMenu')} 
-            style={styles.arrowWrapper}
-            activeOpacity={1}  
-          >
-            <View style={styles.arrowTouchArea}>
-              <Image
-                source={require('../../../assets/icons/arrow.png')}
-                style={styles.arrowIcon}
-              />
-            </View>
-          </TouchableOpacity>
-
-          {/* TITLE TEXT */}
-          <Text style={styles.menuTitle}>Нова консервація</Text>
-
-          {/* FIRST INPUT WITH LABEL */}
-          <View style={{ marginTop: hp(2) }}>
-            <Text style={styles.label}>Назва</Text>
-            <View style={[
-              styles.searchContainer,
-              { borderColor: isNameFocused ? '#00B4BF' : '#AEAEAE' }
-            ]}>
-              <TextInput
-                style={styles.searchInput}
-                onFocus={() => setIsNameFocused(true)}
-                onBlur={() => setIsNameFocused(false)}
-              />
-            </View>
-          </View>
-
-          {/* SECOND INPUT WITH LABEL */}
-          <View style={{ marginTop: hp(2) }}>
-            <Text style={styles.label}>Категорія</Text>
-            <View style={[
-              styles.searchContainer,
-              { borderColor: isCategoryFocused ? '#00B4BF' : '#AEAEAE' }
-            ]}>
-              <TextInput
-                style={styles.searchInput}
-                onFocus={() => setIsCategoryFocused(true)}
-                onBlur={() => setIsCategoryFocused(false)}
-              />
-            </View>
-          </View>
-
-          {/* CONSERVATION TIME */}
-          <View style={styles.timeRow}> 
-            <Text style={styles.timeTitle}>Час консервації:</Text>
-            <Pressable style={styles.bigIconContainer}>
-              <Text style={styles.timeTitle}>2021</Text>
-              <Image
-                source={require('../../../assets/icons/frame_down.png')}
-                style={styles.arrowDownIcon}
-              />
-            </Pressable>
-          </View>
-
-          {/* JAR NUM */}
-          <Text style={styles.jarNumTitle}>Кількість банок</Text>
-
-          <View style={styles.leftCol}>
-            {/* LEFT COLUMN 3 CARDS */}
-            <View style={{ paddingHorizontal: hp(3.2), justifyContent: 'flex-start' }}>
-              <View style={{ justifyContent: 'flex-start' }}>
-                <JarNumCard 
-                  image={require('../../../assets/jar_icons/empty_jar.png')} 
-                  style={{ marginBottom: hp(4) }} 
-                  label="2"             // card center text 
-                  circleLabel="3л"        // text in jar
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+        >
+          <View style={styles.headerContainer}>
+            {/* ARROW TO MAIN MENU */}
+            <TouchableOpacity 
+              onPress={() => navigation.navigate('MainMenu')} 
+              style={styles.arrowWrapper}
+              activeOpacity={1}  
+            >
+              <View style={styles.arrowTouchArea}>
+                <Image
+                  source={require('../../../assets/icons/arrow.png')}
+                  style={styles.arrowIcon}
                 />
-                <JarNumCard 
-                  image={require('../../../assets/jar_icons/empty_jar.png')}
-                  style={{ marginBottom: hp(4) }}
-                  label="4" 
-                  circleLabel={'2л'}  
-                />
-                <JarNumCard 
-                  image={require('../../../assets/jar_icons/empty_jar.png')}
-                  label="7" 
-                  style={undefined} 
-                  circleLabel={'1.5л'}
+              </View>
+            </TouchableOpacity>
+
+            {/* TITLE TEXT */}
+            <Text style={styles.menuTitle}>Нова консервація</Text>
+
+            {/* FIRST INPUT WITH LABEL */}
+            <View style={{ marginTop: hp(2) }}>
+              <Text style={styles.label}>Назва</Text>
+              <View style={[
+                styles.searchContainer,
+                { borderColor: isNameFocused ? '#00B4BF' : '#AEAEAE' }
+              ]}>
+                <TextInput
+                  style={styles.searchInput}
+                  onFocus={() => setIsNameFocused(true)}
+                  onBlur={() => setIsNameFocused(false)}
                 />
               </View>
             </View>
 
-            {/* RIGHT COLUMN 2 CARDS */}
-            <View style={{ justifyContent: 'center' }}>
-              <JarNumCard 
-                image={require('../../../assets/jar_icons/empty_jar.png')} 
-                style={{ marginBottom: hp(4) }} 
-                label={2} 
-                circleLabel={'1л'} 
-              />
-              <JarNumCard 
-                image={require('../../../assets/jar_icons/empty_jar.png')} 
-                style={undefined} 
-                label={1} 
-                circleLabel={'0.5л'} 
-              />
-            </View>
-          </View>
+            {/* CATEGORIES INPUT WITH DROPDOWN */}
+            <View style={{ marginTop: hp(2) }}>
+              <Text style={styles.label}>Категорія</Text>
+              <Pressable
+                onPress={() => setCategoryModalVisible(prev => !prev)}
+                style={[
+                  styles.searchContainer,
+                  { borderColor: isCategoryFocused ? '#00B4BF' : '#AEAEAE' }
+                ]}
+              >
+                <Text style={styles.searchInput}>
+                  {selectedCategory || 'Оберіть категорію'}
+                </Text>
+                <Image
+                  source={require('../../../assets/icons/frame_down.png')}
+                  style={styles.arrowDownIcon}
+                />
+              </Pressable>
 
-          {/* ADD CONSERVATION BUTTON */}
-          <Pressable style={styles.addButton}>
-            <Text style={styles.addButtonText}>Додати консервацію</Text>
-          </Pressable>
-        </View>
-      </ScrollView>
+              {/* Dropdown */}
+              {isCategoryModalVisible && (
+                <View style={styles.dropdownContainer}>
+                  {categories.map((cat, index) => (
+                    <Pressable
+                      key={index}
+                      style={styles.dropdownItem}
+                      onPress={() => {
+                        setSelectedCategory(cat);
+                        setCategoryModalVisible(false);
+                      }}
+                    >
+                      <Text style={styles.dropdownItemText}>{cat}</Text>
+                    </Pressable>
+                  ))}
+                </View>
+              )}
+            </View>
+
+            {/* CONSERVATION TIME */}
+            <View style={styles.timeRow}> 
+              <Text style={styles.timeTitle}>Час консервації:</Text>
+              <Pressable style={styles.bigIconContainer}>
+                <Text style={styles.timeTitle}>2021</Text>
+                <Image
+                  source={require('../../../assets/icons/frame_down.png')}
+                  style={styles.arrowDownIcon}
+                />
+              </Pressable>
+            </View>
+
+            {/* JAR NUM */}
+            <Text style={styles.jarNumTitle}>Кількість банок</Text>
+
+            <View style={styles.leftCol}>
+              {/* LEFT COLUMN 3 CARDS */}
+              <View style={{ paddingHorizontal: hp(3.2), justifyContent: 'flex-start' }}>
+                <View style={{ justifyContent: 'flex-start' }}>
+                  <JarNumCard 
+                    image={require('../../../assets/jar_icons/empty_jar.png')} 
+                    style={{ marginBottom: hp(4) }} 
+                    label="2"             // card center text 
+                    circleLabel="3л"        // text in jar
+                  />
+                  <JarNumCard 
+                    image={require('../../../assets/jar_icons/empty_jar.png')}
+                    style={{ marginBottom: hp(4) }}
+                    label="4" 
+                    circleLabel={'2л'}  
+                  />
+                  <JarNumCard 
+                    image={require('../../../assets/jar_icons/empty_jar.png')}
+                    label="7" 
+                    style={undefined} 
+                    circleLabel={'1.5л'}
+                  />
+                </View>
+              </View>
+
+              {/* RIGHT COLUMN 2 CARDS */}
+              <View style={{ justifyContent: 'center' }}>
+                <JarNumCard 
+                  image={require('../../../assets/jar_icons/empty_jar.png')} 
+                  style={{ marginBottom: hp(4) }} 
+                  label={2} 
+                  circleLabel={'1л'} 
+                />
+                <JarNumCard 
+                  image={require('../../../assets/jar_icons/empty_jar.png')} 
+                  style={undefined} 
+                  label={1} 
+                  circleLabel={'0.5л'} 
+                />
+              </View>
+            </View>
+
+            {/* ADD CONSERVATION BUTTON */}
+            <Pressable style={styles.addButton}>
+              <Text style={styles.addButtonText}>Додати консервацію</Text>
+            </Pressable>
+          </View>
+        </ScrollView>
+      </Pressable>
     </SafeAreaProvider>
   );
 };
@@ -200,6 +237,33 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: hp(2.2),
     color: '#000',
+  },
+
+  // categories dropdown
+  dropdownContainer: {
+    position: 'absolute',  
+    top: hp(10),            
+    width: '100%',
+    backgroundColor: '#F6F6F6',
+    borderWidth: 1,
+    borderColor: '#AEAEAE',
+    borderRadius: hp(1.5),
+    zIndex: 100,            
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 5,         
+  },
+  dropdownItem: {
+    paddingVertical: hp(1.5),
+    paddingHorizontal: hp(2),
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  dropdownItemText: {
+    fontSize: hp(2.2),
+    color: '#333',
   },
 
   // time row styles
