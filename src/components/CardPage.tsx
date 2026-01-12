@@ -81,6 +81,10 @@ const [selectedYear, setSelectedYear] = useState(availableYears[0] || '2021');
   : 0;
 
 
+  const [newYear, setNewYear] = useState('');
+  const { addYear } = useConservation();
+
+
   
   return (
     // MAIN CONTAINER
@@ -181,10 +185,6 @@ const [selectedYear, setSelectedYear] = useState(availableYears[0] || '2021');
       )}
     </View>
   </View>
-
-
-
-
 
             <View style={styles.leftCol}>
               {/* LEFT COLUMN 3 CARDS */}

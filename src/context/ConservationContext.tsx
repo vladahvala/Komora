@@ -72,13 +72,37 @@ export const ConservationProvider = ({ children }: Props) => {
   // Додавання нової консервації
   const addConservation = async (item: ConservationItem) => {
     try {
-      const newList = [...conservations, item];
+      const existingIndex = conservations.findIndex(
+        c => c.name.trim().toLowerCase() === item.name.trim().toLowerCase()
+      );
+  
+      let newList: ConservationItem[];
+  
+      if (existingIndex !== -1) {
+        // 👉 така назва вже є — додаємо рік
+        newList = conservations.map((c, index) =>
+          index === existingIndex
+            ? {
+                ...c,
+                history: {
+                  ...c.history,
+                  ...item.history, // новий рік
+                },
+              }
+            : c
+        );
+      } else {
+        // 👉 нова назва — нова картка
+        newList = [...conservations, item];
+      }
+  
       setConservations(newList);
       await AsyncStorage.setItem('@conservations', JSON.stringify(newList));
     } catch (e) {
       console.error('Failed to save conservation', e);
     }
   };
+  
 
   const updateJarHistory = async (
     itemName: string,
