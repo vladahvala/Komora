@@ -7,7 +7,7 @@ import { RootStackParamList } from '../../navigation';
 import JarNumCard from '../../components/JarNumCard';
 import AlertModal from '../../components/AlertModal';
 import { launchImageLibrary } from 'react-native-image-picker';
-import { ConservationContext } from '../../context/ConservationContext';
+import { ConservationContext, ConservationItem } from '../../context/ConservationContext';
 import { useContext } from 'react';
 
 const AddConservation = () => {
@@ -70,13 +70,15 @@ const AddConservation = () => {
     }
 
     // створюємо об’єкт
-  const newItem = {
-    name,
-    category: selectedCategory!,
-    year: selectedYear || '2021',
-    imageUri,
-    jarCounts,
-  };
+    const newItem: ConservationItem = {
+      name,
+      category: selectedCategory!,
+      imageUri,
+      history: {
+        [selectedYear || '2021']: jarCounts, // тут обов’язково поле history
+      },
+    };
+    
 
   // додаємо через контекст
   addConservation(newItem);

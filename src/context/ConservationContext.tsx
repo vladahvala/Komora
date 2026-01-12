@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useContext } from 'react';
 
 // Тип для одного елементу консервації
 export type ConservationItem = {
@@ -19,17 +20,31 @@ export type ConservationItem = {
 
 
 // Тип контексту
+// Додаємо тип функції
 export type ConservationContextType = {
   conservations: ConservationItem[];
   addConservation: (item: ConservationItem) => void;
   loadConservations: () => void;
+  updateJarHistory: (
+    itemName: string,
+    year: string,
+    jarCounts: {
+      jar2_3l: number;
+      jar4_2l: number;
+      jar7_15l: number;
+      jar2_1l: number;
+      jar1_05l: number;
+    }
+  ) => void;
 };
+
 
 // Контекст
 export const ConservationContext = createContext<ConservationContextType>({
   conservations: [],
   addConservation: () => {},
   loadConservations: () => {},
+  updateJarHistory: () => {},
 });
 
 type Props = {
@@ -65,6 +80,38 @@ export const ConservationProvider = ({ children }: Props) => {
     }
   };
 
+  const updateJarHistory = async (
+    itemName: string,
+    year: string,
+    jarCounts: {
+      jar2_3l: number;
+      jar4_2l: number;
+      jar7_15l: number;
+      jar2_1l: number;
+      jar1_05l: number;
+    }
+  ) => {
+    try {
+      const newConservations = conservations.map(item =>
+        item.name === itemName
+          ? {
+              ...item,
+              history: {
+                ...item.history,
+                [year]: jarCounts,
+              },
+            }
+          : item
+      );
+  
+      setConservations(newConservations);
+      await AsyncStorage.setItem('@conservations', JSON.stringify(newConservations));
+    } catch (e) {
+      console.error('Failed to update jar history', e);
+    }
+  };
+  
+
   useEffect(() => {
     loadConservations();
   }, []);
@@ -74,9 +121,18 @@ export const ConservationProvider = ({ children }: Props) => {
 
   return (
     <ConservationContext.Provider
-      value={{ conservations, addConservation, loadConservations }}
-    >
-      {children}
-    </ConservationContext.Provider>
+    value={{ conservations, addConservation, loadConservations, updateJarHistory }}
+  >
+    {children}
+  </ConservationContext.Provider>
+  
   );
+};
+
+export const useConservation = () => {
+  const context = useContext(ConservationContext);
+  if (!context) {
+    throw new Error('useConservation must be used within a ConservationProvider');
+  }
+  return context;
 };

@@ -6,7 +6,7 @@ import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../navigation';
 import JarNumCard from './JarNumCard';
 import { useRoute, RouteProp } from '@react-navigation/native';
-
+import { useConservation } from '../context/ConservationContext';
 
 type CardPageRouteProp = RouteProp<RootStackParamList, 'CardPage'>;
 
@@ -15,49 +15,71 @@ const CardPage = () => {
   const { item } = route.params;  // card ConsMenuCard
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
+  const { conservations, updateJarHistory } = useConservation();
+
+  const updateJarCount = (key: string, newCount: number) => {
+    if (!currentItem) return;
+  
+    const newJarCounts = { ...jarCounts, [key]: newCount };
+    setJarCounts(newJarCounts);
+  
+    // Оновлюємо в контексті і AsyncStorage
+    updateJarHistory(currentItem.name, selectedYear, newJarCounts);
+  };
+  
+
   // Історія банок за роками
-  const [history, setHistory] = useState<{ [year: string]: Record<string, number> }>({
-    2021: { jar2_3l: 2, jar4_2l: 1, jar7_15l: 0, jar2_1l: 1, jar1_05l: 3 },
-    2022: { jar2_3l: 0, jar4_2l: 2, jar7_15l: 1, jar2_1l: 0, jar1_05l: 1 },
-  });
+  // const [history, setHistory] = useState<{ [year: string]: Record<string, number> }>({
+  //   2021: { jar2_3l: 2, jar4_2l: 1, jar7_15l: 0, jar2_1l: 1, jar1_05l: 3 },
+  //   2022: { jar2_3l: 0, jar4_2l: 2, jar7_15l: 1, jar2_1l: 0, jar1_05l: 1 },
+  // });
 
   // Десь разом із іншими useState
 const [dropdownVisible, setDropdownVisible] = useState(false);
 
+const currentItem = conservations.find(c => c.name === item.name);
 
-  // Всі доступні роки
-  const availableYears = Object.keys(history);
-
-  // Обраний рік
-  const [selectedYear, setSelectedYear] = useState(availableYears[0]);
+const availableYears = currentItem ? Object.keys(currentItem.history) : [];
+const [selectedYear, setSelectedYear] = useState(availableYears[0] || '2021');
 
   // Кількість банок для поточного року
-  const [jarCounts, setJarCounts] = useState(history[selectedYear]);
+  const [jarCounts, setJarCounts] = useState(
+    currentItem ? currentItem.history[selectedYear] : { jar2_3l:0, jar4_2l:0, jar7_15l:0, jar2_1l:0, jar1_05l:0 }
+  );
 
   // При зміні року
   const handleYearChange = (year: string) => {
     setSelectedYear(year);
-    setJarCounts(history[year]);
+    if (currentItem) {
+      setJarCounts(currentItem.history[year]);
+    }
   };
+  
+  
 
   // При зміні кількості банок
-  const updateJarCount = (key: string, newCount: number) => {
-    const newJarCounts = { ...jarCounts, [key]: newCount };
-    setJarCounts(newJarCounts);
+  // const updateJarCount = (key: string, newCount: number) => {
+  //   const newJarCounts = { ...jarCounts, [key]: newCount };
+  //   setJarCounts(newJarCounts);
 
-    setHistory(prev => ({
-      ...prev,
-      [selectedYear]: newJarCounts,
-    }));
-  };
+  //   setHistory(prev => ({
+  //     ...prev,
+  //     [selectedYear]: newJarCounts,
+  //   }));
+  // };
 
   // Підсумок банок за поточний рік
   const totalJars = Object.values(jarCounts).reduce((sum, val) => sum + val, 0);
 
   // Сума банок за всі роки
-const totalJarsAllYears = Object.values(history).reduce((sum, yearData) => {
-  return sum + Object.values(yearData).reduce((s, val) => s + val, 0);
-}, 0);
+  const totalJarsAllYears = currentItem
+  ? Object.values(currentItem.history).reduce(
+      (sum, yearData) =>
+        sum + Object.values(yearData).reduce((s, val) => s + val, 0),
+      0
+    )
+  : 0;
+
 
   
   return (

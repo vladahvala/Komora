@@ -25,7 +25,11 @@ const ConsMenuCard = ({ item, index }: ConsMenuCardProps) => {
   };
 
    // підрахунок банок
-   const totalJars = Object.values(item.jarCounts).reduce((sum, val) => sum + val, 0);
+   const totalJars = Object.values(item.history).reduce(
+    (sum, yearData) => sum + Object.values(yearData).reduce((s, val) => s + val, 0),
+    0
+  );
+  
 
   return (
     <Pressable
