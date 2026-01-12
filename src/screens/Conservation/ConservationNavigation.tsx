@@ -54,8 +54,8 @@ export default function ConservationNavigation() {
               focused={focused}
               source={
                 focused
-                  ? require('../../../assets/icons/bookmark_black.png')
-                  : require('../../../assets/icons/bookmark.png')
+                  ? require('../../../assets/icons/category_black.png')
+                  : require('../../../assets/icons/category.png')
               }
             />
           ),

@@ -408,7 +408,7 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     fontSize: hp(2.2),
-    color: '#000',
+    color: '#666',
   },
 
   // DROPDOWNS
