@@ -7,6 +7,7 @@ import { RootStackParamList } from '../navigation';
 import JarNumCard from './JarNumCard';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { useConservation } from '../context/ConservationContext';
+import { launchImageLibrary } from 'react-native-image-picker';
 
 type CardPageRouteProp = RouteProp<RootStackParamList, 'CardPage'>;
 
@@ -18,7 +19,7 @@ const CardPage = () => {
   const { item } = route.params;  // card ConsMenuCard
 
   // card array, function for updating jars of a year
-  const { conservations, updateJarHistory } = useConservation();
+  const { conservations, updateJarHistory, updateImage } = useConservation();
 
   // current card 
   const currentItem = conservations.find(c => c.name === item.name);
@@ -33,6 +34,9 @@ const CardPage = () => {
     // update in context & AsyncStorage
     updateJarHistory(currentItem.name, selectedYear, newJarCounts);
   };
+
+  // changing img
+  const [imageUri, setImageUri] = useState<string | null>(item.imageUri || null);
 
   // YEARS
   // dropdown years
@@ -104,12 +108,34 @@ const CardPage = () => {
               <View style={styles.titleImageWrapper}>
                 <Image
                   source={
-                    item.imageUri
-                      ? { uri: item.imageUri }   // user chose img
+                    imageUri
+                      ? { uri: imageUri }   // user chose img
                       : require('../../assets/images/default_conservation.png') // fallback
                   }
                   style={styles.titleImage}
                 />
+
+                {/* overlay for img change */}
+                <Pressable
+                  style={styles.imageOverlay}
+                  onPress={() => {
+                    launchImageLibrary(
+                      { mediaType: 'photo', quality: 0.7 },
+                      (response) => {
+                        if (response.assets && response.assets.length > 0) {
+                          setImageUri(response.assets[0].uri);
+
+                          // img to context
+                          if (currentItem) {
+                            updateImage(currentItem.name, response.assets[0].uri);
+                          }
+                        }
+                      }
+                    );
+                  }}
+                >
+                  <Text style={styles.imageOverlayText}>Змінити</Text>
+                </Pressable>
               </View>
               
             </View>
@@ -282,7 +308,8 @@ const styles = StyleSheet.create({
     color: 'black',
     textAlign: 'center', 
   },
-  
+
+  // IMAGE
   // img styles
   titleImageWrapper: {
     width: hp(22),
@@ -294,6 +321,21 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     resizeMode: 'cover', 
+  },
+  // img change styles
+  imageOverlay: {
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    height: '25%',       
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  imageOverlayText: {
+    color: 'white',
+    fontWeight: '600',
+    fontSize: hp(2.2),
   },
   
   // input fields
