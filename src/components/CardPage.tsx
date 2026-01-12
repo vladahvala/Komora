@@ -46,7 +46,6 @@ const CardPage = () => {
   // categories list
   const categories = ['Мариновані', 'Солені', 'Квашені', 'Варення / Джеми', 'Компоти', 'Соуси / Кетчупи', 'Консерви в олії / жирі'];
   
-  
   // YEARS
   // dropdown years
   const [dropdownVisible, setDropdownVisible] = useState(false);
@@ -85,7 +84,10 @@ const CardPage = () => {
     <SafeAreaProvider style={styles.container}>
       <Pressable 
         style={{ flex: 1 }} 
-        onPress={() => dropdownVisible && setDropdownVisible(false)}
+        onPress={() => {
+          dropdownVisible && setDropdownVisible(false);
+          setCategoryDropdownVisible(false);
+        }}
       >
         <ScrollView
           contentContainerStyle={styles.scrollContent}
