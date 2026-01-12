@@ -10,27 +10,27 @@ import { ConservationItem } from '../context/ConservationContext';
 const CARD_WIDTH = Dimensions.get('window').width / 2 - 40;
 
 type ConsMenuCardProps = {
-  item: ConservationItem; // беремо тип прямо з контексту
+  item: ConservationItem; 
   index: number;
 };
 
 const ConsMenuCard = ({ item, index }: ConsMenuCardProps) => {
-  // shadow glowing efect
-  const [pressed, setPressed] = useState(false);
-
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
+  // navigate to CardPage
   const handlePress = () => {
     navigation.navigate('CardPage', { item });
   };
 
-   // підрахунок банок
-   const totalJars = Object.values(item.history).reduce(
+  // shadow glowing efect
+  const [pressed, setPressed] = useState(false);
+
+  // jars count (all years)
+  const totalJars = Object.values(item.history).reduce(
     (sum, yearData) => sum + Object.values(yearData).reduce((s, val) => s + val, 0),
     0
   );
   
-
   return (
     <Pressable
       onPress={handlePress}
@@ -53,7 +53,7 @@ const ConsMenuCard = ({ item, index }: ConsMenuCardProps) => {
             <Image
               source={
                 item.imageUri
-                  ? { uri: item.imageUri } // якщо користувач вибрав фото
+                  ? { uri: item.imageUri } // if the user adds img
                   : require('../../assets/images/default_conservation.png') // fallback
               }
               style={styles.image}

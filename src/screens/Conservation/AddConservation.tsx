@@ -12,6 +12,8 @@ import { useContext } from 'react';
 
 const AddConservation = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
+  // func addConservation from context
   const { addConservation } = useContext(ConservationContext);
 
   // image field
@@ -69,35 +71,33 @@ const AddConservation = () => {
       return;
     }
 
-    // створюємо об’єкт
+    // creating obj
     const newItem: ConservationItem = {
       name,
       category: selectedCategory!,
       imageUri,
       history: {
-        [selectedYear || '2021']: jarCounts, // тут обов’язково поле history
+        [selectedYear || '2021']: jarCounts, 
       },
     };
-    
+  
+    // adding obj to context
+    addConservation(newItem);
 
-  // додаємо через контекст
-  addConservation(newItem);
+    // clearing fields
+    setName('');
+    setSelectedCategory(null);
+    setSelectedYear('2021');
+    setJarCounts({
+      jar2_3l: 0,
+      jar4_2l: 0,
+      jar7_15l: 0,
+      jar2_1l: 0,
+      jar1_05l: 0,
+    });
+    setImageUri(null);
 
-  // опціонально очистити поля
-  setName('');
-  setSelectedCategory(null);
-  setSelectedYear('2021');
-  setJarCounts({
-    jar2_3l: 0,
-    jar4_2l: 0,
-    jar7_15l: 0,
-    jar2_1l: 0,
-    jar1_05l: 0,
-  });
-  setImageUri(null);
-
-  // повертатися до списку
-  navigation.goBack();
+    navigation.goBack();
   };
 
   return (
@@ -329,7 +329,7 @@ const AddConservation = () => {
 export default AddConservation;
 
 const styles = StyleSheet.create({
-  // main cintainer
+  // main container
   container: { 
     flex: 1, 
     backgroundColor: '#F7F9FD',

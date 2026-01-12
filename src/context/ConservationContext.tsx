@@ -2,7 +2,7 @@ import React, { createContext, useState, useEffect, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useContext } from 'react';
 
-// Тип для одного елементу консервації
+// conservation item type
 export type ConservationItem = {
   name: string;
   category: string;
@@ -18,14 +18,12 @@ export type ConservationItem = {
   };
 };
 
-
-// Тип контексту
-// Додаємо тип функції
+// context type
 export type ConservationContextType = {
-  conservations: ConservationItem[];
-  addConservation: (item: ConservationItem) => void;
-  loadConservations: () => void;
-  updateJarHistory: (
+  conservations: ConservationItem[];  // all conservations array
+  addConservation: (item: ConservationItem) => void;  // adds new card/updates existed
+  loadConservations: () => void;  // loads data from AsyncStorage
+  updateJarHistory: (  // updates jar count of a card and a year 
     itemName: string,
     year: string,
     jarCounts: {
@@ -38,8 +36,7 @@ export type ConservationContextType = {
   ) => void;
 };
 
-
-// Контекст
+// Context
 export const ConservationContext = createContext<ConservationContextType>({
   conservations: [],
   addConservation: () => {},
@@ -47,15 +44,27 @@ export const ConservationContext = createContext<ConservationContextType>({
   updateJarHistory: () => {},
 });
 
+// Custom hook to access the ConservationContext
+export const useConservation = () => {
+  const context = useContext(ConservationContext);
+  if (!context) {
+    throw new Error('useConservation must be used within a ConservationProvider');
+  }
+  return context;
+};
+
 type Props = {
   children: ReactNode;
 };
 
+// 
 export const ConservationProvider = ({ children }: Props) => {
+  // array of all conservation cards
   const [conservations, setConservations] = useState<ConservationItem[]>([]);
-  const [loading, setLoading] = useState(true); // щоб чекати завантаження
+  // state of loading (from AsyncStorage)
+  const [loading, setLoading] = useState(true); 
 
-  // Завантаження з AsyncStorage
+  // loading from AsyncStorage
   const loadConservations = async () => {
     try {
       const json = await AsyncStorage.getItem('@conservations');
@@ -65,12 +74,12 @@ export const ConservationProvider = ({ children }: Props) => {
     } catch (e) {
       console.error('Failed to load conservations', e);
     } finally {
-      setLoading(false); // закінчили завантаження
+      setLoading(false); // end of loading
     }
   };
 
-  // Додавання нової консервації
-  const addConservation = async (item: ConservationItem) => {
+  // adding new conservation
+  const addConservation = async (item: ConservationItem) => { // params: new card
     try {
       const existingIndex = conservations.findIndex(
         c => c.name.trim().toLowerCase() === item.name.trim().toLowerCase()
@@ -79,23 +88,39 @@ export const ConservationProvider = ({ children }: Props) => {
       let newList: ConservationItem[];
   
       if (existingIndex !== -1) {
-        // 👉 така назва вже є — додаємо рік
+        // name exists 
+        const existingItem = conservations[existingIndex];
+        const newHistory = { ...existingItem.history };
+  
+        // years from card
+        Object.entries(item.history).forEach(([year, newJars]) => {
+          if (newHistory[year]) {
+            // if year exists — adding jars
+            newHistory[year] = {
+              jar2_3l: newHistory[year].jar2_3l + newJars.jar2_3l,
+              jar4_2l: newHistory[year].jar4_2l + newJars.jar4_2l,
+              jar7_15l: newHistory[year].jar7_15l + newJars.jar7_15l,
+              jar2_1l: newHistory[year].jar2_1l + newJars.jar2_1l,
+              jar1_05l: newHistory[year].jar1_05l + newJars.jar1_05l,
+            };
+          } else {
+            // if year NOT exists — adding year
+            newHistory[year] = newJars;
+          }
+        });
+  
+        // new card list
         newList = conservations.map((c, index) =>
           index === existingIndex
-            ? {
-                ...c,
-                history: {
-                  ...c.history,
-                  ...item.history, // новий рік
-                },
-              }
+            ? { ...c, history: newHistory }
             : c
         );
       } else {
-        // 👉 нова назва — нова картка
+        // adding new card
         newList = [...conservations, item];
       }
   
+      // new array in AsyncStorage
       setConservations(newList);
       await AsyncStorage.setItem('@conservations', JSON.stringify(newList));
     } catch (e) {
@@ -103,7 +128,7 @@ export const ConservationProvider = ({ children }: Props) => {
     }
   };
   
-
+  // updating jar count for a year
   const updateJarHistory = async (
     itemName: string,
     year: string,
@@ -116,7 +141,7 @@ export const ConservationProvider = ({ children }: Props) => {
     }
   ) => {
     try {
-      const newConservations = conservations.map(item =>
+      const newConservations = conservations.map(item => // going through all cards
         item.name === itemName
           ? {
               ...item,
@@ -135,12 +160,11 @@ export const ConservationProvider = ({ children }: Props) => {
     }
   };
   
-
+  // loads all conservations from AsyncStorage
   useEffect(() => {
     loadConservations();
   }, []);
 
-  // Поки завантажуємо — можна повернути null або спіннер
   if (loading) return null;
 
   return (
@@ -153,10 +177,3 @@ export const ConservationProvider = ({ children }: Props) => {
   );
 };
 
-export const useConservation = () => {
-  const context = useContext(ConservationContext);
-  if (!context) {
-    throw new Error('useConservation must be used within a ConservationProvider');
-  }
-  return context;
-};
