@@ -19,7 +19,7 @@ const CardPage = () => {
   const { item } = route.params;  // card ConsMenuCard
 
   // card array, function for updating jars of a year
-  const { conservations, updateJarHistory, updateImage } = useConservation();
+  const { conservations, updateJarHistory, updateImage, updateCategory } = useConservation();
 
   // current card 
   const currentItem = conservations.find(c => c.name === item.name);
@@ -38,6 +38,15 @@ const CardPage = () => {
   // changing img
   const [imageUri, setImageUri] = useState<string | null>(item.imageUri || null);
 
+  // CATEGORY
+  // category state
+  const [selectedCategory, setSelectedCategory] = useState<string>(item.category);
+  // category dropdown visibility
+  const [categoryDropdownVisible, setCategoryDropdownVisible] = useState(false);
+  // categories list
+  const categories = ['Мариновані', 'Солені', 'Квашені', 'Варення / Джеми', 'Компоти', 'Соуси / Кетчупи', 'Консерви в олії / жирі'];
+  
+  
   // YEARS
   // dropdown years
   const [dropdownVisible, setDropdownVisible] = useState(false);
@@ -140,6 +149,55 @@ const CardPage = () => {
               
             </View>
 
+            {/* CATEGORY */}
+            <View style={{ marginTop: hp(2) }}>
+              <Text style={styles.timeTitle}>Категорія:</Text>
+
+              <View style={{ alignItems: 'center', marginTop: hp(1) }}>
+                <Pressable
+                  style={[
+                    styles.bigIconContainerCat,
+                    {
+                      width: '100%', 
+                    },
+                  ]}
+                  onPress={() => setCategoryDropdownVisible(prev => !prev)}
+                >
+                  <Text style={styles.timeTitleCat}>{selectedCategory}</Text>
+                  <Image
+                    source={require('../../assets/icons/frame_down.png')}
+                    style={styles.arrowDownIconCat}
+                  />
+                </Pressable>
+
+                {/* Dropdown */}
+                {categoryDropdownVisible && (
+                  <View
+                    style={[
+                      styles.yearsDropdownContainer,
+                      {
+                        width: '100%',
+                        marginLeft: 0, 
+                      },
+                    ]}
+                  >
+                    {categories.map(cat => (
+                      <Pressable
+                        key={cat}
+                        style={styles.dropdownItem}
+                        onPress={() => {
+                          setSelectedCategory(cat);
+                          setCategoryDropdownVisible(false);
+                        }}
+                      >
+                        <Text style={styles.dropdownItemText}>{cat}</Text>
+                      </Pressable>
+                    ))}
+                  </View>
+                )}
+              </View>
+            </View>
+
             {/* TOTAL JAR COUNT */}
             <View style={styles.timeRow}> 
                 <Text style={styles.timeTitle}>Загальна к-ть банок:</Text>
@@ -236,7 +294,14 @@ const CardPage = () => {
             </View>
 
             {/* ADD CONSERVATION BUTTON */}
-            <Pressable style={styles.addButton}>
+            <Pressable style={styles.addButton}
+              onPress={() => {
+                if (!currentItem) return;
+                if (currentItem.category !== selectedCategory) {
+                  updateCategory(currentItem.name, selectedCategory);
+                }
+              }}
+            >
               <Text style={styles.addButtonText}>Зберегти зміни</Text>
             </Pressable>
 
@@ -411,6 +476,30 @@ const styles = StyleSheet.create({
     height: hp(2.5),
     resizeMode: 'contain',
     marginLeft: hp(1), 
+  },
+
+  // CATEGORIES
+  bigIconContainerCat: {
+    flexDirection: 'row',    
+    alignItems: 'center',      
+    paddingHorizontal: hp(1.5),
+    height: hp(6),       
+    backgroundColor: '#00B4BF66',
+    borderRadius: hp(1.5),
+    justifyContent: 'center',
+    position: 'relative',
+  },
+  arrowDownIconCat: {
+    position: 'absolute',
+    right: hp(1.5), 
+    width: hp(2.5),
+    height: hp(2.5),
+    resizeMode: 'contain',
+  },
+  timeTitleCat: {
+    fontSize: hp(2.8), 
+    fontWeight: '600', 
+    color: 'black', 
   },
 
   // left column

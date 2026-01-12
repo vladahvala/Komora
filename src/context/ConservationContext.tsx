@@ -35,6 +35,7 @@ export type ConservationContextType = {
     }
   ) => void;
   updateImage: (itemName: string, newUri: string) => void; // updating card img
+  updateCategory: (itemName: string, newCategory: string) => void; // updating card cat
 };
 
 // Context
@@ -44,6 +45,7 @@ export const ConservationContext = createContext<ConservationContextType>({
   loadConservations: () => {},
   updateJarHistory: () => {},
   updateImage: () => {},
+  updateCategory: () => {},
 });
 
 // Custom hook to access the ConservationContext
@@ -146,6 +148,23 @@ export const ConservationProvider = ({ children }: Props) => {
     }
   };
 
+  // update category
+  const updateCategory = async (itemName: string, newCategory: string) => {
+    try {
+      const newConservations = conservations.map(item =>
+        item.name === itemName
+          ? { ...item, category: newCategory }
+          : item
+      );
+  
+      setConservations(newConservations);
+      await AsyncStorage.setItem('@conservations', JSON.stringify(newConservations));
+    } catch (e) {
+      console.error('Failed to update category', e);
+    }
+  };
+  
+
   // updating jar count for a year
   const updateJarHistory = async (
     itemName: string,
@@ -192,7 +211,8 @@ export const ConservationProvider = ({ children }: Props) => {
       addConservation, 
       loadConservations, 
       updateJarHistory,
-      updateImage,   
+      updateImage,  
+      updateCategory, 
     }}
   >
     {children}
