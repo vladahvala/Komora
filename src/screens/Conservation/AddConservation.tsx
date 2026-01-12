@@ -5,7 +5,7 @@ import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigation';
 import JarNumCard from '../../components/JarNumCard';
-import AlertModal from '../../components/AlertModal';
+import AlertModal from '../../modals/AlertModal';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { ConservationContext, ConservationItem } from '../../context/ConservationContext';
 import { useContext } from 'react';

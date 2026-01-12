@@ -4,7 +4,8 @@ import { Shadow } from 'react-native-shadow-2';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../navigation'; // твій стек навігації
-import { ConservationItem } from '../context/ConservationContext';
+import { ConservationItem, useConservation } from '../context/ConservationContext';
+import ConfirmModal from '../modals/ConfirmModal';
 
 // fixed card width
 const CARD_WIDTH = Dimensions.get('window').width / 2 - 40;
@@ -16,6 +17,11 @@ type ConsMenuCardProps = {
 
 const ConsMenuCard = ({ item, index }: ConsMenuCardProps) => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
+  // importing functions from context
+  const { deleteConservation } = useConservation();
+  // for alert
+  const [modalVisible, setModalVisible] = useState(false);
 
   // navigate to CardPage
   const handlePress = () => {
@@ -50,15 +56,30 @@ const ConsMenuCard = ({ item, index }: ConsMenuCardProps) => {
           <View style={styles.listContainer}>
             {/* CARD IMG */}
             <View style={styles.imageContainer}>
-            <Image
-              source={
-                item.imageUri
-                  ? { uri: item.imageUri } // if the user adds img
-                  : require('../../assets/images/default_conservation.png') // fallback
-              }
-              style={styles.image}
-            />
+              <Image
+                source={
+                  item.imageUri
+                    ? { uri: item.imageUri }
+                    : require('../../assets/images/default_conservation.png')
+                }
+                style={styles.image}
+              />
+
+              {/* TRASH BUTTON */}
+              <Pressable
+                style={styles.trashButton}
+                onPress={(e) => {
+                  e.stopPropagation(); 
+                  setModalVisible(true);
+                }}
+              >
+                <Image
+                  source={require('../../assets/icons/trash.png')}
+                  style={styles.trashIcon}
+                />
+              </Pressable>
             </View>
+
             <Text
               style={styles.nameText}
               numberOfLines={1}
@@ -78,6 +99,18 @@ const ConsMenuCard = ({ item, index }: ConsMenuCardProps) => {
             </View>      
           </View>
       </Shadow>
+
+      {/* ALERT */}
+      <ConfirmModal
+        visible={modalVisible}
+        message="Ви впевнені, що хочете видалити цю картку?"
+        onCancel={() => setModalVisible(false)}
+        onConfirm={() => {
+          deleteConservation(item.name);
+          setModalVisible(false);
+        }}
+      />
+      
     </Pressable>
   );
 };
@@ -99,6 +132,7 @@ const styles = StyleSheet.create({
     marginRight: hp(2),
     marginTop: hp(0.3),
     overflow: 'hidden',
+    position: 'relative',
   },
   image: {
     width: '100%',
@@ -106,6 +140,30 @@ const styles = StyleSheet.create({
     aspectRatio: 1,      
     transform: [{ scaleY: 0.85 }],  
     borderRadius: hp(1.5),
+  },
+  // delete card styles
+  trashButton: {
+    position: 'absolute',
+    top: hp(2),
+    left: hp(1),
+    backgroundColor: '#FFFFFF',
+    width: hp(3.5),
+    height: hp(3.5),
+    borderRadius: hp(1),
+    justifyContent: 'center',
+    alignItems: 'center',
+  
+    // shadow
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowOffset: { width: 0, height: 1 },
+    shadowRadius: 2,
+    elevation: 3,
+  },
+  trashIcon: {
+    width: hp(2.2),
+    height: hp(2.2),
+    resizeMode: 'contain',
   },
 
   // title 

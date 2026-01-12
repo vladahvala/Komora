@@ -36,6 +36,7 @@ export type ConservationContextType = {
   ) => void;
   updateImage: (itemName: string, newUri: string) => void; // updating card img
   updateCategory: (itemName: string, newCategory: string) => void; // updating card cat
+  deleteConservation: (itemName: string) => void; // delete card
 };
 
 // Context
@@ -46,6 +47,7 @@ export const ConservationContext = createContext<ConservationContextType>({
   updateJarHistory: () => {},
   updateImage: () => {},
   updateCategory: () => {},
+  deleteConservation: () => {},
 });
 
 // Custom hook to access the ConservationContext
@@ -82,6 +84,23 @@ export const ConservationProvider = ({ children }: Props) => {
     }
   };
 
+  // deleting card
+  const deleteConservation = async (itemName: string) => {
+    try {
+      const newConservations = conservations.filter(
+        item => item.name !== itemName
+      );
+  
+      setConservations(newConservations);
+      await AsyncStorage.setItem(
+        '@conservations',
+        JSON.stringify(newConservations)
+      );
+    } catch (e) {
+      console.error('Failed to delete conservation', e);
+    }
+  };
+  
   // adding new conservation
   const addConservation = async (item: ConservationItem) => { // params: new card
     try {
@@ -213,6 +232,7 @@ export const ConservationProvider = ({ children }: Props) => {
       updateJarHistory,
       updateImage,  
       updateCategory, 
+      deleteConservation, 
     }}
   >
     {children}
