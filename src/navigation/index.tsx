@@ -7,6 +7,7 @@ import ConservationMain from '../screens/Conservation/ConservationMain';
 import CardPage from '../components/CardPage';
 import ConservationNavigation from '../screens/Conservation/ConservationNavigation';
 import { ConservationItem, ConservationProvider } from '../context/ConservationContext';
+import CategoryPage from '../screens/Conservation/CategoryPage';
 
 export type RootStackParamList = {
   Welcome: undefined;
@@ -15,6 +16,7 @@ export type RootStackParamList = {
   ConservationMain: undefined;
   Details: { itemId: number };
   CardPage: { item: ConservationItem };
+  CategoryPage: { category: string };
 };
 
 // Створюємо Stack перед використанням
@@ -36,6 +38,7 @@ export default function AppNavigation() {
           <Stack.Screen name="ConservationNavigation" component={ConservationNavigation} />
           <Stack.Screen name="CardPage" component={CardPage} />
           <Stack.Screen name="ConservationMain" component={ConservationMain} />
+          <Stack.Screen name="CategoryPage" component={CategoryPage} />
         </Stack.Navigator>
       </NavigationContainer>
     </ConservationProvider>

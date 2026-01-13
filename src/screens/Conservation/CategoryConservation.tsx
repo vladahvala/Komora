@@ -6,6 +6,8 @@ import { RootStackParamList } from '../../navigation';
 import cat_data from '../../../data/cat_data.js';
 import CatCard from '../../components/CatCard';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import CategoryPage from './CategoryPage';
+
 
 const CategoryConservation = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -43,8 +45,11 @@ const CategoryConservation = () => {
                 name: item.title,
                 image: item.image,
                 cansCount: Math.floor(Math.random() * 20 + 1),
-              }}
-              onPress={() => console.log('Pressed', item.title)}
+                  category: item.category, 
+                }}
+                onPress={() =>
+                  navigation.navigate('CategoryPage', { category: item.category })
+                }
             />
           ))}
         </View>
