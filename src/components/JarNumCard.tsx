@@ -1,5 +1,5 @@
-import React from 'react';
-import { View, Image, StyleSheet, Text, Pressable, TextInput } from 'react-native';
+import React, { useState } from 'react';
+import { View, Image, StyleSheet, Text, Pressable, TextInput, Animated } from 'react-native';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Shadow } from 'react-native-shadow-2';
 
@@ -21,6 +21,40 @@ const JarNumCard: React.FC<JarNumCardProps> = ({ image, style, label, circleLabe
         if (num > 99) num = 99; // max = 99
         onChange(num);
     };
+
+    // animations for + and -
+    const [scaleMinus] = useState(new Animated.Value(1));
+    const [scalePlus] = useState(new Animated.Value(1));
+
+    const onPressInMinus = () => {
+        Animated.timing(scaleMinus, {
+            toValue: 1.2,
+            duration: 80,  
+            useNativeDriver: true,
+        }).start();
+    };
+    const onPressOutMinus = () => {
+        Animated.timing(scaleMinus, {
+            toValue: 1,
+            duration: 80,
+            useNativeDriver: true,
+        }).start();
+    };
+      
+    const onPressInPlus = () => {
+        Animated.timing(scalePlus, {
+            toValue: 1.2,
+            duration: 80,  
+            useNativeDriver: true,
+        }).start();
+    };
+    const onPressOutPlus = () => {
+        Animated.timing(scalePlus, {
+            toValue: 1,
+            duration: 80,
+            useNativeDriver: true,
+        }).start();
+    };
  
     return (
     <View
@@ -41,15 +75,18 @@ const JarNumCard: React.FC<JarNumCardProps> = ({ image, style, label, circleLabe
                 <View style={styles.circle}>
 
                     {/* SMALL BLACK CIRCLE (MINUS) */}
-                    <Pressable
-                        style={[styles.smallDot, styles.leftDot]}
-                        onPress={() => onChange(Math.max(count - 1, 0))}
+                    <Animated.View
+                        style={[styles.smallDot, styles.leftDot, { transform: [{ scale: scaleMinus }] }]}
                     >
-                        <Image
-                            source={require('../../assets/jar_icons/minus.png')}
-                            style={styles.dotIcon}
-                        />
-                    </Pressable>
+                        <Pressable
+                            onPress={() => onChange(Math.max(count - 1, 0))}
+                            onPressIn={onPressInMinus}
+                            onPressOut={onPressOutMinus}
+                            style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} 
+                        >
+                            <Image source={require('../../assets/jar_icons/minus.png')} style={styles.dotIcon} />
+                        </Pressable>
+                    </Animated.View>
 
                     {/* JAR IMAGE */}
                     <Image source={image} style={styles.icon} />
@@ -74,15 +111,19 @@ const JarNumCard: React.FC<JarNumCardProps> = ({ image, style, label, circleLabe
 
 
                     {/* SMALL BLACK CIRCLE (PLUS) */}
-                    <Pressable
-                        style={[styles.smallDot, styles.rightDot]}
-                        onPress={() => onChange(count + 1)}
+                    <Animated.View
+                        style={[styles.smallDot, styles.rightDot, { transform: [{ scale: scalePlus }] }]}
                     >
-                        <Image
-                            source={require('../../assets/jar_icons/plus.png')}
-                            style={styles.dotIcon}
-                        />
-                    </Pressable>
+                        <Pressable
+                            onPress={() => onChange(count + 1)}
+                            onPressIn={onPressInPlus}
+                            onPressOut={onPressOutPlus}
+                            style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
+                        >
+                            <Image source={require('../../assets/jar_icons/plus.png')} style={styles.dotIcon} />
+                        </Pressable>
+                    </Animated.View>
+
                 </View>
 
                 {/* CARD TEXT */}
@@ -155,14 +196,14 @@ const styles = StyleSheet.create({
     // minus
     leftDot: {
         left: -hp(0.7),
-        top: '50%',
-        transform: [{ translateY: -hp(0.7) }],
+        top: '42%',
+        transform: [{ translateY: -hp(1) }],
     },
     // plus
     rightDot: {
         right: -hp(0.7),
-        top: '50%',
-        transform: [{ translateY: -hp(0.7) }],
+        top: '42%',
+        transform: [{ translateY: -hp(1) }],
     },
     // plus/minus icon
     dotIcon: {
