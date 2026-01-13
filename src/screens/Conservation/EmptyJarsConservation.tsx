@@ -1,22 +1,27 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet, TextInput, Pressable, ScrollView } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigation';
 import JarNumCard from '../../components/JarNumCard';
+import { useConservation } from '../../context/ConservationContext';
 
 const EmptyJarsConservation = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   // jars count
-  const [jarCounts, setJarCounts] = useState({
-    jar2_3l: 0,
-    jar4_2l: 0,
-    jar7_15l: 0,
-    jar2_1l: 0,
-    jar1_05l: 0,
-  });
+  const { emptyJars, updateEmptyJars } = useConservation();
+
+  // local changes by user
+  const [localJars, setLocalJars] = useState(emptyJars);
+  // sync local changes with context
+  useEffect(() => {
+    setLocalJars(emptyJars);
+  }, [emptyJars]);
+
+  // all empty jars count
+  const totalJars = Object.values(localJars).reduce((sum, val) => sum + val, 0);
 
   return (
     // MAIN CONTAINER
@@ -50,47 +55,69 @@ const EmptyJarsConservation = () => {
               label="2"
               circleLabel="3л"
               style={styles.jarCard}
-              count={jarCounts.jar2_3l}
-              onChange={(newCount) => setJarCounts(prev => ({ ...prev, jar2_3l: newCount }))}
+              count={localJars.jar2_3l}
+              onChange={(newCount) =>
+                setLocalJars(prev => ({ ...prev, jar2_3l: newCount }))
+              }
             />
             <JarNumCard 
               image={require('../../../assets/jar_icons/empty_jar.png')}
               label="4" 
               circleLabel="2л"
               style={styles.jarCard}
-              count={jarCounts.jar4_2l}
-              onChange={(newCount) => setJarCounts(prev => ({ ...prev, jar4_2l: newCount }))}
+              count={localJars.jar4_2l}
+              onChange={(newCount) =>
+                setLocalJars(prev => ({ ...prev, jar4_2l: newCount }))
+              }
             />
             <JarNumCard 
               image={require('../../../assets/jar_icons/empty_jar.png')}
               label="7" 
               circleLabel="1.5л"
               style={styles.jarCard}
-              count={jarCounts.jar7_15l}
-              onChange={(newCount) => setJarCounts(prev => ({ ...prev, jar7_15l: newCount }))}
+              count={localJars.jar7_15l}
+              onChange={(newCount) =>
+                setLocalJars(prev => ({ ...prev, jar7_15l: newCount }))
+              }
             />
             <JarNumCard 
               image={require('../../../assets/jar_icons/empty_jar.png')}
               label="2" 
               circleLabel="1л"
               style={styles.jarCard}
-              count={jarCounts.jar2_1l}
-              onChange={(newCount) => setJarCounts(prev => ({ ...prev, jar2_1l: newCount }))}
+              count={localJars.jar2_1l}
+              onChange={(newCount) =>
+                setLocalJars(prev => ({ ...prev, jar2_1l: newCount }))
+              }
             />
             <JarNumCard 
               image={require('../../../assets/jar_icons/empty_jar.png')}
               label="1" 
               circleLabel="0.5л"
               style={styles.jarCard}
-              count={jarCounts.jar1_05l}
-              onChange={(newCount) => setJarCounts(prev => ({ ...prev, jar1_05l: newCount }))}
+              count={localJars.jar1_05l}
+              onChange={(newCount) =>
+                setLocalJars(prev => ({ ...prev, jar1_05l: newCount }))
+              }
             />
           </View>
 
+          {/* TOTAL JARS */}
+          <View style={styles.timeRow}>
+            <Text style={styles.timeTitle}>Загальна к-ть банок:</Text>
+            <View style={styles.bigIconContainer}>
+              <Text style={styles.timeTitle}>{totalJars}</Text>
+            </View>
+          </View>
+
           {/* ADD CONSERVATION BUTTON */}
-          <Pressable style={styles.addButton}>
+          <Pressable
+            style={styles.addButton}
+            onPress={() => updateEmptyJars(localJars)}
+          >
             <Text style={styles.addButtonText}>Зберегти зміни</Text>
           </Pressable>
+
         </View>
       </ScrollView>
     </SafeAreaProvider>
@@ -118,7 +145,7 @@ const styles = StyleSheet.create({
   // arrow styles
   arrowWrapper: {
     alignSelf: 'flex-start',
-    marginBottom: hp(6),
+    marginBottom: hp(4),
     marginLeft: -hp(1),
   },
   arrowTouchArea: {
@@ -149,6 +176,28 @@ const styles = StyleSheet.create({
   },
   jarCard: {
     marginBottom: hp(3),
+  },
+
+  // all empty jars num styles
+  timeRow: {
+    flexDirection: 'row',     
+    alignItems: 'center', 
+    justifyContent: 'center',    
+  },
+  timeTitle: {
+    fontSize: hp(3), 
+    fontWeight: '600', 
+    color: 'black', 
+  },
+  bigIconContainer: {
+    flexDirection: 'row',    
+    alignItems: 'center',      
+    paddingHorizontal: hp(1.5),
+    height: hp(6),
+    marginLeft: hp(2),         
+    backgroundColor: '#00B4BF66',
+    borderRadius: hp(1.5),
+    justifyContent: 'center',
   },
   
   // button styles
