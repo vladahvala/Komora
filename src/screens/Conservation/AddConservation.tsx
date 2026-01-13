@@ -167,7 +167,7 @@ const AddConservation = () => {
                 <TextInput
                   value={name}                 
                   onChangeText={text => setName(text)}
-                  style={styles.searchInput}
+                  style={styles.inputName}
                   onFocus={() => setIsNameFocused(true)}
                   onBlur={() => setIsNameFocused(false)}
                 />
@@ -405,6 +405,11 @@ const styles = StyleSheet.create({
     borderRadius: hp(1.5),
     paddingHorizontal: hp(1.5),
     height: hp(6),
+  },
+  inputName: {
+    flex: 1,
+    fontSize: hp(2.2),
+    color: 'black',
   },
   searchInput: {
     flex: 1,

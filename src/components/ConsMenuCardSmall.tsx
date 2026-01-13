@@ -8,7 +8,7 @@ import { useConservation } from '../context/ConservationContext';
 import ConfirmModal from '../modals/ConfirmModal';
 
 // fixed card width
-const CARD_WIDTH = Dimensions.get('window').width - 40; 
+const CARD_WIDTH = Dimensions.get('window').width - 60; 
 
 type ConsMenuCardSmallProps = {
   item: {

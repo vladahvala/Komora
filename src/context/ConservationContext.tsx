@@ -145,12 +145,21 @@ export const ConservationProvider = ({ children }: Props) => {
       console.error('Failed to delete conservation', e);
     }
   };
+
+  // editing name
+  const normalizeName = (name: string) =>
+    name
+      .trim()
+      .replace(/\s+/g, ' ') 
+      .toLowerCase();  
   
   // adding new conservation
   const addConservation = async (item: ConservationItem) => { // params: new card
     try {
+      const normalizedName = normalizeName(item.name);
+  
       const existingIndex = conservations.findIndex(
-        c => c.name.trim().toLowerCase() === item.name.trim().toLowerCase()
+        c => normalizeName(c.name) === normalizedName
       );
   
       let newList: ConservationItem[];
@@ -183,6 +192,7 @@ export const ConservationProvider = ({ children }: Props) => {
             ? { ...c, history: newHistory }
             : c
         );
+  
       } else {
         // adding new card
         newList = [...conservations, item];
@@ -194,7 +204,7 @@ export const ConservationProvider = ({ children }: Props) => {
     } catch (e) {
       console.error('Failed to save conservation', e);
     }
-  };
+  };  
 
   // updating card img 
   const updateImage = async (itemName: string, newUri: string) => {
