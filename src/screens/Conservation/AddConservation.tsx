@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet, TextInput, Pressable, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, Image, StyleSheet, TextInput, Pressable, ScrollView, Animated } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
@@ -99,6 +99,35 @@ const AddConservation = () => {
     setImageUri(null);
 
     navigation.goBack();
+  };
+
+  // buttons animation
+  const [pressAnim] = useState(new Animated.Value(0));
+
+  const onPressIn = () => {
+    Animated.timing(pressAnim, {
+      toValue: 1,        
+      duration: 100,
+      useNativeDriver: false,
+    }).start();
+  };
+
+  const onPressOut = () => {
+    Animated.timing(pressAnim, {
+      toValue: 0,        
+      duration: 100,
+      useNativeDriver: false,
+    }).start();
+  };
+
+  // animation styles
+  const animatedStyle = {
+    top: pressAnim.interpolate({ inputRange: [0, 1], outputRange: [0, 3] }), // down to 3 px
+    shadowOffset: {
+      width: 0,
+      height: pressAnim.interpolate({ inputRange: [0, 1], outputRange: [3, 1] }) // shadow up/down
+    },
+    elevation: pressAnim.interpolate({ inputRange: [0, 1], outputRange: [3, 1] }) // Android
   };
 
   return (
@@ -316,9 +345,16 @@ const AddConservation = () => {
             />
 
             {/* ADD CONSERVATION BUTTON */}
-            <Pressable style={styles.addButton} onPress={handleAddConservation}>
-              <Text style={styles.addButtonText}>Додати консервацію</Text>
+            <Pressable
+              onPress={handleAddConservation}
+              onPressIn={onPressIn}
+              onPressOut={onPressOut}
+            >
+              <Animated.View style={[styles.addButton, animatedStyle]}>
+                <Text style={styles.addButtonText}>Додати консервацію</Text>
+              </Animated.View>
             </Pressable>
+
 
           </View>
         </ScrollView>

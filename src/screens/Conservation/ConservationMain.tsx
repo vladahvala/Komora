@@ -8,6 +8,7 @@ import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigation';
 import { ConservationContext } from '../../context/ConservationContext';
 import { useContext, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ConservationMain = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -15,9 +16,9 @@ const ConservationMain = () => {
 
   // search bar
   const [searchText, setSearchText] = useState('');
- const filteredData = conservations.filter(item =>
-  item.name.toLowerCase().includes(searchText.toLowerCase())
-);
+  const filteredData = conservations.filter(item =>
+    item.name.toLowerCase().includes(searchText.toLowerCase())
+  );
   // cards style
   const [isBigIcon, setIsBigIcon] = useState(true); 
   const toggleIcon = () => {

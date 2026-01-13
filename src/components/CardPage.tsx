@@ -8,6 +8,7 @@ import JarNumCard from './JarNumCard';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { useConservation } from '../context/ConservationContext';
 import { launchImageLibrary } from 'react-native-image-picker';
+import { Animated } from 'react-native';
 
 type CardPageRouteProp = RouteProp<RootStackParamList, 'CardPage'>;
 
@@ -79,6 +80,35 @@ const CardPage = () => {
     )
   : 0;
 
+  // buttons animation
+  const [pressAnim] = useState(new Animated.Value(0));
+
+  const onPressIn = () => {
+    Animated.timing(pressAnim, {
+      toValue: 1,        
+      duration: 100,
+      useNativeDriver: false,
+    }).start();
+  };
+
+  const onPressOut = () => {
+    Animated.timing(pressAnim, {
+      toValue: 0,        
+      duration: 100,
+      useNativeDriver: false,
+    }).start();
+  };
+
+  // animation styles
+  const animatedStyle = {
+    top: pressAnim.interpolate({ inputRange: [0, 1], outputRange: [0, 3] }), // down to 3 px
+    shadowOffset: {
+      width: 0,
+      height: pressAnim.interpolate({ inputRange: [0, 1], outputRange: [3, 1] }) // shadow up/down
+    },
+    elevation: pressAnim.interpolate({ inputRange: [0, 1], outputRange: [3, 1] }) // Android
+  };
+
   return (
     // MAIN CONTAINER
     <SafeAreaProvider style={styles.container}>
@@ -96,7 +126,7 @@ const CardPage = () => {
           <View style={styles.headerContainer}>
             {/* ARROW TO MAIN MENU */}
             <TouchableOpacity 
-              onPress={() => navigation.navigate('ConservationNavigation')} 
+              onPress={() => navigation.goBack()} 
               style={styles.arrowWrapper}
               activeOpacity={1}  
             >
@@ -296,15 +326,19 @@ const CardPage = () => {
             </View>
 
             {/* ADD CONSERVATION BUTTON */}
-            <Pressable style={styles.addButton}
+            <Pressable
               onPress={() => {
                 if (!currentItem) return;
                 if (currentItem.category !== selectedCategory) {
                   updateCategory(currentItem.name, selectedCategory);
                 }
               }}
+              onPressIn={onPressIn}
+              onPressOut={onPressOut}
             >
-              <Text style={styles.addButtonText}>Зберегти зміни</Text>
+              <Animated.View style={[styles.addButton, animatedStyle]}>
+                <Text style={styles.addButtonText}>Зберегти зміни</Text>
+              </Animated.View>
             </Pressable>
 
             <View style={styles.timeRow}> 
