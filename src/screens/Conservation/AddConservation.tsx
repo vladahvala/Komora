@@ -9,6 +9,7 @@ import AlertModal from '../../modals/AlertModal';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { ConservationContext, ConservationItem } from '../../context/ConservationContext';
 import { useContext } from 'react';
+import { TouchableWithoutFeedback, Keyboard } from 'react-native';
 
 const AddConservation = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -102,18 +103,18 @@ const AddConservation = () => {
 
   return (
     // MAIN CONTAINER
-    <SafeAreaProvider style={styles.container}>
-      <Pressable
-        style={{ flex: 1 }}
-        onPress={() => {
-          setCategoryModalVisible(false);
-          setYearsModalVisible(false);
-        }}        
-        pointerEvents="box-none" // allows pressing buttons
-      >
+    <TouchableWithoutFeedback
+      onPress={() => {
+        Keyboard.dismiss();
+        setCategoryModalVisible(false);
+        setYearsModalVisible(false);
+      }}
+    >
+      <SafeAreaProvider style={styles.container}>
         <ScrollView
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
         >
           <View style={styles.headerContainer}>
             {/* ARROW TO MAIN MENU */}
@@ -321,8 +322,8 @@ const AddConservation = () => {
 
           </View>
         </ScrollView>
-      </Pressable>
-    </SafeAreaProvider>
+      </SafeAreaProvider>
+    </TouchableWithoutFeedback>
   );
 };
 
