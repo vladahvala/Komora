@@ -69,7 +69,7 @@ const ConsMenuCardSmall = ({ item }: ConsMenuCardSmallProps) => {
 
           {/* CARD INFO + TRASH BUTTON INLINE */}
           <View style={styles.textContainer}>
-            <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">
+            <Text style={styles.title} numberOfLines={2} ellipsizeMode="tail">
               {item.name}
             </Text>
             <View style={styles.infoRow}>
