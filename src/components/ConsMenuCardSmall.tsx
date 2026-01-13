@@ -1,25 +1,48 @@
 import React, { useState } from 'react';
-import { View, Text, Image, StyleSheet, Pressable } from 'react-native';
+import { View, Text, Image, StyleSheet, Pressable, Dimensions } from 'react-native';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Shadow } from 'react-native-shadow-2';
+import { useNavigation, NavigationProp } from '@react-navigation/native';
+import { RootStackParamList } from '../navigation';
+import { useConservation } from '../context/ConservationContext';
+import ConfirmModal from '../modals/ConfirmModal';
+
+// fixed card width
+const CARD_WIDTH = Dimensions.get('window').width - 40; 
 
 type ConsMenuCardSmallProps = {
   item: {
     name: string;
-    image: any;       
-    cansCount: number;
+    imageUri?: string;       
+    history: Record<string, Record<string, number>>; 
   };
-  onPress?: () => void;
 };
 
-const ConsMenuCardSmall = ({ item, onPress }: ConsMenuCardSmallProps) => {
+const ConsMenuCardSmall = ({ item }: ConsMenuCardSmallProps) => {
+  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+
   // shadow glowing efect
   const [pressed, setPressed] = useState(false);
 
+  // importing functions from context
+  const { deleteConservation } = useConservation();
+  const [modalVisible, setModalVisible] = useState(false);
+
+  // jars count (all years)
+  const totalJars = Object.values(item.history).reduce(
+    (sum, yearData) => sum + Object.values(yearData).reduce((s, val) => s + val, 0),
+    0
+  );
+
+  // navigate to CardPage
+  const handlePress = () => {
+    navigation.navigate('CardPage', { item });
+  };
+
   return (
     <Pressable
-      style={{ marginBottom: hp(2) }}
-      onPress={onPress}
+      style={{ marginBottom: hp(2), width: CARD_WIDTH }}
+      onPress={handlePress}
       onPressIn={() => setPressed(true)}
       onPressOut={() => setPressed(false)}
     >
@@ -35,24 +58,57 @@ const ConsMenuCardSmall = ({ item, onPress }: ConsMenuCardSmallProps) => {
         {/* CARD STYLES */}
         <View style={styles.cardContainer}>
           {/* CARD IMG */}
-          <Image source={item.image} style={styles.image} />
-    
-          {/* CARD INFO */}
+          <Image
+            source={
+              item.imageUri
+                ? { uri: item.imageUri }
+                : require('../../assets/images/default_conservation.png')
+            }
+            style={styles.image}
+          />
+
+          {/* CARD INFO + TRASH BUTTON INLINE */}
           <View style={styles.textContainer}>
             <Text style={styles.title} numberOfLines={1} ellipsizeMode="tail">
               {item.name}
             </Text>
-            <View style={styles.subtitleRow}>
-              <Text style={styles.subtitle}>{item.cansCount}</Text>
+            <View style={styles.infoRow}>
+              <Text style={styles.subtitle}>{totalJars}</Text>
               <Image
                 source={require('../../assets/icons/jar.png')}
                 style={styles.jarIcon}
               />
               <Text style={styles.subtitle}> Банок</Text>
+
+              {/* TRASH BUTTON INLINE */}
+              <Pressable
+                onPress={(e) => {
+                  e.stopPropagation();
+                  setModalVisible(true);
+                }}
+                style={styles.trashInline}
+              >
+                <Image
+                  source={require('../../assets/icons/trash.png')}
+                  style={styles.trashIconInline}
+                />
+              </Pressable>
             </View>
           </View>
         </View>
       </Shadow>
+
+      {/* ALERT */}
+      <ConfirmModal
+        visible={modalVisible}
+        message="Ви впевнені, що хочете видалити цю картку?"
+        onCancel={() => setModalVisible(false)}
+        onConfirm={() => {
+          deleteConservation(item.name);
+          setModalVisible(false);
+        }}
+      />
+
     </Pressable>
   );
 };
@@ -92,10 +148,12 @@ const styles = StyleSheet.create({
     fontSize: hp(2.2),
     fontWeight: '600',
     color: '#000',
-    marginBottom: hp(3.5),  
+    marginBottom: hp(1.5),
   },
-  subtitleRow: {
-    flexDirection: 'row',    
+
+  // info row with jars and trash button inline
+  infoRow: {
+    flexDirection: 'row',
     alignItems: 'center',
   },
   subtitle: {
@@ -105,7 +163,18 @@ const styles = StyleSheet.create({
   jarIcon: {
     width: hp(2.2),
     height: hp(2.2),
-    marginLeft: hp(0.5),        
+    marginLeft: hp(0.5),
+    marginRight: hp(0.5),
+    resizeMode: 'contain',
+  },
+
+  // trash button inline
+  trashInline: {
+    marginLeft: 'auto', 
+  },
+  trashIconInline: {
+    width: hp(2.2),
+    height: hp(2.2),
     resizeMode: 'contain',
   },
 });
