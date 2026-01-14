@@ -18,10 +18,13 @@ const CardPageRecipe = () => {
 
   const { item } = route.params;  // card ConsMenuCard
 
-  const { recipes, updateImage, updateCategory, addIngredient, updateRecipeText } = useRecipe();
+  const { recipes, updateImage, updateCategory, addIngredient, updateRecipeText, favorites, toggleFavorite } = useRecipe();
 
   // current card 
   const currentItem = recipes.find(c => c.name === item.name);
+
+  // fav log
+  const isFavorite = favorites.includes(item.name);
 
   // changing img
   const [imageUri, setImageUri] = useState<string | null>(item.imageUri || null);
@@ -57,20 +60,39 @@ const CardPageRecipe = () => {
                 contentContainerStyle={styles.scrollContent}
                 showsVerticalScrollIndicator={false}
             >
-                <View style={styles.headerContainer}>
-                    {/* ARROW TO MAIN MENU */}
-                    <TouchableOpacity 
+              <View style={styles.headerContainer}>
+                {/* ARROW TO MAIN MENU */}
+                <View style={styles.headerTopRow}>
+                  <TouchableOpacity 
                     onPress={() => navigation.goBack()} 
                     style={styles.arrowWrapper}
                     activeOpacity={1}  
-                    >
+                  >
                     <View style={styles.arrowTouchArea}>
-                        <Image
+                      <Image
                         source={require('../../assets/icons/arrow.png')}
                         style={styles.arrowIcon}
-                        />
+                      />
                     </View>
-                    </TouchableOpacity>
+                  </TouchableOpacity>
+
+                  {/* LIKE */}
+                  <Pressable
+                    onPress={() => toggleFavorite(item.name)}
+                    style={styles.headerIconButton}
+                  >
+                    <Image
+                      source={
+                        isFavorite
+                          ? require('../../assets/icons/like_blue.png')
+                          : require('../../assets/icons/like.png')
+                      }
+                      style={[
+                        styles.heartIcon,
+                      ]}
+                    />
+                  </Pressable>
+                </View>
 
                     {/* TITLE TEXT */}
                     <View style={styles.titleRow}>
@@ -344,6 +366,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: hp(1), 
   },
 
+  // arrow + like row
+  headerTopRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+
   // arrow styles
   arrowWrapper: {
     alignSelf: 'flex-start',
@@ -360,6 +389,19 @@ const styles = StyleSheet.create({
     height: hp(3),
     resizeMode: 'contain', 
   },  
+
+  // heart icon
+  heartIcon: {
+    width: hp(3),
+    height: hp(3),
+    resizeMode: 'contain',
+  },
+  headerIconButton: {
+    width: hp(5),
+    height: hp(5),
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 
   // title text
   titleRow: {
