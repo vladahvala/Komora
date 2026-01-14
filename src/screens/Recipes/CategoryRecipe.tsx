@@ -48,7 +48,7 @@ const CategoryConservation = () => {
                   category: item.category, 
                 }}
                 onPress={() =>
-                  navigation.navigate('CategoryPage', { category: item.category })
+                  navigation.navigate('CategoryPageRecipe', { category: item.category })
                 }
             />
           ))}
