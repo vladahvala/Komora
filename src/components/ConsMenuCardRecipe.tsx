@@ -19,7 +19,7 @@ const ConsMenuCardRecipe = ({ item, index }: ConsMenuCardRecipeProps) => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   // importing functions from context
-  const { deleteRecipe } = useRecipe();
+  const { deleteRecipe, favorites, toggleFavorite } = useRecipe();
   // for alert
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -30,6 +30,9 @@ const ConsMenuCardRecipe = ({ item, index }: ConsMenuCardRecipeProps) => {
 
   // shadow glowing efect
   const [pressed, setPressed] = useState(false);
+
+  // like logic
+  const isFavorite = favorites.includes(item.name);
 
   
   return (
@@ -73,11 +76,29 @@ const ConsMenuCardRecipe = ({ item, index }: ConsMenuCardRecipeProps) => {
                   style={styles.trashIcon}
                 />
               </Pressable>
+
+               {/* HEART BUTTON */}
+               <Pressable
+                  style={styles.heartButton}
+                  onPress={(e) => {
+                    e.stopPropagation();
+                    toggleFavorite(item.name);
+                  }}
+                >
+                  <Image
+                    source={
+                      isFavorite
+                        ? require('../../assets/icons/like_blue.png')
+                        : require('../../assets/icons/like.png')
+                    }
+                    style={[styles.heartIcon, { tintColor: isFavorite ? undefined : 'grey' }]}
+                  />
+                </Pressable>
             </View>
 
             <Text
               style={styles.nameText}
-              numberOfLines={1}
+              numberOfLines={2}
               ellipsizeMode="tail"
             >
               {item.name}
@@ -152,34 +173,41 @@ const styles = StyleSheet.create({
     resizeMode: 'contain',
   },
 
+  // HEART button
+  heartButton: {
+    position: 'absolute',
+    top: hp(2),
+    right: hp(1),        
+    backgroundColor: '#FFFFFF',
+    width: hp(3.5),
+    height: hp(3.5),
+    borderRadius: hp(1),
+    justifyContent: 'center',
+    alignItems: 'center',
+
+    // shadow
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowOffset: { width: 0, height: 1 },
+    shadowRadius: 2,
+    elevation: 3,
+  },
+  heartIcon: {
+    width: hp(2.2),
+    height: hp(2.2),
+    resizeMode: 'contain',
+  },
+
   // title 
   nameText: {
     color: 'black',
     fontWeight: 'bold',
-    marginLeft: hp(2),
-    marginRight: hp(2),
-    lineHeight: hp(1.5),  
-    height: hp(1.8),    
-    fontSize: hp(2),
-    marginTop: hp(0.5),
-  },     
-
-  // card info styles 
-  jarsRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginLeft: hp(2),
-    marginTop: hp(2.5),
+    fontSize: hp(2.2),       
+    textAlign: 'center',       
+    marginTop: hp(1),          
+    marginHorizontal: hp(1.5),  
+    lineHeight: hp(2.5),        
+    minHeight: hp(5),         
   },
-  jarText: {
-    color: 'grey',
-    fontWeight: 'bold',
-    fontSize: hp(1.5),
-  },
-  jarIcon: {
-    width: hp(2.2),
-    height: hp(2.2),
-    marginHorizontal: hp(0.5),
-    resizeMode: 'contain',
-  },
+   
 });

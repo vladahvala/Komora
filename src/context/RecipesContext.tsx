@@ -18,7 +18,9 @@ type Props = { children: ReactNode };
 
 export type RecipesContextType = {
   recipes: RecipeItem[];
+  favorites: string[]; 
   addRecipe: (item: RecipeItem) => void;
+  toggleFavorite: (name: string) => void;
   updateImage: (name: string, newUri: string) => void;
   updateCategory: (name: string, newCategory: string) => void;
   updateRecipeText: (name: string, newText: string) => void;
@@ -28,7 +30,9 @@ export type RecipesContextType = {
 
 export const RecipesContext = createContext<RecipesContextType>({
   recipes: [],
+  favorites: [],
   addRecipe: () => {},
+  toggleFavorite: () => {},
   updateImage: () => {},
   updateCategory: () => {},
   updateRecipeText: () => {},
@@ -136,6 +140,39 @@ export const RecipeProvider = ({ children }: Props) => {
   }
 };
 
+const [favorites, setFavorites] = useState<string[]>([]);
+
+const toggleFavorite = async (name: string) => {
+  try {
+    let newFavorites: string[];
+    if (favorites.includes(name)) {
+      newFavorites = favorites.filter(f => f !== name);
+    } else {
+      newFavorites = [...favorites, name];
+    }
+    setFavorites(newFavorites);
+    await AsyncStorage.setItem('@favorites', JSON.stringify(newFavorites));
+  } catch (e) {
+    console.error('Failed to toggle favorite', e);
+  }
+};
+
+// при завантаженні
+const loadFavorites = async () => {
+  try {
+    const json = await AsyncStorage.getItem('@favorites');
+    if (json) setFavorites(JSON.parse(json));
+  } catch (e) {
+    console.error('Failed to load favorites', e);
+  }
+};
+
+useEffect(() => {
+  loadRecipes();
+  loadFavorites();
+}, []);
+
+
 
   useEffect(() => {
     loadRecipes();
@@ -143,9 +180,10 @@ export const RecipeProvider = ({ children }: Props) => {
 
   return (
     <RecipesContext.Provider
-      value={{ recipes, addRecipe, updateImage, updateCategory, updateRecipeText, deleteRecipe, addIngredient }}
-    >
-      {children}
-    </RecipesContext.Provider>
+    value={{ recipes, favorites, addRecipe, toggleFavorite, updateImage, updateCategory, updateRecipeText, deleteRecipe, addIngredient }}
+  >
+    {children}
+  </RecipesContext.Provider>
+  
   );
 };

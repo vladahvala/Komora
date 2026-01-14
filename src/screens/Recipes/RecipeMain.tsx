@@ -44,33 +44,25 @@ const RecipeMain = () => {
     >
       <SafeAreaProvider style={styles.container}>
         <FlatList
-          // card style change
-          // key={isBigIcon ? 'big' : 'small'}
-          // data={filteredData}
-          // renderItem={({ item, index }) =>
-          //   item ? (
-          //     isBigIcon ? (
-          //       <ConsMenuCardRecipe item={item} index={index} />
-          //     ) : (
-          //       <ConsMenuCardSmallRecipe item={item} index={index} />
-          //     )
-          //   ) : null
-          // }
-          data={recipes}
-          keyExtractor={(item) => item.name}
-          renderItem={({ item, index }) => {
-            if (!item) return null;
-            return <ConsMenuCardRecipe item={item} index={index} />;
-          }}          
-          numColumns={isBigIcon ? 2 : 1}  // column num
-          columnWrapperStyle={
-            isBigIcon
-              ? { justifyContent: 'space-between', marginBottom: 25 }
-              : undefined
-          }
-          contentContainerStyle={{
-            paddingHorizontal: 27,
-          }}
+            key={isBigIcon ? 'big' : 'small'} // ключ для перерендеру при зміні розміру карток
+            data={filteredData} // краще відфільтровані дані
+            keyExtractor={(item) => item.name}
+            renderItem={({ item, index }) =>
+              isBigIcon ? (
+                <ConsMenuCardRecipe item={item} index={index} />
+              ) : (
+                <ConsMenuCardSmallRecipe item={item} index={index} />
+              )
+            }     
+            numColumns={isBigIcon ? 2 : 1}  
+            columnWrapperStyle={
+              isBigIcon
+                ? { justifyContent: 'space-between', marginBottom: 25 }
+                : undefined
+            }
+            contentContainerStyle={{
+              paddingHorizontal: 27,
+            }}
           ListHeaderComponent={
             <View style={styles.headerContainer}>
               {/* ARROW TO MAIN MENU */}
