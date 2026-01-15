@@ -450,7 +450,7 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     fontSize: hp(2.2),
-    color: '#666',
+    color: 'black',
   },
 
   // DROPDOWNS
