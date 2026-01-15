@@ -69,7 +69,7 @@ const FavRecipes = () => {
               {/* TITLE TEXT */}
               <Text style={styles.menuTitle}>Улюблені</Text>
 
-              {/* Кнопка зміни розміру карток по центру */}
+              {filteredData.length > 0 ? (
               <View style={styles.centeredButton}>
                 <Pressable onPress={toggleIcon} style={styles.bigIconContainer}>
                   <Image
@@ -82,6 +82,10 @@ const FavRecipes = () => {
                   />
                 </Pressable>
               </View>
+              ) : (
+                <Text style={styles.noFavMessage}>Поки немає улюблених рецептів!</Text>
+              )}
+              
             </View>
           }
         />
@@ -147,5 +151,13 @@ const styles = StyleSheet.create({
     width: hp(3),
     height: hp(3),
     resizeMode: 'contain',
+  },
+
+  // message when no fav
+  noFavMessage: {
+    fontSize: hp(3), 
+    marginTop: hp(3),
+    color: 'grey', 
+    textAlign: 'center' 
   },
 });
