@@ -30,10 +30,6 @@ const RecipeMain = () => {
     setIsBigIcon(prev => !prev);
   };
 
-  console.log('Recipes:', recipes);
-  console.log('Filtered:', filteredData);
-
-
   return (
     <Pressable
       style={{ flex: 1 }}
