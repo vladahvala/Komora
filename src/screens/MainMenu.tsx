@@ -30,7 +30,11 @@ export default function MainMenu({ navigation }: Props) {
           caption="Консервація"
           onPress={() => navigation.navigate('ConservationNavigation')}
         />
-        <MenuCard imageSource={require('../../assets/images/інші_продукти.jpg')} caption="Інші продукти" />
+        <MenuCard 
+          imageSource={require('../../assets/images/інші_продукти.jpg')} 
+          caption="Інші продукти" 
+          onPress={() => navigation.navigate('OthersNavigation')}
+        />
         <MenuCard 
           imageSource={require('../../assets/images/рецепти.jpg')} 
           caption="Рецепти" 

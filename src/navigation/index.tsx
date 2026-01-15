@@ -5,6 +5,7 @@ import WelcomeScreen from '../screens/WelcomeScreen';
 import MainMenu from '../screens/MainMenu';
 import ConservationMain from '../screens/Conservation/ConservationMain';
 import RecipesNavigation from '../screens/Recipes/RecipesNavigation';
+import OthersNavigation from '../screens/Others/OthersNavigation';
 import CardPage from '../components/CardPage';
 import CardPageRecipe from '../components/CardPageRecipe';
 import ConservationNavigation from '../screens/Conservation/ConservationNavigation';
@@ -17,6 +18,7 @@ export type RootStackParamList = {
   Welcome: undefined;
   MainMenu: undefined;
   ConservationNavigation: undefined;
+  OthersNavigation: undefined;
   RecipesNavigation: undefined;
   ConservationMain: undefined;
   Details: { itemId: number };
@@ -45,6 +47,7 @@ export default function AppNavigation() {
             <Stack.Screen name="MainMenu" component={MainMenu} />
             <Stack.Screen name="ConservationNavigation" component={ConservationNavigation} />
             <Stack.Screen name="RecipesNavigation" component={RecipesNavigation} />
+            <Stack.Screen name="OthersNavigation" component={OthersNavigation} />
             <Stack.Screen name="CardPage" component={CardPage} />
             <Stack.Screen name="CardPageRecipe" component={CardPageRecipe} />
             <Stack.Screen name="ConservationMain" component={ConservationMain} />
