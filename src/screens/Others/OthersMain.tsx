@@ -6,14 +6,24 @@ import ConsMenuCardSmall from '../../components/ConsMenuCardSmall';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigation';
-import { OthersContext } from '../../context/OthersContext';
+import { OthersContext, useOthers } from '../../context/OthersContext';
 import { useContext, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ConsMenuCardOthers from '../../components/ConsMenuCardOthers';
+import ConsMenuCardOthersSmall from '../../components/ConsMenuCardOthersSmall';
 
 const OthersMain = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-  const { others } = useContext(OthersContext);
+  const { others, loadOthers, loading } = useOthers();
+
+  useEffect(() => {
+    loadOthers();
+  }, []);
+  
+  if (loading) return null;
+  console.log('Loading:', loading, 'Others:', others);
+
+  
 
   // search bar
   const [searchText, setSearchText] = useState('');
@@ -35,26 +45,19 @@ const OthersMain = () => {
       }}
     >
       <SafeAreaProvider style={styles.container}>
-        <FlatList
-          // card style change
-          key={isBigIcon ? 'big' : 'small'} 
+      <FlatList
+          key={isBigIcon ? 'big' : 'small'}
           data={filteredData}
+          extraData={others}  // <- ось сюди
           renderItem={({ item, index }) =>
-            isBigIcon ? (
-              <ConsMenuCardOthers item={item} index={index} />
-            ) : (
-              <ConsMenuCardOthers item={item} index={index} />
-            )
-          }
-          numColumns={isBigIcon ? 2 : 1}  // column num
-          columnWrapperStyle={
             isBigIcon
-              ? { justifyContent: 'space-between', marginBottom: 25 }
-              : undefined
+              ? <ConsMenuCardOthers item={item} index={index} />
+              : <ConsMenuCardOthersSmall item={item} index={index} />
           }
-          contentContainerStyle={{
-            paddingHorizontal: 27,
-          }}
+          keyExtractor={item => item.name}
+          numColumns={isBigIcon ? 2 : 1}
+          columnWrapperStyle={isBigIcon ? { justifyContent: 'space-between', marginBottom: 25 } : undefined}
+          contentContainerStyle={{ paddingHorizontal: 27, paddingBottom: 50 }}
           ListHeaderComponent={
             <View style={styles.headerContainer}>
               {/* ARROW TO MAIN MENU */}

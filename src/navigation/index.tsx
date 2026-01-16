@@ -8,11 +8,13 @@ import RecipesNavigation from '../screens/Recipes/RecipesNavigation';
 import OthersNavigation from '../screens/Others/OthersNavigation';
 import CardPage from '../components/CardPage';
 import CardPageRecipe from '../components/CardPageRecipe';
+import CardPageOther from '../components/CardPageOther';
 import ConservationNavigation from '../screens/Conservation/ConservationNavigation';
 import { ConservationItem, ConservationProvider } from '../context/ConservationContext';
 import CategoryPage from '../screens/Conservation/CategoryPage';
 import { RecipeItem, RecipeProvider } from '../context/RecipesContext';
 import CategoryPageRecipe from '../screens/Recipes/CategoryPageRecipe';
+import { OthersItem, OthersProvider } from '../context/OthersContext';
 
 export type RootStackParamList = {
   Welcome: undefined;
@@ -24,6 +26,7 @@ export type RootStackParamList = {
   Details: { itemId: number };
   CardPage: { item: ConservationItem };
   CardPageRecipe: { item: RecipeItem };
+  CardPageOther: { item: OthersItem };
   CategoryPage: { category: string };
   CategoryPageRecipe: { category: string }; 
 };
@@ -33,29 +36,32 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
 
 export default function AppNavigation() {
   return (
-    <RecipeProvider>
-      <ConservationProvider>
-        <NavigationContainer>
-          <Stack.Navigator
-            initialRouteName="Welcome"
-            screenOptions={{
-              headerShown: false, 
-              animation: 'none', // default animations off
-            }}
-          >
-            <Stack.Screen name="Welcome" component={WelcomeScreen} />
-            <Stack.Screen name="MainMenu" component={MainMenu} />
-            <Stack.Screen name="ConservationNavigation" component={ConservationNavigation} />
-            <Stack.Screen name="RecipesNavigation" component={RecipesNavigation} />
-            <Stack.Screen name="OthersNavigation" component={OthersNavigation} />
-            <Stack.Screen name="CardPage" component={CardPage} />
-            <Stack.Screen name="CardPageRecipe" component={CardPageRecipe} />
-            <Stack.Screen name="ConservationMain" component={ConservationMain} />
-            <Stack.Screen name="CategoryPage" component={CategoryPage} />
-            <Stack.Screen name="CategoryPageRecipe" component={CategoryPageRecipe} />
-          </Stack.Navigator>
-        </NavigationContainer>
-      </ConservationProvider>
-    </RecipeProvider>
+    <OthersProvider>
+      <RecipeProvider>
+        <ConservationProvider>
+          <NavigationContainer>
+            <Stack.Navigator
+              initialRouteName="Welcome"
+              screenOptions={{
+                headerShown: false, 
+                animation: 'none', // default animations off
+              }}
+            >
+              <Stack.Screen name="Welcome" component={WelcomeScreen} />
+              <Stack.Screen name="MainMenu" component={MainMenu} />
+              <Stack.Screen name="ConservationNavigation" component={ConservationNavigation} />
+              <Stack.Screen name="RecipesNavigation" component={RecipesNavigation} />
+              <Stack.Screen name="OthersNavigation" component={OthersNavigation} />
+              <Stack.Screen name="CardPage" component={CardPage} />
+              <Stack.Screen name="CardPageRecipe" component={CardPageRecipe} />
+              <Stack.Screen name="CardPageOther" component={CardPageOther} />
+              <Stack.Screen name="ConservationMain" component={ConservationMain} />
+              <Stack.Screen name="CategoryPage" component={CategoryPage} />
+              <Stack.Screen name="CategoryPageRecipe" component={CategoryPageRecipe} />
+            </Stack.Navigator>
+          </NavigationContainer>
+        </ConservationProvider>
+      </RecipeProvider>
+    </OthersProvider>
   );
 }
