@@ -16,7 +16,7 @@ type Props = {
 
 const ConsMenuCardOthersSmall = ({ item }: Props) => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-  const { deleteOther } = useOthers();
+  const { deleteOther, others } = useOthers();
 
   const [pressed, setPressed] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
@@ -25,6 +25,7 @@ const ConsMenuCardOthersSmall = ({ item }: Props) => {
     navigation.navigate('CardPageOther', { item });
   };
 
+  const currentItem = others.find(o => o.name === item.name) || item;
   return (
     <Pressable
       style={{ marginBottom: hp(2), width: CARD_WIDTH }}
@@ -57,7 +58,7 @@ const ConsMenuCardOthersSmall = ({ item }: Props) => {
             </Text>
 
             <View style={styles.infoRow}>
-              <Text style={styles.subtitle}>{item.packsCount}</Text>
+              <Text style={styles.subtitle}>{currentItem.totalCount}</Text>
               <Text style={styles.subtitle}> Штук</Text>
 
               {/* TRASH INLINE */}
@@ -140,8 +141,9 @@ const styles = StyleSheet.create({
 
   // quantity text
   subtitle: {
-    fontSize: hp(1.7),
     color: 'grey',
+    fontWeight: 'bold',
+    fontSize: hp(1.5),
   },
 
   // trash inline (right aligned)

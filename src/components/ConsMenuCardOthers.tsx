@@ -78,9 +78,10 @@ const ConsMenuCardOthers = ({ item, index }: ConsMenuCardOthersProps) => {
           </Text>
 
           <View style={styles.jarsRow}>
-            <Text style={styles.jarText}>{currentItem.packsCount}</Text>
+            <Text style={styles.jarText}>{currentItem.totalCount}</Text>
             <Text style={styles.jarText}> Штук</Text>
           </View>
+
         </View>
       </Shadow>
 

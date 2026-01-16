@@ -2,15 +2,15 @@ import React, { useState, useContext } from 'react';
 import {
   View,
   Text,
-  TouchableOpacity,
   Image,
-  StyleSheet,
   TextInput,
   Pressable,
   ScrollView,
-  Animated,
   TouchableWithoutFeedback,
   Keyboard,
+  StyleSheet,
+  TouchableOpacity,
+  Animated,
 } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
@@ -18,46 +18,28 @@ import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigation';
 import AlertModal from '../../modals/AlertModal';
 import { launchImageLibrary } from 'react-native-image-picker';
-import { OthersContext, OthersItem } from '../../context/OthersContext';
+import { OthersContext } from '../../context/OthersContext';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import AnimatedButton from '../../animations/AnimatedButton';
 
 const AddOthers = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-
-  // func addOther from context
   const { addOther } = useContext(OthersContext);
 
-  // image field
   const [imageUri, setImageUri] = useState<string | null>(null);
-
-  // name field
   const [name, setName] = useState('');
-  // active
-  const [isNameFocused, setIsNameFocused] = useState(false);
-
-  // packs count
   const [packsCount, setPacksCount] = useState('');
-
-  const [isPacksFocused, setIsPacksFocused] = useState(false);
-
-
-  // date
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
 
-  // date format 15.03.2023
-  const formatDate = (date: Date) => {
-    const d = String(date.getDate()).padStart(2, '0');
-    const m = String(date.getMonth() + 1).padStart(2, '0');
-    const y = date.getFullYear();
-    return `${d}.${m}.${y}`;
-  };
-
-
-  // alerts
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
+
+  const formatDate = (d: Date) => {
+    const day = String(d.getDate()).padStart(2, '0');
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const year = d.getFullYear();
+    return `${day}.${month}.${year}`;
+  };
 
   const handleAddOther = () => {
     if (!name) {
@@ -65,166 +47,128 @@ const AddOthers = () => {
       setModalVisible(true);
       return;
     }
-
     if (!packsCount) {
       setModalMessage('Введіть кількість упаковок/пляшок/банок!');
       setModalVisible(true);
       return;
     }
 
-    // creating obj
-    const newItem: OthersItem = {
+    const newItem = {
       name,
       imageUri,
-      packsCount: Number(packsCount),
-      date: formatDate(date), 
+      count: Number(packsCount ?? 0),
+      date: formatDate(date),
     };
 
-    // adding obj to context
     addOther(newItem);
 
-    // clearing fields
     setName('');
     setPacksCount('');
     setImageUri(null);
-
     navigation.goBack();
   };
 
+  // BUTTON ANIMATION
+  const [pressAnim] = useState(new Animated.Value(0));
+  const onPressIn = () =>
+    Animated.timing(pressAnim, { toValue: 1, duration: 100, useNativeDriver: false }).start();
+  const onPressOut = () =>
+    Animated.timing(pressAnim, { toValue: 0, duration: 100, useNativeDriver: false }).start();
+  const animatedStyle = {
+    top: pressAnim.interpolate({ inputRange: [0, 1], outputRange: [0, 3] }),
+    shadowOffset: {
+      width: 0,
+      height: pressAnim.interpolate({ inputRange: [0, 1], outputRange: [3, 1] }),
+    },
+    elevation: pressAnim.interpolate({ inputRange: [0, 1], outputRange: [3, 1] }),
+  };
+
   return (
-    // MAIN CONTAINER
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaProvider style={styles.container}>
-        <ScrollView
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={false}
-          keyboardShouldPersistTaps="handled"
-        >
+        <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
           <View style={styles.headerContainer}>
-            {/* ARROW TO MAIN MENU */}
-            <TouchableOpacity
-              onPress={() => navigation.goBack()}
-              style={styles.arrowWrapper}
-              activeOpacity={1}
-            >
+
+            {/* ARROW */}
+            <TouchableOpacity onPress={() => navigation.navigate('MainMenu')} style={styles.arrowWrapper}>
               <View style={styles.arrowTouchArea}>
-                <Image
-                  source={require('../../../assets/icons/arrow.png')}
-                  style={styles.arrowIcon}
-                />
+                <Image source={require('../../../assets/icons/arrow.png')} style={styles.arrowIcon} />
               </View>
             </TouchableOpacity>
 
-            {/* TITLE TEXT */}
+            {/* TITLE */}
             <Text style={styles.menuTitle}>Новий продукт</Text>
 
             {/* IMAGE */}
             <View style={{ marginTop: hp(2) }}>
               <Text style={styles.label}>Фото продукту</Text>
               <Pressable
-                style={[
-                  styles.imagePicker,
-                  { borderColor: imageUri ? '#00B4BF' : '#AEAEAE' },
-                ]}
+                style={[styles.imagePicker, { borderColor: imageUri ? '#00B4BF' : '#AEAEAE' }]}
                 onPress={() =>
-                  launchImageLibrary(
-                    { mediaType: 'photo', quality: 0.7 },
-                    response => {
-                      if (response.assets?.length) {
-                        setImageUri(response.assets[0].uri || null);
-                      }
-                    }
-                  )
+                  launchImageLibrary({ mediaType: 'photo', quality: 0.7 }, (response) => {
+                    if (response.assets?.length) setImageUri(response.assets[0].uri ?? null);
+                  })
                 }
               >
-                {imageUri ? (
-                  <Image source={{ uri: imageUri }} style={styles.selectedImage} />
-                ) : (
-                  <Text style={styles.imagePickerText}>Оберіть фото</Text>
-                )}
+                {imageUri ? <Image source={{ uri: imageUri }} style={styles.selectedImage} /> : <Text style={styles.imagePickerText}>Оберіть фото</Text>}
               </Pressable>
             </View>
 
-            {/* NAME */}
+            {/* NAME INPUT */}
             <View style={{ marginTop: hp(2) }}>
               <Text style={styles.label}>Назва</Text>
-              <View
-                style={[
-                  styles.searchContainer,
-                  { borderColor: isNameFocused ? '#00B4BF' : '#AEAEAE' },
-                ]}
-              >
+              <View style={[styles.searchContainer, { borderColor: '#AEAEAE' }]}>
                 <TextInput
                   value={name}
                   onChangeText={setName}
                   style={styles.inputName}
-                  onFocus={() => setIsNameFocused(true)}
-                  onBlur={() => setIsNameFocused(false)}
                 />
               </View>
             </View>
 
-            {/* PACKS COUNT */}
+            {/* PACKS COUNT INPUT */}
             <View style={{ marginTop: hp(2) }}>
               <Text style={styles.label}>Кількість упаковок/пляшок/банок</Text>
-              <View
-                style={[
-                  styles.searchContainer,
-                  { borderColor: isPacksFocused ? '#00B4BF' : '#AEAEAE' },
-                ]}
-              >
+              <View style={[styles.searchContainer, { borderColor: '#AEAEAE' }]}>
                 <TextInput
                   value={packsCount}
                   onChangeText={setPacksCount}
                   keyboardType="numeric"
                   style={styles.inputName}
-                  onFocus={() => setIsPacksFocused(true)}
-                  onBlur={() => setIsPacksFocused(false)}
                 />
               </View>
             </View>
 
             {/* DATE */}
-            <View style={styles.dateRow}>
-              <Text style={styles.labelTime}>Час купівлі:</Text>
-
-              <Pressable
-                style={styles.dateBox}
-                onPress={() => setShowDatePicker(true)}
-              >
+            <View style={styles.timeRow}>
+              <Text style={styles.timeTitle}>Час купівлі:</Text>
+              <Pressable style={styles.bigIconContainer} onPress={() => setShowDatePicker(true)}>
                 <Text style={styles.dateText}>{formatDate(date)}</Text>
               </Pressable>
-
-              {showDatePicker && (
-                <DateTimePicker
-                  value={date}
-                  mode="date"
-                  display="default"
-                  onChange={(_, selectedDate) => {
-                    setShowDatePicker(false);
-                    if (selectedDate) setDate(selectedDate);
-                  }}
-                />
-              )}
             </View>
-
-            {/* ALERT */}
-            <AlertModal
-              visible={modalVisible}
-              message={modalMessage}
-              onClose={() => setModalVisible(false)}
-            />
+            {showDatePicker && (
+              <DateTimePicker
+                value={date}
+                mode="date"
+                display="default"
+                onChange={(_, selectedDate) => {
+                  setShowDatePicker(false);
+                  if (selectedDate) setDate(selectedDate);
+                }}
+              />
+            )}
 
             {/* ADD BUTTON */}
-            <AnimatedButton
-              onPress={handleAddOther}
-              style={styles.addButton}
-            >
-              <Text style={styles.addButtonText}>Додати продукт</Text>
-            </AnimatedButton>
+            <Pressable onPress={handleAddOther} onPressIn={onPressIn} onPressOut={onPressOut}>
+              <Animated.View style={[styles.addButton, animatedStyle]}>
+                <Text style={styles.addButtonText}>Додати продукт</Text>
+              </Animated.View>
+            </Pressable>
 
           </View>
         </ScrollView>
+
+        <AlertModal visible={modalVisible} message={modalMessage} onClose={() => setModalVisible(false)} />
       </SafeAreaProvider>
     </TouchableWithoutFeedback>
   );
@@ -233,7 +177,6 @@ const AddOthers = () => {
 export default AddOthers;
 
 const styles = StyleSheet.create({
-  // main container
   container: {
     flex: 1,
     backgroundColor: '#F7F9FD',
@@ -245,31 +188,30 @@ const styles = StyleSheet.create({
   headerContainer: {
     paddingTop: hp(5),
     marginBottom: hp(2),
+    paddingHorizontal: hp(1),
   },
-
-  // arrow styles
   arrowWrapper: {
     alignSelf: 'flex-start',
     marginBottom: hp(1),
+    marginLeft: -hp(1),
   },
   arrowTouchArea: {
     padding: hp(1.2),
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   arrowIcon: {
     width: hp(3.2),
     height: hp(3),
     resizeMode: 'contain',
   },
-
-  // title
   menuTitle: {
     fontSize: hp(3.5),
+    marginBottom: hp(2),
     fontWeight: '600',
-    textAlign: 'center',
     color: 'black',
+    textAlign: 'center',
   },
-
-  // image
   imagePicker: {
     height: hp(15),
     borderWidth: hp(0.25),
@@ -286,47 +228,47 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     borderRadius: hp(1.5),
+    resizeMode: 'cover',
   },
-
-  // inputs
   label: {
     fontSize: hp(2.2),
     fontWeight: '500',
+    color: '#333',
     marginBottom: hp(0.5),
-    color: 'black',
-  },
-  labelTime: {
-    fontSize: hp(3.2),
-    fontWeight: '500',
-    marginBottom: hp(0.5),
-    marginRight: hp(2),
-    color: 'black',
   },
   searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: '#F1F1F1',
     borderWidth: hp(0.25),
     borderRadius: hp(1.5),
     paddingHorizontal: hp(1.5),
     height: hp(6),
-    justifyContent: 'center',
   },
   inputName: {
+    flex: 1,
     fontSize: hp(2.2),
     color: 'black',
   },
-
-  // date
-  dateRow: {
+  timeRow: {
     flexDirection: 'row',
     alignItems: 'center',
     marginTop: hp(3),
   },
-  dateBox: {
+  timeTitle: {
+    fontSize: hp(3.2),
+    fontWeight: '600',
+    color: 'black',
+  },
+  bigIconContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: hp(1.5),
     height: hp(6),
+    marginLeft: hp(2),
     backgroundColor: '#00B4BF66',
     borderRadius: hp(1.5),
     justifyContent: 'center',
-    alignItems: 'center',
   },
   dateText: {
     fontSize: hp(2.4),
@@ -334,18 +276,16 @@ const styles = StyleSheet.create({
     color: 'black',
     paddingHorizontal: hp(1),
   },
-
-  // button
   addButton: {
     marginTop: hp(4),
-    paddingHorizontal: hp(2),  
+    paddingHorizontal: hp(2),
     height: hp(6.5),
     borderRadius: hp(3.25),
     backgroundColor: '#00B4BF',
     justifyContent: 'center',
     alignItems: 'center',
-    alignSelf: 'center',       
-  },  
+    alignSelf: 'center',
+  },
   addButtonText: {
     fontSize: hp(2.6),
     fontWeight: '700',
