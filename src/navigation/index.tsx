@@ -15,6 +15,7 @@ import CategoryPage from '../screens/Conservation/CategoryPage';
 import { RecipeItem, RecipeProvider } from '../context/RecipesContext';
 import CategoryPageRecipe from '../screens/Recipes/CategoryPageRecipe';
 import { OthersItem, OthersProvider } from '../context/OthersContext';
+import RemaindersMain from '../screens/Conservation/RemaindersMain';
 
 export type RootStackParamList = {
   Welcome: undefined;
@@ -29,6 +30,7 @@ export type RootStackParamList = {
   CardPageOther: { item: OthersItem };
   CategoryPage: { category: string };
   CategoryPageRecipe: { category: string }; 
+  RemaindersMain: undefined;
 };
 
 // Створюємо Stack перед використанням
@@ -58,6 +60,7 @@ export default function AppNavigation() {
               <Stack.Screen name="ConservationMain" component={ConservationMain} />
               <Stack.Screen name="CategoryPage" component={CategoryPage} />
               <Stack.Screen name="CategoryPageRecipe" component={CategoryPageRecipe} />
+              <Stack.Screen name="RemaindersMain" component={RemaindersMain} />
             </Stack.Navigator>
           </NavigationContainer>
         </ConservationProvider>

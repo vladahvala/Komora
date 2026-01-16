@@ -40,7 +40,11 @@ export default function MainMenu({ navigation }: Props) {
           caption="Рецепти" 
           onPress={() => navigation.navigate('RecipesNavigation')}
         />
-        <MenuCard imageSource={require('../../assets/images/нагадування.jpg')} caption="Нагадування" />
+        <MenuCard 
+          imageSource={require('../../assets/images/нагадування.jpg')} 
+          caption="Нагадування" 
+          onPress={() => navigation.navigate('RemaindersMain')}
+        />
       </Animated.View>
     </View>
   );
