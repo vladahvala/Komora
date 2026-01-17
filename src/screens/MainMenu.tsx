@@ -4,21 +4,30 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation';
 import MenuCard from '../components/CardsInCards/MenuCard';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import { useFocusEffect } from '@react-navigation/native';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'MainMenu'>;
 
 export default function MainMenu({ navigation }: Props) {
   const opacityAnim = useRef(new Animated.Value(0)).current;
 
-  useEffect(() => {
-    Animated.timing(opacityAnim, {
-      toValue: 1,
-      duration: 500,  
-      delay: 100,     
-      useNativeDriver: true,
-    }).start();
-  }, []);
-
+  useFocusEffect(
+    React.useCallback(() => {
+      opacityAnim.setValue(0);
+  
+      const animation = Animated.timing(opacityAnim, {
+        toValue: 1,
+        duration: 500,
+        delay: 100,
+        useNativeDriver: true,
+      });
+  
+      animation.start();
+  
+      return () => animation.stop(); // stop animation when out
+    }, [])
+  );
+  
   return (
     <View style={styles.screen}>
       <Text style={styles.menuText}>Меню</Text>
