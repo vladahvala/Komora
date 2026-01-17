@@ -6,8 +6,8 @@ import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigation';
 import { RecipesContext } from '../../context/RecipesContext';
 import { useContext, useEffect } from 'react';
-import ConsMenuCardRecipe from '../../components/ConsMenuCardRecipe';
-import ConsMenuCardSmallRecipe from '../../components/ConsMenuCardSmallRecipe';
+import ConsMenuCardRecipe from '../../components/BigCards/ConsMenuCardRecipe';
+import ConsMenuCardSmallRecipe from '../../components/SmallCards/ConsMenuCardSmallRecipe';
 
 const FavRecipes = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();

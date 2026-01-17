@@ -3,12 +3,12 @@ import { View, Text, TouchableOpacity, Image, StyleSheet, TextInput, Pressable, 
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
-import { RootStackParamList } from '../navigation';
-import JarNumCard from './JarNumCard';
+import { RootStackParamList } from '../../navigation';
+import JarNumCard from '../../components/CardsInCards/JarNumCard';
 import { useRoute, RouteProp } from '@react-navigation/native';
-import { useConservation } from '../context/ConservationContext';
+import { useConservation } from '../../context/ConservationContext';
 import { launchImageLibrary } from 'react-native-image-picker';
-import { Animated } from 'react-native';
+import AnimatedButton from '../../animations/AnimatedButton';
 
 type CardPageRouteProp = RouteProp<RootStackParamList, 'CardPage'>;
 
@@ -90,35 +90,6 @@ const CardPage = () => {
     }, 0)
   : 0;
 
-  // buttons animation
-  const [pressAnim] = useState(new Animated.Value(0));
-
-  const onPressIn = () => {
-    Animated.timing(pressAnim, {
-      toValue: 1,        
-      duration: 100,
-      useNativeDriver: false,
-    }).start();
-  };
-
-  const onPressOut = () => {
-    Animated.timing(pressAnim, {
-      toValue: 0,        
-      duration: 100,
-      useNativeDriver: false,
-    }).start();
-  };
-
-  // animation styles
-  const animatedStyle = {
-    top: pressAnim.interpolate({ inputRange: [0, 1], outputRange: [0, 3] }), // down to 3 px
-    shadowOffset: {
-      width: 0,
-      height: pressAnim.interpolate({ inputRange: [0, 1], outputRange: [3, 1] }) // shadow up/down
-    },
-    elevation: pressAnim.interpolate({ inputRange: [0, 1], outputRange: [3, 1] }) // Android
-  };
-
   return (
     // MAIN CONTAINER
     <SafeAreaProvider style={styles.container}>
@@ -142,7 +113,7 @@ const CardPage = () => {
             >
               <View style={styles.arrowTouchArea}>
                 <Image
-                  source={require('../../assets/icons/arrow.png')}
+                  source={require('../../../assets/icons/arrow.png')}
                   style={styles.arrowIcon}
                 />
               </View>
@@ -161,7 +132,7 @@ const CardPage = () => {
                   source={
                     imageUri
                       ? { uri: imageUri }   // user chose img
-                      : require('../../assets/images/default_conservation.png') // fallback
+                      : require('../../../assets/images/default_conservation.png') // fallback
                   }
                   style={styles.titleImage}
                 />
@@ -207,7 +178,7 @@ const CardPage = () => {
                 >
                   <Text style={styles.timeTitleCat}>{selectedCategory}</Text>
                   <Image
-                    source={require('../../assets/icons/frame_down.png')}
+                    source={require('../../../assets/icons/frame_down.png')}
                     style={[
                       styles.arrowDownIconCat,
                       categoryDropdownVisible && { transform: [{ rotate: '180deg' }] },
@@ -262,7 +233,7 @@ const CardPage = () => {
                 >
                   <Text style={styles.timeTitle}>{selectedYear}</Text>
                   <Image
-                    source={require('../../assets/icons/frame_down.png')}
+                    source={require('../../../assets/icons/frame_down.png')}
                     style={[
                       styles.arrowDownIcon,
                       dropdownVisible && { transform: [{ rotate: '180deg' }] },
@@ -296,7 +267,7 @@ const CardPage = () => {
               <View style={{ paddingHorizontal: hp(3.2), justifyContent: 'flex-start' }}>
                 <View style={{ justifyContent: 'flex-start' }}>
                   <JarNumCard 
-                    image={require('../../assets/jar_icons/empty_jar.png')} 
+                    image={require('../../../assets/jar_icons/empty_jar.png')} 
                     style={{ marginBottom: hp(4) }} 
                     label="2"             
                     circleLabel="3л"        
@@ -304,7 +275,7 @@ const CardPage = () => {
                     onChange={(newCount) => updateJarCount('jar2_3l', newCount)}
                   />
                   <JarNumCard 
-                    image={require('../../assets/jar_icons/empty_jar.png')}
+                    image={require('../../../assets/jar_icons/empty_jar.png')}
                     style={{ marginBottom: hp(4) }}
                     label="4" 
                     circleLabel="2л"  
@@ -312,7 +283,7 @@ const CardPage = () => {
                     onChange={(newCount) => updateJarCount('jar4_2l', newCount)}
                   />
                   <JarNumCard 
-                    image={require('../../assets/jar_icons/empty_jar.png')}
+                    image={require('../../../assets/jar_icons/empty_jar.png')}
                     label="7" 
                     circleLabel="1.5л"
                     count={jarCounts.jar7_15l}
@@ -324,7 +295,7 @@ const CardPage = () => {
               {/* RIGHT COLUMN 2 CARDS */}
               <View style={{ justifyContent: 'center' }}>
                 <JarNumCard 
-                  image={require('../../assets/jar_icons/empty_jar.png')} 
+                  image={require('../../../assets/jar_icons/empty_jar.png')} 
                   style={{ marginBottom: hp(4) }} 
                   label="2" 
                   circleLabel="1л" 
@@ -332,7 +303,7 @@ const CardPage = () => {
                   onChange={(newCount) => updateJarCount('jar2_1l', newCount)}
                 />
                 <JarNumCard 
-                  image={require('../../assets/jar_icons/empty_jar.png')} 
+                  image={require('../../../assets/jar_icons/empty_jar.png')} 
                   label="1" 
                   circleLabel="0.5л" 
                   count={jarCounts.jar1_05l}
@@ -343,7 +314,7 @@ const CardPage = () => {
             </View>
 
             {/* ADD CONSERVATION BUTTON */}
-            <Pressable
+            <AnimatedButton
               onPress={() => {
                 if (!currentItem) return;
 
@@ -359,15 +330,12 @@ const CardPage = () => {
                   return copy;
                 });
 
-                navigation.goBack();  
-              }}                         
-              onPressIn={onPressIn}
-              onPressOut={onPressOut}
+                navigation.goBack();
+              }}
+              style={styles.addButton}
             >
-              <Animated.View style={[styles.addButton, animatedStyle]}>
-                <Text style={styles.addButtonText}>Зберегти зміни</Text>
-              </Animated.View>
-            </Pressable>
+              <Text style={styles.addButtonText}>Зберегти зміни</Text>
+            </AnimatedButton>
 
             <View style={styles.timeRow}> 
               <Text style={styles.timeTitle}>К-ть банок за рік {selectedYear}:</Text>

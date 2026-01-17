@@ -20,6 +20,7 @@ import AlertModal from '../../modals/AlertModal';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { OthersContext } from '../../context/OthersContext';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import AnimatedButton from '../../animations/AnimatedButton';
 
 const AddOthers = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -66,21 +67,6 @@ const AddOthers = () => {
     setPacksCount('');
     setImageUri(null);
     navigation.goBack();
-  };
-
-  // BUTTON ANIMATION
-  const [pressAnim] = useState(new Animated.Value(0));
-  const onPressIn = () =>
-    Animated.timing(pressAnim, { toValue: 1, duration: 100, useNativeDriver: false }).start();
-  const onPressOut = () =>
-    Animated.timing(pressAnim, { toValue: 0, duration: 100, useNativeDriver: false }).start();
-  const animatedStyle = {
-    top: pressAnim.interpolate({ inputRange: [0, 1], outputRange: [0, 3] }),
-    shadowOffset: {
-      width: 0,
-      height: pressAnim.interpolate({ inputRange: [0, 1], outputRange: [3, 1] }),
-    },
-    elevation: pressAnim.interpolate({ inputRange: [0, 1], outputRange: [3, 1] }),
   };
 
   return (
@@ -159,11 +145,12 @@ const AddOthers = () => {
             )}
 
             {/* ADD BUTTON */}
-            <Pressable onPress={handleAddOther} onPressIn={onPressIn} onPressOut={onPressOut}>
-              <Animated.View style={[styles.addButton, animatedStyle]}>
-                <Text style={styles.addButtonText}>Додати продукт</Text>
-              </Animated.View>
-            </Pressable>
+            <AnimatedButton 
+              onPress={handleAddOther} 
+              style={styles.addButton}
+            >
+              <Text style={styles.addButtonText}>Додати продукт</Text>
+            </AnimatedButton>
 
           </View>
         </ScrollView>

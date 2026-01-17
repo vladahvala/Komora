@@ -4,7 +4,7 @@ import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigation';
 import cat_data from '../../../data/cat_data.js';
-import CatCard from '../../components/CatCard';
+import CatCard from '../../components/CardsInCards/CatCard';
 import { SafeAreaView } from 'react-native-safe-area-context';
 // import CategoryPage from './CategoryPage';
 

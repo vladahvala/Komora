@@ -4,12 +4,13 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigation';
-import JarNumCard from '../../components/JarNumCard';
+import JarNumCard from '../../components/CardsInCards/JarNumCard';
 import AlertModal from '../../modals/AlertModal';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { ConservationContext, ConservationItem } from '../../context/ConservationContext';
 import { useContext } from 'react';
 import { TouchableWithoutFeedback, Keyboard } from 'react-native';
+import AnimatedButton from '../../animations/AnimatedButton';
 
 const AddConservation = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -99,35 +100,6 @@ const AddConservation = () => {
     setImageUri(null);
 
     navigation.goBack();
-  };
-
-  // buttons animation
-  const [pressAnim] = useState(new Animated.Value(0));
-
-  const onPressIn = () => {
-    Animated.timing(pressAnim, {
-      toValue: 1,        
-      duration: 100,
-      useNativeDriver: false,
-    }).start();
-  };
-
-  const onPressOut = () => {
-    Animated.timing(pressAnim, {
-      toValue: 0,        
-      duration: 100,
-      useNativeDriver: false,
-    }).start();
-  };
-
-  // animation styles
-  const animatedStyle = {
-    top: pressAnim.interpolate({ inputRange: [0, 1], outputRange: [0, 3] }), // down to 3 px
-    shadowOffset: {
-      width: 0,
-      height: pressAnim.interpolate({ inputRange: [0, 1], outputRange: [3, 1] }) // shadow up/down
-    },
-    elevation: pressAnim.interpolate({ inputRange: [0, 1], outputRange: [3, 1] }) // Android
   };
 
   return (
@@ -351,16 +323,12 @@ const AddConservation = () => {
             />
 
             {/* ADD CONSERVATION BUTTON */}
-            <Pressable
+            <AnimatedButton
               onPress={handleAddConservation}
-              onPressIn={onPressIn}
-              onPressOut={onPressOut}
+              style={styles.addButton}
             >
-              <Animated.View style={[styles.addButton, animatedStyle]}>
-                <Text style={styles.addButtonText}>Додати консервацію</Text>
-              </Animated.View>
-            </Pressable>
-
+              <Text style={styles.addButtonText}>Додати консервацію</Text>
+            </AnimatedButton>
 
           </View>
         </ScrollView>

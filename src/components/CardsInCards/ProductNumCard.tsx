@@ -37,7 +37,7 @@ const ProductNumCard: React.FC<ProductNumCardProps> = ({ image, style, count, ci
                 onPressOut={() => animate(scaleMinus, 1)}
                 style={styles.dotPressable}
               >
-                <Image source={require('../../assets/jar_icons/minus.png')} style={styles.dotIcon} />
+                <Image source={require('../../../assets/jar_icons/minus.png')} style={styles.dotIcon} />
               </Pressable>
             </Animated.View>
 
@@ -50,7 +50,7 @@ const ProductNumCard: React.FC<ProductNumCardProps> = ({ image, style, count, ci
                 onPressOut={() => animate(scalePlus, 1)}
                 style={styles.dotPressable}
               >
-                <Image source={require('../../assets/jar_icons/plus.png')} style={styles.dotIcon} />
+                <Image source={require('../../../assets/jar_icons/plus.png')} style={styles.dotIcon} />
               </Pressable>
             </Animated.View>
           </View>

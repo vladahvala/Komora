@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import { FlatList, StyleSheet, Text, View, TouchableOpacity, Image, TextInput, Keyboard, Pressable } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import ConsMenuCard from '../../components/ConsMenuCard';
-import ConsMenuCardSmall from '../../components/ConsMenuCardSmall'; 
+import ConsMenuCard from '../../components/BigCards/ConsMenuCard';
+import ConsMenuCardSmall from '../../components/SmallCards/ConsMenuCardSmall'; 
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigation';
 import { OthersContext, useOthers } from '../../context/OthersContext';
 import { useContext, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import ConsMenuCardOthers from '../../components/ConsMenuCardOthers';
-import ConsMenuCardOthersSmall from '../../components/ConsMenuCardOthersSmall';
+import ConsMenuCardOthers from '../../components/BigCards/ConsMenuCardOthers';
+import ConsMenuCardOthersSmall from '../../components/SmallCards/ConsMenuCardOthersSmall';
 
 const OthersMain = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -20,10 +20,7 @@ const OthersMain = () => {
     loadOthers();
   }, []);
   
-  if (loading) return null;
-  console.log('Loading:', loading, 'Others:', others);
-
-  
+  if (loading) return null;  
 
   // search bar
   const [searchText, setSearchText] = useState('');

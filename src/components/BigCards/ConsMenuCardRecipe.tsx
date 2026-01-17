@@ -3,9 +3,9 @@ import { View, Text, Image, Pressable, StyleSheet, Dimensions } from 'react-nati
 import { Shadow } from 'react-native-shadow-2';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
-import { RootStackParamList } from '../navigation'; // твій стек навігації
-import { RecipeItem, useRecipe } from '../context/RecipesContext';
-import ConfirmModal from '../modals/ConfirmModal';
+import { RootStackParamList } from '../../navigation';
+import { RecipeItem, useRecipe } from '../../context/RecipesContext';
+import ConfirmModal from '../../modals/ConfirmModal';
 
 // fixed card width
 const CARD_WIDTH = Dimensions.get('window').width / 2 - 40;
@@ -58,7 +58,7 @@ const ConsMenuCardRecipe = ({ item, index }: ConsMenuCardRecipeProps) => {
                 source={
                   item.imageUri
                     ? { uri: item.imageUri }
-                    : require('../../assets/images/default_conservation.png')
+                    : require('../../../assets/images/default_conservation.png')
                 }
                 style={styles.image}
               />
@@ -72,7 +72,7 @@ const ConsMenuCardRecipe = ({ item, index }: ConsMenuCardRecipeProps) => {
                 }}
               >
                 <Image
-                  source={require('../../assets/icons/trash.png')}
+                  source={require('../../../assets/icons/trash.png')}
                   style={styles.trashIcon}
                 />
               </Pressable>
@@ -88,8 +88,8 @@ const ConsMenuCardRecipe = ({ item, index }: ConsMenuCardRecipeProps) => {
                   <Image
                     source={
                       isFavorite
-                        ? require('../../assets/icons/like_blue.png')
-                        : require('../../assets/icons/like.png')
+                        ? require('../../../assets/icons/like_blue.png')
+                        : require('../../../assets/icons/like.png')
                     }
                     style={[styles.heartIcon, { tintColor: isFavorite ? undefined : 'grey' }]}
                   />

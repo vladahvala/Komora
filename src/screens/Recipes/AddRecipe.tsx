@@ -10,6 +10,7 @@ import { RootStackParamList } from '../../navigation';
 import AlertModal from '../../modals/AlertModal';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { RecipesContext, RecipeItem } from '../../context/RecipesContext';
+import AnimatedButton from '../../animations/AnimatedButton';
 
 const AddRecipe = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -37,7 +38,7 @@ const AddRecipe = () => {
 
   const handleAddConservation = () => {
     if (!name) {
-      setModalMessage('Введіть назву консервації!');
+      setModalMessage('Введіть назву рецепту!');
       setModalVisible(true);
       return;
     }
@@ -63,16 +64,6 @@ const AddRecipe = () => {
     setRecipeText('');
 
     navigation.goBack();
-  };
-
-  // BUTTON ANIMATION
-  const [pressAnim] = useState(new Animated.Value(0));
-  const onPressIn = () => Animated.timing(pressAnim, { toValue: 1, duration: 100, useNativeDriver: false }).start();
-  const onPressOut = () => Animated.timing(pressAnim, { toValue: 0, duration: 100, useNativeDriver: false }).start();
-  const animatedStyle = {
-    top: pressAnim.interpolate({ inputRange: [0, 1], outputRange: [0, 3] }),
-    shadowOffset: { width: 0, height: pressAnim.interpolate({ inputRange: [0, 1], outputRange: [3, 1] }) },
-    elevation: pressAnim.interpolate({ inputRange: [0, 1], outputRange: [3, 1] }),
   };
 
   return (
@@ -164,11 +155,12 @@ const AddRecipe = () => {
             />
 
             {/* ADD BUTTON */}
-            <Pressable onPress={handleAddConservation} onPressIn={onPressIn} onPressOut={onPressOut}>
-              <Animated.View style={[styles.addButton, animatedStyle]}>
-                <Text style={styles.addButtonText}>Додати рецепт</Text>
-              </Animated.View>
-            </Pressable>
+            <AnimatedButton 
+              onPress={handleAddConservation}
+              style={styles.addButton}
+            >
+              <Text style={styles.addButtonText}>Додати рецепт</Text>
+            </AnimatedButton>
 
           </View>
         </ScrollView>

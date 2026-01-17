@@ -2,7 +2,7 @@ import { StyleSheet, View, Text, Animated } from 'react-native';
 import React, { useEffect, useRef } from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation';
-import MenuCard from '../components/MenuCard';
+import MenuCard from '../components/CardsInCards/MenuCard';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'MainMenu'>;

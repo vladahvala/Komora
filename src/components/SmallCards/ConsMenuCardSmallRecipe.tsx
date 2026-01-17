@@ -1,50 +1,39 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { View, Text, Image, StyleSheet, Pressable, Dimensions } from 'react-native';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Shadow } from 'react-native-shadow-2';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
-import { RootStackParamList } from '../navigation';
-import { useConservation } from '../context/ConservationContext';
-import ConfirmModal from '../modals/ConfirmModal';
+import { RootStackParamList } from '../../navigation';
+import { useRecipe, RecipeItem, RecipesContext } from '../../context/RecipesContext';
+import ConfirmModal from '../../modals/ConfirmModal';
 
 // fixed card width
 const CARD_WIDTH = Dimensions.get('window').width - 60; 
 
-type ConsMenuCardSmallProps = {
-  item: {
-    name: string;
-    imageUri?: string;       
-    history: Record<string, Record<string, number>>; 
-  };
+type ConsMenuCardSmallRecipeProps = {
+  item: RecipeItem;
 };
 
-const ConsMenuCardSmallRemainders = ({ item }: ConsMenuCardSmallProps) => {
+const ConsMenuCardSmallRecipe = ({ item }: ConsMenuCardSmallRecipeProps) => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
-  // shadow glowing efect
+  // shadow glowing effect
   const [pressed, setPressed] = useState(false);
 
-  // importing functions from context
-  const { deleteConservation } = useConservation();
+  // modal
   const [modalVisible, setModalVisible] = useState(false);
 
-  // jars count (all years)
-  const totalJars = Object.values(item.history).reduce(
-    (sum, yearData) => sum + Object.values(yearData).reduce((s, val) => s + val, 0),
-    0
-  );
+  // context functions
+  const { deleteRecipe } = useRecipe();
 
   // navigate to CardPage
   const handlePress = () => {
-    navigation.navigate('CardPage', { item });
+    navigation.navigate('CardPageRecipe', { item });
   };
   
-  const currentYear = new Date().getFullYear();
-
-  const maxAge = Math.max(
-    ...Object.keys(item.history).map(year => currentYear - Number(year))
-  );
-  
+  // like logic
+  const { favorites, toggleFavorite } = useContext(RecipesContext);
+  const isFavorite = favorites.includes(item.name);
 
   return (
     <Pressable
@@ -64,42 +53,36 @@ const ConsMenuCardSmallRemainders = ({ item }: ConsMenuCardSmallProps) => {
       >
         {/* CARD STYLES */}
         <View style={styles.cardContainer}>
-          {/* CARD IMG */}
+          {/* IMAGE */}
           <Image
-            source={
-              item.imageUri
-                ? { uri: item.imageUri }
-                : require('../../assets/images/default_conservation.png')
-            }
+            source={ item.imageUri ? { uri: item.imageUri } : require('../../../assets/images/default_conservation.png') }
             style={styles.image}
           />
 
-          {/* CARD INFO + TRASH BUTTON INLINE */}
-          <View style={styles.textContainer}>
+          {/* RIGHT SIDE: TEXT + ICONS */}
+          <View style={styles.rightContainer}>
             <Text style={styles.title} numberOfLines={2} ellipsizeMode="tail">
               {item.name}
             </Text>
-            <View style={styles.infoRow}>
-              <Text style={styles.subtitle}>{totalJars}</Text>
-              <Image
-                source={require('../../assets/icons/jar.png')}
-                style={styles.jarIcon}
-              />
-              <Text style={styles.subtitle}>Банок</Text>
-              <Text style={styles.subtitle}>
-                {'  '}- {maxAge}+ років
-              </Text>
 
-              {/* TRASH BUTTON INLINE */}
+            {/* ICONS COLUMN */}
+            <View style={styles.iconsColumn}>
               <Pressable
-                onPress={(e) => {
-                  e.stopPropagation();
-                  setModalVisible(true);
-                }}
-                style={styles.trashInline}
+                onPress={(e) => { e.stopPropagation(); toggleFavorite(item.name); }}
+                style={styles.heartButton}
               >
                 <Image
-                  source={require('../../assets/icons/trash.png')}
+                  source={isFavorite ? require('../../../assets/icons/like_blue.png') : require('../../../assets/icons/like.png')}
+                  style={[styles.heartIcon, { tintColor: isFavorite ? undefined : 'grey' }]}
+                />
+              </Pressable>
+
+              <Pressable
+                onPress={(e) => { e.stopPropagation(); setModalVisible(true); }}
+                style={styles.trashButton}
+              >
+                <Image
+                  source={require('../../../assets/icons/trash.png')}
                   style={styles.trashIconInline}
                 />
               </Pressable>
@@ -114,7 +97,7 @@ const ConsMenuCardSmallRemainders = ({ item }: ConsMenuCardSmallProps) => {
         message="Ви впевнені, що хочете видалити цю картку?"
         onCancel={() => setModalVisible(false)}
         onConfirm={() => {
-          deleteConservation(item.name);
+          deleteRecipe(item.name);
           setModalVisible(false);
         }}
       />
@@ -123,10 +106,10 @@ const ConsMenuCardSmallRemainders = ({ item }: ConsMenuCardSmallProps) => {
   );
 };
 
-export default ConsMenuCardSmallRemainders;
+export default ConsMenuCardSmallRecipe;
 
 const styles = StyleSheet.create({
-  // main container
+  // container
   cardContainer: {
     flexDirection: 'row',
     width: '100%',
@@ -141,7 +124,7 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
 
-  // img styles
+  // image
   image: {
     width: hp(9),
     height: hp(9),
@@ -149,11 +132,15 @@ const styles = StyleSheet.create({
     marginRight: hp(2),
   },
 
-  // text styles
-  textContainer: {
+  // right part
+  rightContainer: {
     flex: 1,
-    justifyContent: 'space-between', 
+    justifyContent: 'space-between',
+    flexDirection: 'row', 
+    alignItems: 'center',
   },
+
+  // title styles
   title: {
     fontSize: hp(2.2),
     fontWeight: '600',
@@ -161,26 +148,26 @@ const styles = StyleSheet.create({
     marginBottom: hp(1.5),
   },
 
-  // info row with jars and trash button inline
-  infoRow: {
-    flexDirection: 'row',
+  // icons column
+  iconsColumn: {
+    flexDirection: 'column',
     alignItems: 'center',
-  },
-  subtitle: {
-    fontSize: hp(1.7),
-    color: 'grey',
-  },
-  jarIcon: {
-    width: hp(2.2),
-    height: hp(2.2),
-    marginLeft: hp(0.5),
-    marginRight: hp(0.5),
-    resizeMode: 'contain',
+    justifyContent: 'flex-start',
   },
 
-  // trash button inline
-  trashInline: {
-    marginLeft: 'auto', 
+  // heart button
+  heartButton: {
+    width: hp(3),
+    height: hp(3),
+    marginBottom: hp(3),
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  trashButton: {
+    width: hp(3),
+    height: hp(3),
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   trashIconInline: {
     width: hp(2.2),

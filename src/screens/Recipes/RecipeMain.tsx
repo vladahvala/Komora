@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import { FlatList, StyleSheet, Text, View, TouchableOpacity, Image, TextInput, Keyboard, Pressable } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import ConsMenuCard from '../../components/ConsMenuCard';
-import ConsMenuCardSmall from '../../components/ConsMenuCardSmall'; 
+import ConsMenuCard from '../../components/BigCards/ConsMenuCard';
+import ConsMenuCardSmall from '../../components/SmallCards/ConsMenuCardSmall'; 
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigation';
 import { RecipesContext } from '../../context/RecipesContext';
 import { useContext, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import ConsMenuCardRecipe from '../../components/ConsMenuCardRecipe';
-import ConsMenuCardSmallRecipe from '../../components/ConsMenuCardSmallRecipe';
+import ConsMenuCardRecipe from '../../components/BigCards/ConsMenuCardRecipe';
+import ConsMenuCardSmallRecipe from '../../components/SmallCards/ConsMenuCardSmallRecipe';
 
 const RecipeMain = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();

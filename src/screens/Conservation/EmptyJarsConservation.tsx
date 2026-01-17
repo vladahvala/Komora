@@ -4,8 +4,9 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigation';
-import JarNumCard from '../../components/JarNumCard';
+import JarNumCard from '../../components/CardsInCards/JarNumCard';
 import { useConservation } from '../../context/ConservationContext';
+import AnimatedButton from '../../animations/AnimatedButton';
 
 const EmptyJarsConservation = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -22,34 +23,6 @@ const EmptyJarsConservation = () => {
 
   // all empty jars count
   const totalJars = Object.values(localJars).reduce((sum, val) => sum + val, 0);
-
-  // button animation
-  const [pressAnim] = useState(new Animated.Value(0));
-
-  const onPressIn = () => {
-    Animated.timing(pressAnim, {
-      toValue: 1,
-      duration: 100,
-      useNativeDriver: false,
-    }).start();
-  };
-
-  const onPressOut = () => {
-    Animated.timing(pressAnim, {
-      toValue: 0,
-      duration: 100,
-      useNativeDriver: false,
-    }).start();
-  };
-
-  const animatedStyle = {
-    top: pressAnim.interpolate({ inputRange: [0, 1], outputRange: [0, 3] }),
-    shadowOffset: {
-      width: 0,
-      height: pressAnim.interpolate({ inputRange: [0, 1], outputRange: [3, 1] }),
-    },
-    elevation: pressAnim.interpolate({ inputRange: [0, 1], outputRange: [3, 1] }),
-  };
 
   return (
     // MAIN CONTAINER
@@ -139,15 +112,12 @@ const EmptyJarsConservation = () => {
           </View>
 
           {/* ADD CONSERVATION BUTTON */}
-          <Pressable
+          <AnimatedButton
             onPress={() => updateEmptyJars(localJars)}
-            onPressIn={onPressIn}
-            onPressOut={onPressOut}
+            style={styles.addButton}
           >
-            <Animated.View style={[styles.addButton, animatedStyle]}>
-              <Text style={styles.addButtonText}>Зберегти зміни</Text>
-            </Animated.View>
-          </Pressable>
+            <Text style={styles.addButtonText}>Зберегти зміни</Text>
+          </AnimatedButton>
 
         </View>
       </ScrollView>

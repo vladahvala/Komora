@@ -3,11 +3,11 @@ import { View, Text, TouchableOpacity, Image, StyleSheet, TextInput, Pressable, 
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
-import { RootStackParamList } from '../navigation';
+import { RootStackParamList } from '../../navigation';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { launchImageLibrary } from 'react-native-image-picker';
-import { useRecipe } from '../context/RecipesContext';
-import AnimatedButton from '../animations/AnimatedButton';
+import { useRecipe } from '../../context/RecipesContext';
+import AnimatedButton from '../../animations/AnimatedButton';
 
 type CardPageRouteProp = RouteProp<RootStackParamList, 'CardPageRecipe'>;
 
@@ -70,7 +70,7 @@ const CardPageRecipe = () => {
                   >
                     <View style={styles.arrowTouchArea}>
                       <Image
-                        source={require('../../assets/icons/arrow.png')}
+                        source={require('../../../assets/icons/arrow.png')}
                         style={styles.arrowIcon}
                       />
                     </View>
@@ -84,8 +84,8 @@ const CardPageRecipe = () => {
                     <Image
                       source={
                         isFavorite
-                          ? require('../../assets/icons/like_blue.png')
-                          : require('../../assets/icons/like.png')
+                          ? require('../../../assets/icons/like_blue.png')
+                          : require('../../../assets/icons/like.png')
                       }
                       style={[
                         styles.heartIcon,
@@ -107,7 +107,7 @@ const CardPageRecipe = () => {
                         source={
                             imageUri
                             ? { uri: imageUri }   // user chose img
-                            : require('../../assets/images/default_conservation.png') // fallback
+                            : require('../../../assets/images/default_conservation.png') // fallback
                         }
                         style={styles.titleImage}
                         />
@@ -153,8 +153,11 @@ const CardPageRecipe = () => {
                         >
                         <Text style={styles.timeTitleCat}>{selectedCategory}</Text>
                         <Image
-                            source={require('../../assets/icons/frame_down.png')}
-                            style={styles.arrowDownIconCat}
+                          source={require('../../../assets/icons/frame_down.png')}
+                          style={[
+                            styles.arrowDownIconCat,
+                            categoryDropdownVisible && { transform: [{ rotate: '180deg' }] },
+                          ]}
                         />
                         </Pressable>
 
@@ -218,7 +221,7 @@ const CardPageRecipe = () => {
                         }}
                     >
                         <Image
-                            source={require('../../assets/icons/remove_black.png')}
+                            source={require('../../../assets/icons/remove_black.png')}
                             style={{ width: hp(2.5), height: hp(2.5), resizeMode: 'contain' }}
                         />
                     </AnimatedButton>
@@ -291,7 +294,7 @@ const CardPageRecipe = () => {
                             }}
                         >
                             <Image 
-                            source={require('../../assets/icons/add_black.png')} 
+                            source={require('../../../assets/icons/add_black.png')} 
                             style={{ height: hp(2.5), resizeMode: 'contain' }}
                             />
                         </AnimatedButton >

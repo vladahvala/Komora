@@ -11,11 +11,11 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useNavigation, NavigationProp, useRoute, RouteProp } from '@react-navigation/native';
-import { RootStackParamList } from '../navigation';
-import { useOthers } from '../context/OthersContext';
+import { RootStackParamList } from '../../navigation';
+import { useOthers } from '../../context/OthersContext';
 import { launchImageLibrary } from 'react-native-image-picker';
-import ProductNumCard from '../components/ProductNumCard';
-import AnimatedButton from '../animations/AnimatedButton';
+import ProductNumCard from '../../components/CardsInCards/ProductNumCard';
+import AnimatedButton from '../../animations/AnimatedButton';
 
 type CardPageRouteProp = RouteProp<RootStackParamList, 'CardPageOther'>;
 
@@ -64,7 +64,7 @@ const CardPageOther = () => {
         <View style={styles.headerTopRow}>
           <TouchableOpacity onPress={() => navigation.goBack()} style={styles.arrowWrapper}>
             <View style={styles.arrowTouchArea}>
-              <Image source={require('../../assets/icons/arrow.png')} style={styles.arrowIcon} />
+              <Image source={require('../../../assets/icons/arrow.png')} style={styles.arrowIcon} />
             </View>
           </TouchableOpacity>
         </View>
@@ -76,7 +76,7 @@ const CardPageOther = () => {
           </View>
           <View style={styles.titleImageWrapper}>
             <Image
-              source={imageUri ? { uri: imageUri } : require('../../assets/images/default_conservation.png')}
+              source={imageUri ? { uri: imageUri } : require('../../../assets/images/default_conservation.png')}
               style={styles.titleImage}
             />
             <Pressable
@@ -113,7 +113,7 @@ const CardPageOther = () => {
             >
               <Text style={styles.timeTitle}>{selectedDate ?? 'Виберіть дату'}</Text>
               <Image
-                source={require('../../assets/icons/frame_down.png')}
+                source={require('../../../assets/icons/frame_down.png')}
                 style={[
                   styles.arrowDownIcon,
                   dropdownVisible && { transform: [{ rotate: '180deg' }] },
@@ -153,7 +153,7 @@ const CardPageOther = () => {
         {selectedDate && (
           <View style={styles.productCardWrap}>
             <ProductNumCard
-              image={require('../../assets/icons/products.png')}
+              image={require('../../../assets/icons/products.png')}
               count={sortedHistory.find(h => h.date === selectedDate)?.count ?? 0}
               circleLabel={(sortedHistory.find(h => h.date === selectedDate)?.count ?? 0).toString()}
               style={{ alignSelf: 'center' }}
@@ -175,7 +175,7 @@ const CardPageOther = () => {
               onPress={() => deleteHistory(currentItem.name, selectedDate)}
             >
               <Image
-                source={require('../../assets/icons/remove_black.png')}
+                source={require('../../../assets/icons/remove_black.png')}
                 style={styles.deleteIcon}
               />
             </AnimatedButton>

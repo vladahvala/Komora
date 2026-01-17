@@ -4,8 +4,8 @@ import { FlatList, View, Text, TouchableOpacity, Image, Pressable, StyleSheet } 
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useContext, useState } from 'react';
-import ConsMenuCardRecipe from '../../components/ConsMenuCardRecipe';
-import ConsMenuCardSmallRecipe from '../../components/ConsMenuCardSmallRecipe';
+import ConsMenuCardRecipe from '../../components/BigCards/ConsMenuCardRecipe';
+import ConsMenuCardSmallRecipe from '../../components/SmallCards/ConsMenuCardSmallRecipe';
 import { RecipesContext } from '../../context/RecipesContext';
 
 type CategoryPageRouteProp = RouteProp<RootStackParamList, 'CategoryPageRecipe'>;

@@ -3,9 +3,9 @@ import { View, Text, Image, Pressable, StyleSheet, Dimensions } from 'react-nati
 import { Shadow } from 'react-native-shadow-2';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
-import { RootStackParamList } from '../navigation'; // твій стек навігації
-import { ConservationItem, useConservation } from '../context/ConservationContext';
-import ConfirmModal from '../modals/ConfirmModal';
+import { RootStackParamList } from '../../navigation'; 
+import { ConservationItem, useConservation } from '../../context/ConservationContext';
+import ConfirmModal from '../../modals/ConfirmModal';
 
 // fixed card width
 const CARD_WIDTH = Dimensions.get('window').width / 2 - 40;
@@ -67,7 +67,7 @@ const maxAge = Math.max(
                 source={
                   item.imageUri
                     ? { uri: item.imageUri }
-                    : require('../../assets/images/default_conservation.png')
+                    : require('../../../assets/images/default_conservation.png')
                 }
                 style={styles.image}
               />
@@ -81,7 +81,7 @@ const maxAge = Math.max(
                 }}
               >
                 <Image
-                  source={require('../../assets/icons/trash.png')}
+                  source={require('../../../assets/icons/trash.png')}
                   style={styles.trashIcon}
                 />
               </Pressable>
@@ -99,7 +99,7 @@ const maxAge = Math.max(
             <View style={styles.jarsRow}>
               <Text style={styles.jarText}>{totalJars}</Text>
               <Image
-                source={require('../../assets/icons/jar.png')}
+                source={require('../../../assets/icons/jar.png')}
                 style={styles.jarIcon}
               />
               <Text style={styles.jarText}>Банок</Text>

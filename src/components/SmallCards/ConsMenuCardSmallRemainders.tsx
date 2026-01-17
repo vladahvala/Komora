@@ -3,9 +3,9 @@ import { View, Text, Image, StyleSheet, Pressable, Dimensions } from 'react-nati
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Shadow } from 'react-native-shadow-2';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
-import { RootStackParamList } from '../navigation';
-import { useConservation } from '../context/ConservationContext';
-import ConfirmModal from '../modals/ConfirmModal';
+import { RootStackParamList } from '../../navigation';
+import { useConservation } from '../../context/ConservationContext';
+import ConfirmModal from '../../modals/ConfirmModal';
 
 // fixed card width
 const CARD_WIDTH = Dimensions.get('window').width - 60; 
@@ -18,7 +18,7 @@ type ConsMenuCardSmallProps = {
   };
 };
 
-const ConsMenuCardSmall = ({ item }: ConsMenuCardSmallProps) => {
+const ConsMenuCardSmallRemainders = ({ item }: ConsMenuCardSmallProps) => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   // shadow glowing efect
@@ -38,6 +38,13 @@ const ConsMenuCardSmall = ({ item }: ConsMenuCardSmallProps) => {
   const handlePress = () => {
     navigation.navigate('CardPage', { item });
   };
+  
+  const currentYear = new Date().getFullYear();
+
+  const maxAge = Math.max(
+    ...Object.keys(item.history).map(year => currentYear - Number(year))
+  );
+  
 
   return (
     <Pressable
@@ -62,7 +69,7 @@ const ConsMenuCardSmall = ({ item }: ConsMenuCardSmallProps) => {
             source={
               item.imageUri
                 ? { uri: item.imageUri }
-                : require('../../assets/images/default_conservation.png')
+                : require('../../../assets/images/default_conservation.png')
             }
             style={styles.image}
           />
@@ -75,10 +82,13 @@ const ConsMenuCardSmall = ({ item }: ConsMenuCardSmallProps) => {
             <View style={styles.infoRow}>
               <Text style={styles.subtitle}>{totalJars}</Text>
               <Image
-                source={require('../../assets/icons/jar.png')}
+                source={require('../../../assets/icons/jar.png')}
                 style={styles.jarIcon}
               />
-              <Text style={styles.subtitle}> Банок</Text>
+              <Text style={styles.subtitle}>Банок</Text>
+              <Text style={styles.subtitle}>
+                {'  '}- {maxAge}+ років
+              </Text>
 
               {/* TRASH BUTTON INLINE */}
               <Pressable
@@ -89,7 +99,7 @@ const ConsMenuCardSmall = ({ item }: ConsMenuCardSmallProps) => {
                 style={styles.trashInline}
               >
                 <Image
-                  source={require('../../assets/icons/trash.png')}
+                  source={require('../../../assets/icons/trash.png')}
                   style={styles.trashIconInline}
                 />
               </Pressable>
@@ -113,7 +123,7 @@ const ConsMenuCardSmall = ({ item }: ConsMenuCardSmallProps) => {
   );
 };
 
-export default ConsMenuCardSmall;
+export default ConsMenuCardSmallRemainders;
 
 const styles = StyleSheet.create({
   // main container

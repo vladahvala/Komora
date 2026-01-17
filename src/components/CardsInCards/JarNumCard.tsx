@@ -84,7 +84,7 @@ const JarNumCard: React.FC<JarNumCardProps> = ({ image, style, label, circleLabe
                             onPressOut={onPressOutMinus}
                             style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} 
                         >
-                            <Image source={require('../../assets/jar_icons/minus.png')} style={styles.dotIcon} />
+                            <Image source={require('../../../assets/jar_icons/minus.png')} style={styles.dotIcon} />
                         </Pressable>
                     </Animated.View>
 
@@ -120,7 +120,7 @@ const JarNumCard: React.FC<JarNumCardProps> = ({ image, style, label, circleLabe
                             onPressOut={onPressOutPlus}
                             style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
                         >
-                            <Image source={require('../../assets/jar_icons/plus.png')} style={styles.dotIcon} />
+                            <Image source={require('../../../assets/jar_icons/plus.png')} style={styles.dotIcon} />
                         </Pressable>
                     </Animated.View>
 

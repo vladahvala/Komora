@@ -6,10 +6,6 @@ import RecipeMain from './RecipeMain';
 import CategoryRecipe from './CategoryRecipe';
 import AddRecipe from './AddRecipe';
 import FavRecipes from './FavRecipes';
-// import ConservationMain from './RecipeMain';
-// import CategoryConservation from './CategoryRecipe';
-// import AddConservation from './AddRecipe';
-// import JarConservation from './EmptyJarsConservation';
 
 const Tab = createBottomTabNavigator();
 
