@@ -26,16 +26,19 @@ const CardPage = () => {
   const currentItem = conservations.find(c => c.name === item.name);
 
   // Syncs local jar count changes with global state and AsyncStorage
-  const updateJarCount = (key: string, newCount: number) => {
-    if (!currentItem) return;
+  const updateJarCount = (key: keyof JarCounts, newCount: number) => {
+    setJarCounts(prev => {
+      const updated = { ...prev, [key]: newCount };
   
-    const newJarCounts = { ...jarCounts, [key]: newCount };
-    setJarCounts(newJarCounts);
+      setDrafts(d => ({
+        ...d,
+        [selectedYear]: updated,
+      }));
   
-    // update in context & AsyncStorage
-    updateJarHistory(currentItem.name, selectedYear, newJarCounts);
+      return updated;
+    });
   };
-
+  
   // changing img
   const [imageUri, setImageUri] = useState<string | null>(item.imageUri || null);
 
@@ -51,7 +54,9 @@ const CardPage = () => {
   // dropdown years
   const [dropdownVisible, setDropdownVisible] = useState(false);
   // years which have jars
-  const availableYears = currentItem ? Object.keys(currentItem.history) : [];
+  const availableYears = currentItem
+  ? Object.keys(currentItem.history).sort((a, b) => Number(a) - Number(b))
+  : [];
   // selected year
   const [selectedYear, setSelectedYear] = useState(availableYears[0] || '2021');
 
@@ -59,25 +64,30 @@ const CardPage = () => {
   const [jarCounts, setJarCounts] = useState(
     currentItem ? currentItem.history[selectedYear] : { jar2_3l:0, jar4_2l:0, jar7_15l:0, jar2_1l:0, jar1_05l:0 }
   );
+  const [drafts, setDrafts] = useState<Record<string, JarCounts>>({});
 
   // year change
   const handleYearChange = (year: string) => {
     setSelectedYear(year);
-    if (currentItem) {
+  
+    if (drafts[year]) {
+      setJarCounts(drafts[year]);      // return unsaved
+    } else if (currentItem) {
       setJarCounts(currentItem.history[year]);
     }
   };
+  
 
   // total Jars of CURRENT YEAR
   const totalJars = Object.values(jarCounts).reduce((sum, val) => sum + val, 0);
 
   // total Jars of ALL YEARs
   const totalJarsAllYears = currentItem
-  ? Object.values(currentItem.history).reduce(
-      (sum, yearData) =>
-        sum + Object.values(yearData).reduce((s, val) => s + val, 0),
-      0
-    )
+  ? Object.entries(currentItem.history).reduce((sum, [year, yearData]) => {
+      const dataToCount = drafts[year] ?? yearData; // якщо є draft - беремо його
+      const yearSum = Object.values(dataToCount).reduce((s, val) => s + val, 0);
+      return sum + yearSum;
+    }, 0)
   : 0;
 
   // buttons animation
@@ -329,10 +339,21 @@ const CardPage = () => {
             <Pressable
               onPress={() => {
                 if (!currentItem) return;
-                if (currentItem.category !== selectedCategory) {
-                  updateCategory(currentItem.name, selectedCategory);
-                }
-              }}
+
+                updateJarHistory(
+                  currentItem.name,
+                  selectedYear,
+                  jarCounts
+                );
+
+                setDrafts(d => {
+                  const copy = { ...d };
+                  delete copy[selectedYear];
+                  return copy;
+                });
+
+                navigation.goBack();  
+              }}                         
               onPressIn={onPressIn}
               onPressOut={onPressOut}
             >
