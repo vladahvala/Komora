@@ -194,8 +194,8 @@ const CardPageRecipe = () => {
 
                 {/* INGREDIENTS HEADER */}
                 <Text style={styles.ingredientsHeader}>Інгредієнти</Text>
-                {currentItem?.ingredients?.length === 0 && ( 
-                    <Text style={styles.ingredientsMessage}>Поки інгедієнтів немає!</Text>
+                {(currentItem?.ingredients?.length ?? 0) === 0 && (
+                  <Text style={styles.ingredientsMessage}>Поки інгедієнтів немає!</Text>
                 )}
 
                 {/* LIST OF INGREDIENTS */}
@@ -232,12 +232,15 @@ const CardPageRecipe = () => {
                 <View style={styles.newIngredientRow}>
                     {/* NUMBER */}
                     <TextInput
-                        placeholder="Кількість"
-                        placeholderTextColor="#999"
-                        style={styles.inputAmount}
-                        value={newIngredient.amount}
-                        onChangeText={text => setNewIngredient(prev => ({ ...prev, amount: text }))}
-                        maxLength={4} 
+                      placeholder="Кількість"
+                      placeholderTextColor="#999"
+                      style={styles.inputAmount}
+                      value={newIngredient.amount}
+                      keyboardType="numeric"
+                      onChangeText={text =>
+                        setNewIngredient(prev => ({ ...prev, amount: text.replace(/[^0-9]/g, '') }))
+                      }
+                      maxLength={4}
                     />
 
                     {/* UNIT */}
