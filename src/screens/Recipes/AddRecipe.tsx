@@ -73,7 +73,11 @@ const AddRecipe = () => {
           <View style={styles.headerContainer}>
 
             {/* ARROW */}
-            <TouchableOpacity onPress={() => navigation.navigate('MainMenu')} style={styles.arrowWrapper}>
+            <TouchableOpacity 
+              onPress={() => navigation.navigate('MainMenu')} 
+              style={styles.arrowWrapper}
+              activeOpacity={1}
+            >
               <View style={styles.arrowTouchArea}>
                 <Image source={require('../../../assets/icons/arrow.png')} style={styles.arrowIcon} />
               </View>

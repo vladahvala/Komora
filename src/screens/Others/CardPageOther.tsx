@@ -62,7 +62,11 @@ const CardPageOther = () => {
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* HEADER */}
         <View style={styles.headerTopRow}>
-          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.arrowWrapper}>
+          <TouchableOpacity 
+            onPress={() => navigation.goBack()} 
+            style={styles.arrowWrapper}
+            activeOpacity={1}
+          >
             <View style={styles.arrowTouchArea}>
               <Image source={require('../../../assets/icons/arrow.png')} style={styles.arrowIcon} />
             </View>
