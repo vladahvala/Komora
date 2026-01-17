@@ -114,7 +114,10 @@ const CardPageOther = () => {
               <Text style={styles.timeTitle}>{selectedDate ?? 'Виберіть дату'}</Text>
               <Image
                 source={require('../../assets/icons/frame_down.png')}
-                style={styles.arrowDownIcon}
+                style={[
+                  styles.arrowDownIcon,
+                  dropdownVisible && { transform: [{ rotate: '180deg' }] },
+                ]}
               />
             </Pressable>
 

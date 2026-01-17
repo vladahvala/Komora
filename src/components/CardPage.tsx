@@ -208,7 +208,10 @@ const CardPage = () => {
                   <Text style={styles.timeTitleCat}>{selectedCategory}</Text>
                   <Image
                     source={require('../../assets/icons/frame_down.png')}
-                    style={styles.arrowDownIconCat}
+                    style={[
+                      styles.arrowDownIconCat,
+                      categoryDropdownVisible && { transform: [{ rotate: '180deg' }] },
+                    ]}
                   />
                 </Pressable>
 
@@ -260,8 +263,12 @@ const CardPage = () => {
                   <Text style={styles.timeTitle}>{selectedYear}</Text>
                   <Image
                     source={require('../../assets/icons/frame_down.png')}
-                    style={styles.arrowDownIcon}
+                    style={[
+                      styles.arrowDownIcon,
+                      dropdownVisible && { transform: [{ rotate: '180deg' }] },
+                    ]}
                   />
+
                 </Pressable>
 
                 {/* Dropdown */}

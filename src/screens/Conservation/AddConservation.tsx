@@ -220,9 +220,12 @@ const AddConservation = () => {
                   {selectedCategory || 'Оберіть категорію'}
                 </Text>
                 <Image
-                  source={require('../../../assets/icons/frame_down.png')}
-                  style={styles.arrowDownIcon}
-                />
+                    source={require('../../../assets/icons/frame_down.png')}
+                    style={[
+                      styles.arrowDownIcon,
+                      isCategoryModalVisible && { transform: [{ rotate: '180deg' }] },
+                    ]}
+                  />
               </Pressable>
 
               {/* Dropdown */}
@@ -258,7 +261,10 @@ const AddConservation = () => {
                   <Text style={styles.timeTitle}>{selectedYear || '2021'}</Text>
                   <Image
                     source={require('../../../assets/icons/frame_down.png')}
-                    style={styles.arrowDownIcon}
+                    style={[
+                      styles.arrowDownIcon,
+                      isYearsModalVisible && { transform: [{ rotate: '180deg' }] },
+                    ]}
                   />
                 </Pressable>
 
