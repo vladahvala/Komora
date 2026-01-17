@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useContext } from 'react';
+import { configureNotifications, sendExpirationNotification } from '../services/notifications';
 
 // conservation item type
 export type ConservationItem = {
@@ -16,6 +17,7 @@ export type ConservationItem = {
       jar1_05l: number;
     };
   };
+  isExpiredNotified?: boolean;
 };
 
 // type for empty jars
@@ -102,12 +104,50 @@ export const ConservationProvider = ({ children }: Props) => {
   const loadConservations = async () => {
     try {
       const json = await AsyncStorage.getItem('@conservations');
+
+      let loadedConservations: ConservationItem[] = [];
+
       if (json) {
-        setConservations(JSON.parse(json));
+        loadedConservations = JSON.parse(json);
       }
+
+      const currentYear = new Date().getFullYear();
+
+      const updatedConservations = await Promise.all(
+        loadedConservations.map(async (item) => {
+          if (!item.history || Object.keys(item.history).length === 0) {
+            return item;
+          }
+
+          // checking expired (at least 1 year)
+          const isExpired = Object.keys(item.history).some(
+            (year) => currentYear - Number(year) >= 1
+          );
+
+          // if expired - notify
+          if (isExpired && !item.isExpiredNotified) {
+            console.log('Will send notification for:', item.name);
+
+            await sendExpirationNotification(item.name);
+
+            // Після відправки — ставимо прапорець
+            return { ...item, isExpiredNotified: true };
+          }
+
+          return item;
+        })
+      );
+
+      // saving updated array
+      setConservations(updatedConservations);
+      await AsyncStorage.setItem(
+        '@conservations',
+        JSON.stringify(updatedConservations)
+      );
 
       // empty jars 
       const empty = await AsyncStorage.getItem('@emptyJars');
+
       if (empty) {
         setEmptyJars(JSON.parse(empty));
       } else {
@@ -125,7 +165,7 @@ export const ConservationProvider = ({ children }: Props) => {
     } catch (e) {
       console.error('Failed to load conservations', e);
     } finally {
-      setLoading(false); // end of loading
+      setLoading(false);
     }
   };
 
@@ -310,9 +350,14 @@ export const ConservationProvider = ({ children }: Props) => {
   
   // loads all conservations from AsyncStorage
   useEffect(() => {
-    loadConservations();
-  }, []);
+    const init = async () => {
+      await configureNotifications();
+      await loadConservations();     
+    };
 
+    init();
+  }, []);
+  
   if (loading) return null;
 
   return (
