@@ -8,6 +8,7 @@ import { useRoute, RouteProp } from '@react-navigation/native';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { useRecipe } from '../../context/RecipesContext';
 import AnimatedButton from '../../animations/AnimatedButton';
+import { TouchableWithoutFeedback, Keyboard } from 'react-native';
 
 type CardPageRouteProp = RouteProp<RootStackParamList, 'CardPageRecipe'>;
 
@@ -51,6 +52,7 @@ const CardPageRecipe = () => {
     <SafeAreaProvider style={styles.container}>
         <Pressable 
             style={{ flex: 1 }} 
+            pointerEvents="box-none"
             onPress={() => {
             setCategoryDropdownVisible(false);
             setUnitDropdownVisible(false);
@@ -149,7 +151,10 @@ const CardPageRecipe = () => {
                             width: '100%', 
                             },
                         ]}
-                        onPress={() => setCategoryDropdownVisible(prev => !prev)}
+                        onPress={() => {
+                          setCategoryDropdownVisible(prev => !prev);
+                          setUnitDropdownVisible(false); // close unit dropdown
+                        }}                        
                         >
                         <Text style={styles.timeTitleCat}>{selectedCategory}</Text>
                         <Image
@@ -247,7 +252,10 @@ const CardPageRecipe = () => {
                     <View style={{ position: 'relative' }}>
                         <Pressable
                             style={styles.unitDropdownButton}
-                            onPress={() => setUnitDropdownVisible(prev => !prev)}
+                            onPress={() => {
+                              setUnitDropdownVisible(prev => !prev);
+                              setCategoryDropdownVisible(false); // close category dropdown
+                            }}                            
                         >
                             <Text style={styles.unitDropdownText}>{newIngredient.unit}</Text>
                         </Pressable>

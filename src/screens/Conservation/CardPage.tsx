@@ -174,7 +174,10 @@ const CardPage = () => {
                       width: '100%', 
                     },
                   ]}
-                  onPress={() => setCategoryDropdownVisible(prev => !prev)}
+                  onPress={() => {
+                    setCategoryDropdownVisible(prev => !prev);
+                    setDropdownVisible(false); // close year dropdown
+                  }}                  
                 >
                   <Text style={styles.timeTitleCat}>{selectedCategory}</Text>
                   <Image
@@ -229,7 +232,10 @@ const CardPage = () => {
               <View style={styles.yearDropdownWrapper}>
                 <Pressable
                   style={styles.bigIconContainer}
-                  onPress={() => setDropdownVisible(prev => !prev)}
+                  onPress={() => {
+                    setDropdownVisible(prev => !prev);
+                    setCategoryDropdownVisible(false); // close category dropdown
+                  }}                  
                 >
                   <Text style={styles.timeTitle}>{selectedYear}</Text>
                   <Image
