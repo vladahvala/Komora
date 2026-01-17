@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -33,7 +33,15 @@ const CardPageOther = () => {
 
   const history = currentItem?.history ?? [];
 
-  const [selectedDate, setSelectedDate] = useState<string | null>(history[0]?.date || null);
+  const sortedHistory = [...history].sort((a, b) => {
+    const [d1, m1, y1] = a.date.split('.');
+    const [d2, m2, y2] = b.date.split('.');
+    const date1 = new Date(`${y1}-${m1}-${d1}`);
+    const date2 = new Date(`${y2}-${m2}-${d2}`);
+    return date1.getTime() - date2.getTime();
+  });
+
+  const [selectedDate, setSelectedDate] = useState<string | null>(sortedHistory[0]?.date || null); 
   const [dropdownVisible, setDropdownVisible] = useState(false);
 
   if (!currentItem) {
@@ -120,7 +128,7 @@ const CardPageOther = () => {
                 />
 
                 <View style={styles.yearsDropdownContainer}>
-                  {history.map((h) => (
+                  {sortedHistory.map((h) => ( 
                     <Pressable
                       key={h.date}
                       style={styles.dropdownItem}
@@ -143,8 +151,8 @@ const CardPageOther = () => {
           <View style={styles.productCardWrap}>
             <ProductNumCard
               image={require('../../assets/icons/products.png')}
-              count={history.find(h => h.date === selectedDate)?.count ?? 0}
-              circleLabel={(history.find(h => h.date === selectedDate)?.count ?? 0).toString()}
+              count={sortedHistory.find(h => h.date === selectedDate)?.count ?? 0}
+              circleLabel={(sortedHistory.find(h => h.date === selectedDate)?.count ?? 0).toString()}
               style={{ alignSelf: 'center' }}
               onChange={(newCount: number) => {
                 updateCount(currentItem.name, newCount, selectedDate);
