@@ -74,29 +74,43 @@ const CardPageOther = () => {
         </View>
 
         {/* TITLE + IMAGE */}
-        <View style={styles.titleRow}>
-          <View style={styles.titleLeft}>
-            <Text style={styles.menuTitle}>{currentItem.name}</Text>
-          </View>
-          <View style={styles.titleImageWrapper}>
-            <Image
-              source={imageUri ? { uri: imageUri } : require('../../../assets/images/default_conservation.png')}
-              style={styles.titleImage}
-            />
-            <Pressable
-              style={styles.imageOverlay}
-              onPress={() => {
-                launchImageLibrary({ mediaType: 'photo', quality: 0.7 }, (response) => {
-                  if (response.assets && response.assets.length > 0) {
-                    setImageUri(response.assets[0].uri ?? null);
-                  }
-                });
-              }}
-            >
-              <Text style={styles.imageOverlayText}>Змінити</Text>
-            </Pressable>
-          </View>
-        </View>
+{/* TITLE + IMAGE */}
+<View style={styles.titleRow}>
+  <Text style={styles.menuTitle}>{item.name}</Text>
+
+  <View style={styles.titleImageWrapper}>
+    <Image
+      source={
+        imageUri
+          ? { uri: imageUri }
+          : require('../../../assets/images/default_conservation.png')
+      }
+      style={styles.titleImage}
+    />
+
+    <Pressable
+      style={styles.imageOverlay}
+      onPress={() => {
+        launchImageLibrary(
+          { mediaType: 'photo', quality: 0.7 },
+          (response) => {
+            if (response.assets && response.assets.length > 0) {
+              setImageUri(response.assets[0].uri);
+
+              if (currentItem) {
+                updateImage(currentItem.name, response.assets[0].uri);
+              }
+            }
+          }
+        );
+      }}
+    >
+      <Text style={styles.imageOverlayText}>Змінити</Text>
+    </Pressable>
+  </View>
+</View>
+
+
 
         {/* SUM TOTAL */}
         <View style={styles.timeRow}>
@@ -115,7 +129,7 @@ const CardPageOther = () => {
               style={styles.bigIconContainer}
               onPress={() => setDropdownVisible(prev => !prev)}
             >
-              <Text style={styles.timeTitle}>{selectedDate ?? 'Виберіть дату'}</Text>
+              <Text style={styles.timeTitleDate}>{selectedDate ?? 'Виберіть дату'}</Text>
               <Image
                 source={require('../../../assets/icons/frame_down.png')}
                 style={[
@@ -200,7 +214,7 @@ export default CardPageOther;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F7F9FD',
+    backgroundColor: '#FFF',
     paddingHorizontal: hp(3.2),
   },
 
@@ -227,19 +241,22 @@ const styles = StyleSheet.create({
   },
 
   titleRow: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'space-between',
+    justifyContent: 'center',
   },
+  
+  
 
   titleLeft: {
     flex: 1,
     justifyContent: 'center',
     marginRight: hp(3),
   },
-
+  
   menuTitle: {
     fontSize: hp(2.9),
+    marginBottom: hp(2),
     fontWeight: '600',
     color: 'black',
     textAlign: 'center',
@@ -282,6 +299,11 @@ const styles = StyleSheet.create({
 
   timeTitle: {
     fontSize: hp(3),
+    fontWeight: '600',
+    color: 'black',
+  },
+  timeTitleDate: {
+    fontSize: hp(2.4),
     fontWeight: '600',
     color: 'black',
   },
@@ -338,16 +360,16 @@ const styles = StyleSheet.create({
   },
 
   dropdownItemText: {
-    fontSize: hp(2.2),
+    fontSize: hp(2),
     color: '#333',
     textAlign: 'center',
   },
 
   arrowDownIcon: {
-    width: hp(2.5),
-    height: hp(2.5),
+    width: hp(2.1),
+    height: hp(2.1),
     resizeMode: 'contain',
-    marginLeft: hp(1),
+    marginLeft: hp(0.2),
   },
 
   // product card
@@ -365,7 +387,7 @@ const styles = StyleSheet.create({
   },
 
   timeTitleDelete: {
-    fontSize: hp(2.6),
+    fontSize: hp(2.4),
     fontWeight: '700',
     color: 'black',
   },

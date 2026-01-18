@@ -131,7 +131,7 @@ const styles = StyleSheet.create({
   // main cintainer
   container: { 
     flex: 1, 
-    backgroundColor: '#F7F9FD',
+    backgroundColor: '#FFF',
     paddingHorizontal: hp(3.2),
   },
   scrollContent: {
@@ -146,7 +146,7 @@ const styles = StyleSheet.create({
   // arrow styles
   arrowWrapper: {
     alignSelf: 'flex-start',
-    marginBottom: hp(4),
+    marginBottom: hp(1),
     marginLeft: -hp(1),
   },
   arrowTouchArea: {

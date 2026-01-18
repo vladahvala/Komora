@@ -101,7 +101,7 @@ export default function RecipesNavigation() {
 const styles = StyleSheet.create({
   // whole tab bar style
   tabBar: {
-    height: hp(12),       
+    height: hp(14),       
     paddingBottom: hp(1.5),  
     paddingTop: hp(2),       
     alignItems: 'center',

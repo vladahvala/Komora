@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FlatList, StyleSheet, Text, View, TouchableOpacity, Image, TextInput, Keyboard, Pressable } from 'react-native';
+import { FlatList, StyleSheet, Text, View, TouchableOpacity, Image, TextInput, Keyboard, Pressable, SafeAreaView } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import ConsMenuCard from '../../components/BigCards/ConsMenuCard';
 import ConsMenuCardSmall from '../../components/SmallCards/ConsMenuCardSmall'; 
@@ -34,9 +34,56 @@ const ConservationMain = () => {
       }}
     >
       <SafeAreaProvider style={styles.container}>
+  
+        {/* FIXED HEADER */}
+        <View style={styles.headerContainer}>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('MainMenu')}
+            style={styles.arrowWrapper}
+            activeOpacity={1}
+          >
+            <View style={styles.arrowTouchArea}>
+              <Image
+                source={require('../../../assets/icons/arrow.png')}
+                style={styles.arrowIcon}
+              />
+            </View>
+          </TouchableOpacity>
+  
+          <Text style={styles.menuTitle}>Консервація</Text>
+  
+          <View style={styles.searchRow}>
+            <View style={styles.searchContainer}>
+              <Image
+                source={require('../../../assets/icons/search.png')}
+                style={styles.searchIcon}
+              />
+              <TextInput
+                placeholder="Шукати консервацію..."
+                style={styles.searchInput}
+                placeholderTextColor="#999"
+                value={searchText}
+                onChangeText={setSearchText}
+                onPressIn={(e) => e.stopPropagation()}
+              />
+            </View>
+  
+            <Pressable onPress={toggleIcon} style={styles.bigIconContainer}>
+              <Image
+                source={
+                  isBigIcon
+                    ? require('../../../assets/icons/big_icons.png')
+                    : require('../../../assets/icons/small_icons.png')
+                }
+                style={styles.bigIconImage}
+              />
+            </Pressable>
+          </View>
+        </View>
+  
+        {/* SCROLLABLE LIST */}
         <FlatList
-          // card style change
-          key={isBigIcon ? 'big' : 'small'} 
+          key={isBigIcon ? 'big' : 'small'}
           data={filteredData}
           renderItem={({ item, index }) =>
             isBigIcon ? (
@@ -45,73 +92,20 @@ const ConservationMain = () => {
               <ConsMenuCardSmall item={item} index={index} />
             )
           }
-          numColumns={isBigIcon ? 2 : 1}  // column num
+          numColumns={isBigIcon ? 2 : 1}
           columnWrapperStyle={
-            isBigIcon
-              ? { justifyContent: 'space-between', marginBottom: 25 }
-              : undefined
+            isBigIcon ? { justifyContent: 'space-between', marginBottom: 25 } : undefined
           }
           contentContainerStyle={{
             paddingHorizontal: 27,
+            paddingBottom: hp(3),
+            paddingTop: hp(2),
           }}
-          ListHeaderComponent={
-            <View style={styles.headerContainer}>
-              {/* ARROW TO MAIN MENU */}
-              <TouchableOpacity 
-                onPress={() => navigation.navigate('MainMenu')} 
-                style={styles.arrowWrapper}
-                activeOpacity={1}  
-              >
-                <View style={styles.arrowTouchArea}>
-                  <Image
-                    source={require('../../../assets/icons/arrow.png')}
-                    style={styles.arrowIcon}
-                  />
-                </View>
-              </TouchableOpacity>
-              
-              {/* TITLE TEXT */}
-              <Text style={styles.menuTitle}>Консервація</Text>
-              <Text style={styles.menuTextMain}>Хочете знайти потрібну консервацію?</Text>
-              <Text style={styles.menuTextSecondary}>Скористайтесь полем пошуку</Text>
-
-              {/* SEARCH & CARD STYLE CHANGE ROW */}
-              <View style={styles.searchRow}>
-
-                {/* SEARCH BAR */}
-                <View style={styles.searchContainer}>
-                  <Image
-                    source={require('../../../assets/icons/search.png')}
-                    style={styles.searchIcon}
-                  />
-                  <TextInput
-                    placeholder="Шукати консервацію..."
-                    style={styles.searchInput}
-                    placeholderTextColor="#999"
-                    value={searchText}
-                    onChangeText={setSearchText}
-                    onPressIn={(e) => e.stopPropagation()}
-                  />
-                </View>
-                
-                {/* CARD STYLE CHANGE */}
-                <Pressable onPress={toggleIcon} style={styles.bigIconContainer}>
-                  <Image
-                    source={
-                      isBigIcon
-                        ? require('../../../assets/icons/big_icons.png')
-                        : require('../../../assets/icons/small_icons.png')
-                    }
-                    style={styles.bigIconImage}
-                  />
-                </Pressable>
-              </View>
-            </View>
-          }
         />
       </SafeAreaProvider>
     </Pressable>
   );
+  
 };
 
 export default ConservationMain;
@@ -120,19 +114,18 @@ const styles = StyleSheet.create({
   // main container
   container: { 
     flex: 1, 
-    backgroundColor: '#F7F9FD' 
+    backgroundColor: '#FFF' 
   },
   // header container
   headerContainer: { 
     paddingTop: hp(5), 
     marginBottom: hp(2), 
-    paddingHorizontal: hp(1), 
+    paddingHorizontal: hp(4), 
   },
 
   // arrow style
   arrowWrapper: {
     alignSelf: 'flex-start',
-    marginBottom: hp(1),
     marginLeft: -hp(1),
   },
   arrowTouchArea: {
@@ -149,23 +142,9 @@ const styles = StyleSheet.create({
   // menu text
   menuTitle: { 
     fontSize: hp(3.5), 
-    marginBottom: hp(3), 
     fontWeight: '600', 
     color: 'black', 
-    textAlign: 'center' 
-  },
-  menuTextMain: { 
-    fontSize: hp(3.2), 
-    marginBottom: hp(0.5), 
-    fontWeight: '600', 
-    color: 'black', 
-    textAlign: 'left' 
-  },
-  menuTextSecondary: { 
-    fontSize: hp(2.5), 
-    fontWeight: '400', 
-    color: 'grey', 
-    textAlign: 'left' 
+    textAlign: 'center', 
   },
 
   // search bar styles

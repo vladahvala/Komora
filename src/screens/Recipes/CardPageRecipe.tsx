@@ -39,7 +39,7 @@ const CardPageRecipe = () => {
   const categories = ['Мариновані', 'Солені', 'Квашені', 'Варення / Джеми', 'Компоти', 'Соуси / Кетчупи', 'Консерви в олії / жирі'];
    
   // UNITS
-  const units = ['ст л', 'ст', 'чй л', 'кг', 'г'];
+  const units = ['ст л', 'ст', 'чй л', 'кг', 'л', 'г'];
   const [unitDropdownVisible, setUnitDropdownVisible] = useState(false);
   const [newIngredient, setNewIngredient] = useState<{ amount: string; unit: string; name: string }>({ amount: '', unit: 'ст л', name: '' });
     
@@ -49,18 +49,13 @@ const CardPageRecipe = () => {
 
   return (
     // MAIN CONTAINER
-    <SafeAreaProvider style={styles.container}>
-        <Pressable 
-            style={{ flex: 1 }} 
-            pointerEvents="box-none"
-            onPress={() => {
-            setCategoryDropdownVisible(false);
-            setUnitDropdownVisible(false);
-            }}
-        >
+          <View style={styles.container}>
+  
             <ScrollView
-                contentContainerStyle={styles.scrollContent}
-                showsVerticalScrollIndicator={false}
+              contentContainerStyle={styles.scrollContent}
+              keyboardShouldPersistTaps="handled"
+              keyboardDismissMode="on-drag"
+              showsVerticalScrollIndicator={false}
             >
               <View style={styles.headerContainer}>
                 {/* ARROW TO MAIN MENU */}
@@ -97,47 +92,42 @@ const CardPageRecipe = () => {
                 </View>
 
                     {/* TITLE TEXT */}
-                    <View style={styles.titleRow}>
-                    {/* TEXT */}
-                    <View style={styles.titleLeft}>
-                        <Text style={styles.menuTitle}>{item.name}</Text>
-                    </View>
+                 {/* TITLE + IMAGE */}
+<View style={styles.titleRow}>
+  <Text style={styles.menuTitle}>{item.name}</Text>
 
-                    {/* IMAGE */}
-                    <View style={styles.titleImageWrapper}>
-                        <Image
-                        source={
-                            imageUri
-                            ? { uri: imageUri }   // user chose img
-                            : require('../../../assets/images/default_conservation.png') // fallback
-                        }
-                        style={styles.titleImage}
-                        />
+  <View style={styles.titleImageWrapper}>
+    <Image
+      source={
+        imageUri
+          ? { uri: imageUri }
+          : require('../../../assets/images/default_conservation.png')
+      }
+      style={styles.titleImage}
+    />
 
-                        {/* overlay for img change */}
-                        <Pressable
-                        style={styles.imageOverlay}
-                        onPress={() => {
-                            launchImageLibrary(
-                            { mediaType: 'photo', quality: 0.7 },
-                            (response) => {
-                                if (response.assets && response.assets.length > 0) {
-                                setImageUri(response.assets[0].uri);
+    <Pressable
+      style={styles.imageOverlay}
+      onPress={() => {
+        launchImageLibrary(
+          { mediaType: 'photo', quality: 0.7 },
+          (response) => {
+            if (response.assets && response.assets.length > 0) {
+              setImageUri(response.assets[0].uri);
 
-                                // img to context
-                                if (currentItem) {
-                                    updateImage(currentItem.name, response.assets[0].uri);
-                                }
-                                }
-                            }
-                            );
-                        }}
-                        >
-                        <Text style={styles.imageOverlayText}>Змінити</Text>
-                        </Pressable>
-                    </View>
-                    
-                    </View>
+              if (currentItem) {
+                updateImage(currentItem.name, response.assets[0].uri);
+              }
+            }
+          }
+        );
+      }}
+    >
+      <Text style={styles.imageOverlayText}>Змінити</Text>
+    </Pressable>
+  </View>
+</View>
+
 
                     {/* CATEGORY */}
                     <View style={{ marginTop: hp(2) }}>
@@ -357,8 +347,18 @@ const CardPageRecipe = () => {
                 </View>
 
             </ScrollView>
-        </Pressable>
-    </SafeAreaProvider>
+            {(categoryDropdownVisible || unitDropdownVisible) && (
+              <Pressable
+                style={StyleSheet.absoluteFill}
+                pointerEvents="box-none"
+                onPress={() => {
+                  setCategoryDropdownVisible(false);
+                  setUnitDropdownVisible(false);
+                  Keyboard.dismiss();
+                }}
+              />
+            )}
+        </View>
   );
 };
 
@@ -419,18 +419,20 @@ const styles = StyleSheet.create({
 
   // title text
   titleRow: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     alignItems: 'center',
-    justifyContent: 'space-between', // left - text, right - img
+    justifyContent: 'center',
     marginTop: hp(2),
   },
+  
   titleLeft: {
     flex: 1,
     justifyContent: 'center',
     marginRight: hp(3), // distance between text & img
   },
   menuTitle: { 
-    fontSize: hp(2.9), 
+    fontSize: hp(2.9),
+    marginBottom: hp(2), 
     fontWeight: '600', 
     color: 'black',
     textAlign: 'center', 
@@ -443,6 +445,7 @@ const styles = StyleSheet.create({
     height: hp(17),
     borderRadius: hp(2.5),
     overflow: 'hidden', 
+    marginBottom: hp(2),
   },
   titleImage: {
     width: '100%',
@@ -484,12 +487,12 @@ const styles = StyleSheet.create({
     borderRadius: hp(1.5),
     marginLeft: hp(2),
     marginTop: hp(0.5),
-    zIndex: 100,
+    zIndex: 9999,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
     shadowRadius: 2,
-    elevation: 5,
+    elevation: 10,
   },
   dropdownItem: {
     paddingVertical: hp(1.5),
@@ -519,6 +522,7 @@ const styles = StyleSheet.create({
     borderRadius: hp(1.5),
     justifyContent: 'center',
     position: 'relative',
+    zIndex: 1000,
   },
   arrowDownIconCat: {
     position: 'absolute',
@@ -642,7 +646,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ccc',
     borderRadius: hp(1),
-    zIndex: 100,
+    zIndex: 9999,
   },
   // add ingredient button
   addIngredientButton: {

@@ -28,6 +28,7 @@ const AddOthers = () => {
 
   const [imageUri, setImageUri] = useState<string | null>(null);
   const [name, setName] = useState('');
+  const [isNameFocused, setIsNameFocused] = useState(false);
   const [packsCount, setPacksCount] = useState('');
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
@@ -72,7 +73,11 @@ const AddOthers = () => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <SafeAreaProvider style={styles.container}>
-        <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
+        <ScrollView 
+        contentContainerStyle={styles.scrollContent} 
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+        >
           <View style={styles.headerContainer}>
 
             {/* ARROW */}
@@ -107,11 +112,12 @@ const AddOthers = () => {
             {/* NAME INPUT */}
             <View style={{ marginTop: hp(2) }}>
               <Text style={styles.label}>Назва</Text>
-              <View style={[styles.searchContainer, { borderColor: '#AEAEAE' }]}>
+              <View style={[styles.searchContainer, { borderColor: isNameFocused ? '#00B4BF' : '#AEAEAE' }]}>
                 <TextInput
                   value={name}
                   onChangeText={setName}
                   style={styles.inputName}
+                  onFocus={() => setIsNameFocused(true)} onBlur={() => setIsNameFocused(false)}
                 />
               </View>
             </View>
@@ -170,7 +176,7 @@ export default AddOthers;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F7F9FD',
+    backgroundColor: '#FFF',
     paddingHorizontal: hp(3.2),
   },
   scrollContent: {

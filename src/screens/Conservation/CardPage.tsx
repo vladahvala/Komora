@@ -122,22 +122,19 @@ const CardPage = () => {
             {/* TITLE TEXT */}
             <View style={styles.titleRow}>
               {/* TEXT */}
-              <View style={styles.titleLeft}>
-                  <Text style={styles.menuTitle}>{item.name}</Text>
-              </View>
+              <Text style={styles.menuTitle}>{item.name}</Text>
 
               {/* IMAGE */}
               <View style={styles.titleImageWrapper}>
                 <Image
                   source={
                     imageUri
-                      ? { uri: imageUri }   // user chose img
-                      : require('../../../assets/images/default_conservation.png') // fallback
+                      ? { uri: imageUri }
+                      : require('../../../assets/images/default_conservation.png')
                   }
                   style={styles.titleImage}
                 />
 
-                {/* overlay for img change */}
                 <Pressable
                   style={styles.imageOverlay}
                   onPress={() => {
@@ -147,7 +144,6 @@ const CardPage = () => {
                         if (response.assets && response.assets.length > 0) {
                           setImageUri(response.assets[0].uri);
 
-                          // img to context
                           if (currentItem) {
                             updateImage(currentItem.name, response.assets[0].uri);
                           }
@@ -159,7 +155,6 @@ const CardPage = () => {
                   <Text style={styles.imageOverlayText}>Змінити</Text>
                 </Pressable>
               </View>
-              
             </View>
 
             {/* CATEGORY */}
@@ -344,7 +339,7 @@ const CardPage = () => {
             </AnimatedButton>
 
             <View style={styles.timeRow}> 
-              <Text style={styles.timeTitle}>К-ть банок за рік {selectedYear}:</Text>
+              <Text style={styles.timeTitleYear}>К-ть банок за рік {selectedYear}:</Text>
               <View style={styles.bigIconContainer}>
                 <Text style={styles.timeTitleNum}>{totalJars}</Text>
               </View>
@@ -364,7 +359,7 @@ const styles = StyleSheet.create({
   // main container
   container: { 
     flex: 1, 
-    backgroundColor: '#F7F9FD',
+    backgroundColor: '#FFF',
     paddingHorizontal: hp(3.2),
   },
   scrollContent: {
@@ -395,11 +390,10 @@ const styles = StyleSheet.create({
 
   // title text
   titleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between', // left - text, right - img
-    marginTop: hp(2),
+    flexDirection: 'column',   // <- змінив на column
+    alignItems: 'center',      // щоб по центру
   },
+  
   titleLeft: {
     flex: 1,
     justifyContent: 'center',
@@ -410,6 +404,7 @@ const styles = StyleSheet.create({
     fontWeight: '600', 
     color: 'black',
     textAlign: 'center', 
+    marginBottom: hp(2),
   },
 
   // IMAGE
@@ -419,6 +414,7 @@ const styles = StyleSheet.create({
     height: hp(17),
     borderRadius: hp(2.5),
     overflow: 'hidden', 
+    marginBottom: hp(2),
   },
   titleImage: {
     width: '100%',
@@ -457,6 +453,11 @@ const styles = StyleSheet.create({
   },
   timeTitle: {
     fontSize: hp(3), 
+    fontWeight: '600', 
+    color: 'black', 
+  },
+  timeTitleYear: {
+    fontSize: hp(2.7), 
     fontWeight: '600', 
     color: 'black', 
   },

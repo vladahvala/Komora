@@ -104,15 +104,17 @@ const AddConservation = () => {
 
   return (
     // MAIN CONTAINER
-    <TouchableWithoutFeedback
-      onPress={() => {
-        Keyboard.dismiss();
-        setCategoryModalVisible(false);
-        setYearsModalVisible(false);
-      }}
-    >
+    <Pressable
+    style={{ flex: 1 }}
+    onPress={() => {
+      Keyboard.dismiss();
+      setCategoryModalVisible(false);
+      setYearsModalVisible(false);
+    }}
+  >
       <SafeAreaProvider style={styles.container}>
         <ScrollView
+          style={{ flex: 1 }}
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
@@ -333,7 +335,7 @@ const AddConservation = () => {
           </View>
         </ScrollView>
       </SafeAreaProvider>
-    </TouchableWithoutFeedback>
+    </Pressable>
   );
 };
 
@@ -343,7 +345,7 @@ const styles = StyleSheet.create({
   // main container
   container: { 
     flex: 1, 
-    backgroundColor: '#F7F9FD',
+    backgroundColor: '#FFF',
     paddingHorizontal: hp(3.2),
   },
   scrollContent: {
@@ -487,7 +489,7 @@ const styles = StyleSheet.create({
     position: 'relative',    
   },
   timeTitle: {
-    fontSize: hp(3.2), 
+    fontSize: hp(3), 
     fontWeight: '600', 
     color: 'black', 
   },

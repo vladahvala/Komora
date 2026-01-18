@@ -92,18 +92,21 @@ const filteredData = conservations
 
               
                 {/* CARD STYLE CHANGE */}
-                <View style={styles.toggleWrapper}>
+                {/* SHOW TOGGLE ONLY IF DATA EXISTS */}
+                {filteredData.length > 0 && (
+                  <View style={styles.toggleWrapper}>
                     <Pressable onPress={toggleIcon} style={styles.bigIconContainer}>
-                        <Image
+                      <Image
                         source={
-                            isBigIcon
+                          isBigIcon
                             ? require('../../../assets/icons/big_icons.png')
                             : require('../../../assets/icons/small_icons.png')
                         }
                         style={styles.bigIconImage}
-                        />
+                      />
                     </Pressable>
-                </View>
+                  </View>
+                )}
 
               </View>
            
@@ -132,7 +135,7 @@ const styles = StyleSheet.create({
   // arrow style
   arrowWrapper: {
     alignSelf: 'flex-start',
-    marginBottom: hp(1),
+    // marginBottom: hp(1),
     marginLeft: -hp(1),
   },
   arrowTouchArea: {
@@ -149,7 +152,7 @@ const styles = StyleSheet.create({
   // menu text
   menuTitle: { 
     fontSize: hp(3.5), 
-    marginBottom: hp(3), 
+    marginBottom: hp(1), 
     fontWeight: '600', 
     color: 'black', 
     textAlign: 'center' 
@@ -181,7 +184,6 @@ const styles = StyleSheet.create({
   toggleWrapper: {
     alignItems: 'center',
     marginTop: hp(2),
-    marginBottom: hp(2),
   },  
   bigIconImage: {
     width: hp(3),           
