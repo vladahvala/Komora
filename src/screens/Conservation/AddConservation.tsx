@@ -26,6 +26,11 @@ const AddConservation = () => {
   // active 
   const [isNameFocused, setIsNameFocused] = useState(false);
 
+  // period field
+  const [period, setPeriod] = useState('');
+  // active 
+  const [isPeriodFocused, setIsPeriodFocused] = useState(false);
+
   // active category field
   const [isCategoryFocused, setIsCategoryFocused] = useState(false);
 
@@ -221,9 +226,26 @@ const AddConservation = () => {
               )}
             </View>
 
+             {/* CONSERVATION PERIOD */}
+            <View style={{ marginTop: hp(2) }}>
+              <Text style={styles.label}>Термін консервації (в роках)</Text>
+              <View style={[
+                styles.searchContainer,
+                { borderColor: isNameFocused ? '#00B4BF' : '#AEAEAE' }
+              ]}>
+                <TextInput
+                  value={name}                 
+                  onChangeText={text => setPeriod(text)}
+                  style={styles.inputName}
+                  onFocus={() => setIsPeriodFocused(true)}
+                  onBlur={() => setIsPeriodFocused(false)}
+                />
+              </View>
+            </View>
+
             {/* CONSERVATION TIME */}
             <View style={styles.timeRow}> 
-              <Text style={styles.timeTitle}>Час консервації:</Text>
+              <Text style={styles.timeTitle}>Початок{'\n'}зберігання:</Text>
               <View style={styles.yearDropdownWrapper}>
                 <Pressable
                   style={styles.bigIconContainer}
