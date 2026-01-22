@@ -234,7 +234,7 @@ const AddConservation = () => {
                 { borderColor: isNameFocused ? '#00B4BF' : '#AEAEAE' }
               ]}>
                 <TextInput
-                  value={name}                 
+                  value={period}                 
                   onChangeText={text => setPeriod(text)}
                   style={styles.inputName}
                   onFocus={() => setIsPeriodFocused(true)}

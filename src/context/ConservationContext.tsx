@@ -9,14 +9,8 @@ export type ConservationItem = {
   category: string;
   imageUri: string | null;
   history: {
-    [year: string]: {
-      jar2_3l: number;
-      jar4_2l: number;
-      jar7_15l: number;
-      jar2_1l: number;
-      jar1_05l: number;
-    };
-  };
+    [year: string]: JarCounts;
+  };  
   isExpiredNotified?: boolean;
 };
 
