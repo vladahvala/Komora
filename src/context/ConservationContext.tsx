@@ -17,6 +17,7 @@ export type ConservationItem = {
 type HistoryItem = {
   jarCounts: JarCounts;
   period: number; 
+  notified?: boolean;
 };
 
 // type for empty jars
@@ -118,7 +119,8 @@ export const ConservationProvider = ({ children }: Props) => {
               // старий формат
               newHistory[year] = {
                 jarCounts: data,
-                period: 0
+                period: 0,
+                notified: false,
               };
             } else {
               // новий формат
@@ -138,27 +140,27 @@ export const ConservationProvider = ({ children }: Props) => {
           if (!item.history || Object.keys(item.history).length === 0) {
             return item;
           }
-
-          // checking expired (at least 1 year)
-          const isExpired = Object.entries(item.history).some(
-            ([year, data]: any) => {
-              const period = data.period ?? 0;
-              return currentYear >= Number(year) + period;
+      
+          const updatedHistory: any = { ...item.history };
+      
+          for (const [year, data] of Object.entries(item.history)) {
+            const period = data.period ?? 0;
+      
+            const startDate = new Date(Number(year), 0, 1);
+            const expirationDate = new Date(startDate);
+            expirationDate.setFullYear(expirationDate.getFullYear() + period);
+      
+            if (new Date() >= expirationDate && !data.notified) {
+              await sendExpirationNotification(item.name);
+      
+              updatedHistory[year] = {
+                ...data,
+                notified: true,
+              };
             }
-          );
-          
-
-          // if expired - notify
-          if (isExpired && !item.isExpiredNotified) {
-            console.log('Will send notification for:', item.name);
-
-            await sendExpirationNotification(item.name);
-
-            // Після відправки — ставимо прапорець
-            return { ...item, isExpiredNotified: true };
           }
-
-          return item;
+      
+          return { ...item, history: updatedHistory };
         })
       );
 
@@ -253,6 +255,7 @@ export const ConservationProvider = ({ children }: Props) => {
             newHistory[year] = {
               jarCounts: newJarCounts,
               period: newPeriod,
+              notified: false,
             };
           }          
         });
@@ -356,7 +359,8 @@ export const ConservationProvider = ({ children }: Props) => {
             ...item.history,
             [year]: {
               jarCounts: newJarCounts,
-              period: item.history[year]?.period ?? 0, // <- важливо
+              period: item.history[year]?.period ?? 0,
+              notified: item.history[year]?.notified ?? false,
             },
           },
         };        
