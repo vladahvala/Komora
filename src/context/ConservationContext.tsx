@@ -9,9 +9,14 @@ export type ConservationItem = {
   category: string;
   imageUri: string | null;
   history: {
-    [year: string]: JarCounts;
+    [year: string]: HistoryItem;
   };  
   isExpiredNotified?: boolean;
+};
+
+type HistoryItem = {
+  jarCounts: JarCounts;
+  period: number; 
 };
 
 // type for empty jars
@@ -103,7 +108,28 @@ export const ConservationProvider = ({ children }: Props) => {
 
       if (json) {
         loadedConservations = JSON.parse(json);
+      
+        // Міграція старого формату (коли history[year] = JarCounts)
+        loadedConservations = loadedConservations.map((item: any) => {
+          const newHistory: any = {};
+      
+          Object.entries(item.history || {}).forEach(([year, data]: any) => {
+            if (data && typeof data === 'object' && !('jarCounts' in data)) {
+              // старий формат
+              newHistory[year] = {
+                jarCounts: data,
+                period: 0
+              };
+            } else {
+              // новий формат
+              newHistory[year] = data;
+            }
+          });
+      
+          return { ...item, history: newHistory };
+        });
       }
+      
 
       const currentYear = new Date().getFullYear();
 
@@ -188,57 +214,65 @@ export const ConservationProvider = ({ children }: Props) => {
       .toLowerCase();  
   
   // adding new conservation
-  const addConservation = async (item: ConservationItem) => { // params: new card
+  const addConservation = async (item: ConservationItem) => {
     try {
       const normalizedName = normalizeName(item.name);
-  
+
       const existingIndex = conservations.findIndex(
         c => normalizeName(c.name) === normalizedName
       );
-  
+
       let newList: ConservationItem[];
-  
+
       if (existingIndex !== -1) {
         // name exists 
         const existingItem = conservations[existingIndex];
         const newHistory = { ...existingItem.history };
-  
+
         // years from card
-        Object.entries(item.history).forEach(([year, newJars]) => {
+        Object.entries(item.history).forEach(([year, newHistoryItem]) => {
+          const newJarCounts = newHistoryItem.jarCounts;
+          const newPeriod = newHistoryItem.period;
+
           if (newHistory[year]) {
-            // if year exists — adding jars
             newHistory[year] = {
-              jar2_3l: newHistory[year].jar2_3l + newJars.jar2_3l,
-              jar4_2l: newHistory[year].jar4_2l + newJars.jar4_2l,
-              jar7_15l: newHistory[year].jar7_15l + newJars.jar7_15l,
-              jar2_1l: newHistory[year].jar2_1l + newJars.jar2_1l,
-              jar1_05l: newHistory[year].jar1_05l + newJars.jar1_05l,
+              jarCounts: {
+                jar2_3l: newHistory[year].jarCounts.jar2_3l + newJarCounts.jar2_3l,
+                jar4_2l: newHistory[year].jarCounts.jar4_2l + newJarCounts.jar4_2l,
+                jar7_15l: newHistory[year].jarCounts.jar7_15l + newJarCounts.jar7_15l,
+                jar2_1l: newHistory[year].jarCounts.jar2_1l + newJarCounts.jar2_1l,
+                jar1_05l: newHistory[year].jarCounts.jar1_05l + newJarCounts.jar1_05l,
+              },
+              period: newHistory[year].period ?? newPeriod, // <- важливо
             };
           } else {
-            // if year NOT exists — adding year
-            newHistory[year] = newJars;
-          }
+            newHistory[year] = {
+              jarCounts: newJarCounts,
+              period: newPeriod,
+            };
+          }          
         });
-  
+
         // new card list
         newList = conservations.map((c, index) =>
           index === existingIndex
             ? { ...c, history: newHistory }
             : c
         );
-  
+
       } else {
         // adding new card
         newList = [...conservations, item];
       }
-  
+
       // new array in AsyncStorage
       setConservations(newList);
       await AsyncStorage.setItem('@conservations', JSON.stringify(newList));
     } catch (e) {
       console.error('Failed to save conservation', e);
     }
-  };  
+  };
+
 
   // updating card img 
   const updateImage = async (itemName: string, newUri: string) => {
@@ -296,7 +330,7 @@ export const ConservationProvider = ({ children }: Props) => {
       const newConservations = conservations.map(item => {
         if (item.name !== itemName) return item;
   
-        const prevJarCounts = item.history[year] || {
+        const prevJarCounts = item.history[year]?.jarCounts || {
           jar2_3l: 0,
           jar4_2l: 0,
           jar7_15l: 0,
@@ -316,9 +350,12 @@ export const ConservationProvider = ({ children }: Props) => {
           ...item,
           history: {
             ...item.history,
-            [year]: newJarCounts,
+            [year]: {
+              jarCounts: newJarCounts,
+              period: item.history[year]?.period ?? 0, // <- важливо
+            },
           },
-        };
+        };        
       });
   
       // adding jars to empty
@@ -330,7 +367,7 @@ export const ConservationProvider = ({ children }: Props) => {
           jar2_1l: prev.jar2_1l + jarsToReturn.jar2_1l,
           jar1_05l: prev.jar1_05l + jarsToReturn.jar1_05l,
         };
-      
+  
         AsyncStorage.setItem('@emptyJars', JSON.stringify(updated));
         return updated;
       });
@@ -340,7 +377,8 @@ export const ConservationProvider = ({ children }: Props) => {
     } catch (e) {
       console.error('Failed to update jar history', e);
     }
-  };  
+  };
+  
   
   // loads all conservations from AsyncStorage
   useEffect(() => {

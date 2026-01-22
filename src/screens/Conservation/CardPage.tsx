@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, TouchableOpacity, Image, StyleSheet, TextInput, Pressable, ScrollView } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
@@ -57,13 +57,60 @@ const CardPage = () => {
   const availableYears = currentItem
   ? Object.keys(currentItem.history).sort((a, b) => Number(a) - Number(b))
   : [];
+  
   // selected year
-  const [selectedYear, setSelectedYear] = useState(availableYears[0] || '2021');
+  const [selectedYear, setSelectedYear] = useState('2021');
+
+  
+  // 1) коли currentItem з’являється — ставимо рік
+  useEffect(() => {
+    if (!currentItem) return;
+  
+    const years = Object.keys(currentItem.history);
+    const firstYear = years[0] ?? '2021';
+  
+    setSelectedYear(firstYear);
+  
+    const counts = currentItem.history[firstYear]?.jarCounts ?? emptyJarCounts;
+    setJarCounts(counts);
+
+  }, [currentItem]);
+  
+  
+  useEffect(() => {
+    if (!currentItem) return;
+  
+    const counts = currentItem.history[selectedYear]?.jarCounts ?? emptyJarCounts;
+    setJarCounts(counts);
+    
+  }, [selectedYear, currentItem]);
+  
+  
+
+  const selectedHistory = currentItem?.history[selectedYear];
+
+  const expirationYear = selectedHistory
+    ? Number(selectedYear) + selectedHistory.period
+    : null;
+
+  const isExpired = expirationYear
+    ? new Date().getFullYear() > expirationYear
+    : false;
 
   // jars of the current year
-  const [jarCounts, setJarCounts] = useState(
-    currentItem ? currentItem.history[selectedYear] : { jar2_3l:0, jar4_2l:0, jar7_15l:0, jar2_1l:0, jar1_05l:0 }
+  const emptyJarCounts: JarCounts = {
+    jar2_3l: 0,
+    jar4_2l: 0,
+    jar7_15l: 0,
+    jar2_1l: 0,
+    jar1_05l: 0,
+  };
+  
+  const [jarCounts, setJarCounts] = useState<JarCounts>(
+    currentItem?.history[selectedYear]?.jarCounts ?? emptyJarCounts
   );
+  
+  const [period, setPeriod] = useState<number>(0);
   const [drafts, setDrafts] = useState<Record<string, JarCounts>>({});
 
   // year change
@@ -71,25 +118,30 @@ const CardPage = () => {
     setSelectedYear(year);
   
     if (drafts[year]) {
-      setJarCounts(drafts[year]);      // return unsaved
-    } else if (currentItem) {
-      setJarCounts(currentItem.history[year]);
+      setJarCounts(drafts[year]);
+      setPeriod(currentItem?.history[year]?.period ?? 0);
+    } else if (currentItem?.history[year]) {
+      setJarCounts(currentItem.history[year].jarCounts);
+      setPeriod(currentItem.history[year].period);
+    } else {
+      setJarCounts(emptyJarCounts);
+      setPeriod(0);
     }
   };
   
 
   // total Jars of CURRENT YEAR
-  const totalJars = Object.values(jarCounts).reduce((sum, val) => sum + val, 0);
+  const totalJars = Object.values(jarCounts).reduce((sum, v) => sum + v, 0);
 
   // total Jars of ALL YEARs
   const totalJarsAllYears = currentItem
   ? Object.entries(currentItem.history).reduce((sum, [year, yearData]) => {
-      const dataToCount = drafts[year] ?? yearData; // якщо є draft - беремо його
+      const dataToCount = drafts[year] ?? yearData.jarCounts ?? emptyJarCounts;
       const yearSum = Object.values(dataToCount).reduce((s, val) => s + val, 0);
       return sum + yearSum;
     }, 0)
   : 0;
-
+  
   return (
     // MAIN CONTAINER
     <SafeAreaProvider style={styles.container}>
@@ -262,6 +314,25 @@ const CardPage = () => {
                 )}
               </View>
             </View>
+
+            {/* EXPIRATION INFO */}
+            {selectedHistory && (
+              <View style={{ marginTop: hp(2) }}>
+                <Text style={styles.timeTitle}>
+                  Термін придатності дійсний до:
+                  {' '}
+                  {expirationYear ? expirationYear : '—'}
+                </Text>
+
+                {isExpired && (
+                  <Text style={[styles.timeTitle, { color: 'red' }]}>
+                    Прострочено
+                  </Text>
+                )}
+
+              </View>
+            )}
+
 
             <View style={styles.leftCol}>
               {/* LEFT COLUMN 3 CARDS */}

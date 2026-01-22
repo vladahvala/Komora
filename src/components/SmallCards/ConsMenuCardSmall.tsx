@@ -30,9 +30,13 @@ const ConsMenuCardSmall = ({ item }: ConsMenuCardSmallProps) => {
 
   // jars count (all years)
   const totalJars = Object.values(item.history).reduce(
-    (sum, yearData) => sum + Object.values(yearData).reduce((s, val) => s + val, 0),
+    (sum, yearData) => {
+      const jarCounts = yearData.jarCounts;
+      const yearSum = Object.values(jarCounts).reduce((s, val) => s + val, 0);
+      return sum + yearSum;
+    },
     0
-  );
+  );  
 
   // navigate to CardPage
   const handlePress = () => {

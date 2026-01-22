@@ -22,11 +22,16 @@ const [searchText, setSearchText] = useState('');
 const currentYear = new Date().getFullYear();
 
 const isOlderThanOneYear = (item: any) => {
-  return Object.keys(item.history).some(year => {
-    const diff = currentYear - Number(year);
-    return diff >= 1;
+  const currentYear = new Date().getFullYear();
+
+  return Object.entries(item.history).some(([year, data]: any) => {
+    const period = data.period ?? 0;   // термін придатності
+    const expirationYear = Number(year) + period;
+
+    return currentYear >= expirationYear;
   });
 };
+
 
 const filteredData = conservations
   .filter(item =>

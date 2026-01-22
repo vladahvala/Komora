@@ -84,15 +84,20 @@ const AddConservation = () => {
       category: selectedCategory!,
       imageUri,
       history: {
-        [selectedYear || '2021']: jarCounts, 
+        [selectedYear || '2021']: {
+          jarCounts: jarCounts,
+          period: Number(period) || 0
+        },
       },
     };
+    
   
     // adding obj to context
     addConservation(newItem);
 
     // clearing fields
     setName('');
+    setPeriod('');
     setSelectedCategory(null);
     setSelectedYear('2021');
     setJarCounts({
