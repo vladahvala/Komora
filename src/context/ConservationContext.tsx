@@ -140,9 +140,13 @@ export const ConservationProvider = ({ children }: Props) => {
           }
 
           // checking expired (at least 1 year)
-          const isExpired = Object.keys(item.history).some(
-            (year) => currentYear - Number(year) >= 1
+          const isExpired = Object.entries(item.history).some(
+            ([year, data]: any) => {
+              const period = data.period ?? 0;
+              return currentYear >= Number(year) + period;
+            }
           );
+          
 
           // if expired - notify
           if (isExpired && !item.isExpiredNotified) {

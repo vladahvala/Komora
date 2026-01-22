@@ -44,11 +44,16 @@ const ConsMenuCardSmallRemainders = ({ item }: ConsMenuCardSmallProps) => {
   };
   
   const currentYear = new Date().getFullYear();
-
-  const maxAge = Math.max(
-    ...Object.keys(item.history).map(year => currentYear - Number(year))
-  );
   
+  const expiredYears = Object.entries(item.history)
+  .map(([year, data]: any) => {
+    const expirationYear = Number(year) + (data.period ?? 0);
+    return currentYear - expirationYear;
+  })
+  .filter(diff => diff >= 0);
+
+  const maxExpired = expiredYears.length > 0 ? Math.max(...expiredYears) : 0;
+
 
   return (
     <Pressable
@@ -91,8 +96,9 @@ const ConsMenuCardSmallRemainders = ({ item }: ConsMenuCardSmallProps) => {
               />
               <Text style={styles.subtitle}>Банок</Text>
               <Text style={styles.subtitle}>
-                {'  '}- {maxAge}+ років
+                {'  '}- {maxExpired}+ років
               </Text>
+
 
               {/* TRASH BUTTON INLINE */}
               <Pressable

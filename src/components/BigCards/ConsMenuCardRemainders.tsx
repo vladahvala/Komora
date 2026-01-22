@@ -43,10 +43,18 @@ const ConsMenuCardRemainders = ({ item, index }: ConsMenuCardProps) => {
 
   const currentYear = new Date().getFullYear();
 
-const maxAge = Math.max(
-  ...Object.keys(item.history).map(year => currentYear - Number(year))
-);
+  const expiredYears = Object.entries(item.history)
+    .map(([year, data]: any) => {
+      const period = data.period ?? 0;
+      const expirationYear = Number(year) + period;
+      return currentYear - expirationYear;
+    })
+    .filter(diff => diff >= 1); // тільки прострочені 1+ рік
+  
 
+    const maxExpired = expiredYears.length > 0
+    ? Math.max(...expiredYears)
+    : 0;
   
   return (
     <Pressable
@@ -109,8 +117,9 @@ const maxAge = Math.max(
               <Text style={styles.jarText}>Банок</Text>
 
               <Text style={styles.jarText}>
-                {'  '}- {maxAge}+ років
+                {'  '}- {maxExpired}+ років
               </Text>
+
             </View>
               
           </View>

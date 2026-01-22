@@ -21,14 +21,16 @@ const [searchText, setSearchText] = useState('');
 
 const currentYear = new Date().getFullYear();
 
-const isOlderThanOneYear = (item: any) => {
+
+const isExpiredOneYearPlus = (item: any) => {
   const currentYear = new Date().getFullYear();
 
   return Object.entries(item.history).some(([year, data]: any) => {
-    const period = data.period ?? 0;   // термін придатності
+    const period = data.period ?? 0;
     const expirationYear = Number(year) + period;
+    const overdueYears = currentYear - expirationYear;
 
-    return currentYear >= expirationYear;
+    return overdueYears >= 1;
   });
 };
 
@@ -37,7 +39,7 @@ const filteredData = conservations
   .filter(item =>
     item.name.toLowerCase().includes(searchText.toLowerCase())
   )
-  .filter(isOlderThanOneYear);
+  .filter(isExpiredOneYearPlus);
 
   // cards style
   const [isBigIcon, setIsBigIcon] = useState(true); 
