@@ -141,6 +141,19 @@ const CardPage = () => {
       return sum + yearSum;
     }, 0)
   : 0;
+
+  useEffect(() => {
+    if (!currentItem) return;
+  
+    const years = Object.keys(currentItem.history);
+    const firstYear = years[0] ?? '2021';
+  
+    setSelectedYear(firstYear);
+  
+    const counts = currentItem.history[firstYear]?.jarCounts ?? emptyJarCounts;
+    setJarCounts(counts);
+  }, [currentItem]);
+  
   
   return (
     // MAIN CONTAINER

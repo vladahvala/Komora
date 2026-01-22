@@ -345,7 +345,7 @@ export const ConservationProvider = ({ children }: Props) => {
           jar1_05l: 0,
         };
   
-        // counting the diff between jar arrays
+        // diff
         (Object.keys(prevJarCounts) as (keyof JarCounts)[]).forEach(key => {
           const diff = prevJarCounts[key] - newJarCounts[key];
           if (diff > 0) {
@@ -353,17 +353,25 @@ export const ConservationProvider = ({ children }: Props) => {
           }
         });
   
+        // перевірка: чи всі банки = 0
+        const allZero = Object.values(newJarCounts).every(v => v === 0);
+  
+        // якщо всі 0 -> видаляємо рік з history
+        const updatedHistory = { ...item.history };
+        if (allZero) {
+          delete updatedHistory[year];
+        } else {
+          updatedHistory[year] = {
+            jarCounts: newJarCounts,
+            period: item.history[year]?.period ?? 0,
+            notified: item.history[year]?.notified ?? false,
+          };
+        }
+  
         return {
           ...item,
-          history: {
-            ...item.history,
-            [year]: {
-              jarCounts: newJarCounts,
-              period: item.history[year]?.period ?? 0,
-              notified: item.history[year]?.notified ?? false,
-            },
-          },
-        };        
+          history: updatedHistory,
+        };
       });
   
       // adding jars to empty
@@ -385,7 +393,7 @@ export const ConservationProvider = ({ children }: Props) => {
     } catch (e) {
       console.error('Failed to update jar history', e);
     }
-  };
+  };  
   
   
   // loads all conservations from AsyncStorage
