@@ -331,21 +331,28 @@ const CardPage = () => {
             {/* EXPIRATION INFO */}
             {selectedHistory && (
               <View style={{ marginTop: hp(2) }}>
-                <Text style={styles.timeTitle}>
-                  Термін придатності дійсний до:
-                  {' '}
-                  {expirationYear ? expirationYear : '—'}
-                </Text>
-
-                {isExpired && (
-                  <Text style={[styles.timeTitle, { color: 'red' }]}>
-                    Прострочено
+                <View style={styles.expirationRow}>
+                  <Text style={[styles.timeTitle, { marginRight: hp(2) }]}>
+                    Термін{'\n'}придатності{'\n'}дійсний до:
                   </Text>
-                )}
 
+                  {isExpired ? (
+                    <Text style={[styles.timeTitleExpired, { color: 'red', textAlign: 'center' }]}>
+                      Прострочено{'\n'}
+                      ({expirationYear ? expirationYear : '—'})
+                    </Text>
+                  ):(
+                    <View style={styles.bigIconContainer}>
+                    <Text style={styles.timeTitle}>
+                      {expirationYear ? expirationYear : '—'}
+                    </Text>
+                  </View>
+                  )}
+                </View>
+
+                
               </View>
             )}
-
 
             <View style={styles.leftCol}>
               {/* LEFT COLUMN 3 CARDS */}
@@ -625,6 +632,17 @@ const styles = StyleSheet.create({
     color: 'black', 
   },
 
+  expirationRow: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+  },
+  timeTitleExpired: {
+    fontSize: hp(2.5), 
+    fontWeight: '600', 
+    color: 'black', 
+  },
+  
   // left column
   leftCol: { 
     flexDirection: 'row', 
