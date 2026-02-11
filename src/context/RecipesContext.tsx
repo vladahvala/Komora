@@ -1,5 +1,10 @@
 import React, { createContext, useState, ReactNode, useEffect, useContext } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {
+  loadRecipesFromStorage,
+  saveRecipesToStorage,
+  loadFavoritesFromStorage,
+  saveFavoritesToStorage
+} from '../services/recipesStorageService';
 
 export type RecipeItem = {
   name: string;
@@ -50,12 +55,8 @@ export const RecipeProvider = ({ children }: Props) => {
   const [recipes, setRecipes] = useState<RecipeItem[]>([]);
 
   const loadRecipes = async () => {
-    try {
-      const json = await AsyncStorage.getItem('@recipes');
-      if (json) setRecipes(JSON.parse(json));
-    } catch (e) {
-      console.error('Failed to load recipes', e);
-    }
+    const data = await loadRecipesFromStorage();
+    setRecipes(data);
   };
 
   // Додавання нового рецепту (назва незмінна, якщо існує, не міняємо)
@@ -65,7 +66,7 @@ export const RecipeProvider = ({ children }: Props) => {
       if (!exists) {
         const newList = [...recipes, item];
         setRecipes(newList);
-        await AsyncStorage.setItem('@recipes', JSON.stringify(newList));
+        await saveRecipesToStorage(newList);
       }
     } catch (e) {
       console.error('Failed to add recipe', e);
@@ -79,7 +80,7 @@ export const RecipeProvider = ({ children }: Props) => {
         r.name === name ? { ...r, imageUri: newUri } : r
       );
       setRecipes(newList);
-      await AsyncStorage.setItem('@recipes', JSON.stringify(newList));
+      await saveRecipesToStorage(newList);
     } catch (e) {
       console.error('Failed to update image', e);
     }
@@ -92,7 +93,7 @@ export const RecipeProvider = ({ children }: Props) => {
         r.name === name ? { ...r, category: newCategory } : r
       );
       setRecipes(newList);
-      await AsyncStorage.setItem('@recipes', JSON.stringify(newList));
+      await saveRecipesToStorage(newList);
     } catch (e) {
       console.error('Failed to update category', e);
     }
@@ -105,7 +106,7 @@ export const RecipeProvider = ({ children }: Props) => {
         r.name === name ? { ...r, recipeText: newText } : r
       );
       setRecipes(newList);
-      await AsyncStorage.setItem('@recipes', JSON.stringify(newList));
+      await saveRecipesToStorage(newList);
     } catch (e) {
       console.error('Failed to update recipe text', e);
     }
@@ -116,7 +117,7 @@ export const RecipeProvider = ({ children }: Props) => {
     try {
       const newList = recipes.filter(r => r.name !== name);
       setRecipes(newList);
-      await AsyncStorage.setItem('@recipes', JSON.stringify(newList));
+      await saveRecipesToStorage(newList);
     } catch (e) {
       console.error('Failed to delete recipe', e);
     }
@@ -134,7 +135,7 @@ export const RecipeProvider = ({ children }: Props) => {
     );
 
     setRecipes(newList);
-    await AsyncStorage.setItem('@recipes', JSON.stringify(newList));
+    await saveRecipesToStorage(newList);
   } catch (e) {
     console.error('Failed to add ingredient', e);
   }
@@ -151,7 +152,7 @@ const toggleFavorite = async (name: string) => {
       newFavorites = [...favorites, name];
     }
     setFavorites(newFavorites);
-    await AsyncStorage.setItem('@favorites', JSON.stringify(newFavorites));
+    await saveFavoritesToStorage(newFavorites);
   } catch (e) {
     console.error('Failed to toggle favorite', e);
   }
@@ -159,12 +160,8 @@ const toggleFavorite = async (name: string) => {
 
 // при завантаженні
 const loadFavorites = async () => {
-  try {
-    const json = await AsyncStorage.getItem('@favorites');
-    if (json) setFavorites(JSON.parse(json));
-  } catch (e) {
-    console.error('Failed to load favorites', e);
-  }
+  const data = await loadFavoritesFromStorage();
+  setFavorites(data);
 };
 
 useEffect(() => {

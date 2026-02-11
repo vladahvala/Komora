@@ -1,7 +1,12 @@
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useContext } from 'react';
 import { configureNotifications, sendExpirationNotification } from '../services/notifications';
+import { 
+  loadConservationsFromStorage, 
+  saveConservationsToStorage,
+  loadEmptyJarsFromStorage,
+  saveEmptyJarsToStorage 
+} from '../services/storageService';
 
 // conservation item type
 export type ConservationItem = {
@@ -21,7 +26,7 @@ type HistoryItem = {
 };
 
 // type for empty jars
-type JarCounts = {
+export type JarCounts = {
   jar2_3l: number;
   jar4_2l: number;
   jar7_15l: number;
@@ -103,97 +108,67 @@ export const ConservationProvider = ({ children }: Props) => {
   // loading from AsyncStorage
   const loadConservations = async () => {
     try {
-      const json = await AsyncStorage.getItem('@conservations');
-
-      let loadedConservations: ConservationItem[] = [];
-
-      if (json) {
-        loadedConservations = JSON.parse(json);
-      
-        // Міграція старого формату (коли history[year] = JarCounts)
-        loadedConservations = loadedConservations.map((item: any) => {
-          const newHistory: any = {};
-      
-          Object.entries(item.history || {}).forEach(([year, data]: any) => {
-            if (data && typeof data === 'object' && !('jarCounts' in data)) {
-              // старий формат
-              newHistory[year] = {
-                jarCounts: data,
-                period: 0,
-                notified: false,
-              };
-            } else {
-              // новий формат
-              newHistory[year] = data;
-            }
-          });
-      
-          return { ...item, history: newHistory };
+      let loadedConservations = await loadConservationsFromStorage();
+  
+      // Міграція старого формату
+      loadedConservations = loadedConservations.map((item: any) => {
+        const newHistory: any = {};
+  
+        Object.entries(item.history || {}).forEach(([year, data]: any) => {
+          if (data && typeof data === 'object' && !('jarCounts' in data)) {
+            newHistory[year] = {
+              jarCounts: data,
+              period: 0,
+              notified: false,
+            };
+          } else {
+            newHistory[year] = data;
+          }
         });
-      }
-      
-
-      const currentYear = new Date().getFullYear();
-
+  
+        return { ...item, history: newHistory };
+      });
+  
       const updatedConservations = await Promise.all(
         loadedConservations.map(async (item) => {
-          if (!item.history || Object.keys(item.history).length === 0) {
-            return item;
-          }
-      
-          const updatedHistory: any = { ...item.history };
-      
+          if (!item.history) return item;
+  
+          const updatedHistory = { ...item.history };
+  
           for (const [year, data] of Object.entries(item.history)) {
             const period = data.period ?? 0;
-      
+  
             const startDate = new Date(Number(year), 0, 1);
             const expirationDate = new Date(startDate);
             expirationDate.setFullYear(expirationDate.getFullYear() + period);
-      
+  
             if (new Date() >= expirationDate && !data.notified) {
               await sendExpirationNotification(item.name);
-      
+  
               updatedHistory[year] = {
                 ...data,
                 notified: true,
               };
             }
           }
-      
+  
           return { ...item, history: updatedHistory };
         })
       );
-
-      // saving updated array
+  
       setConservations(updatedConservations);
-      await AsyncStorage.setItem(
-        '@conservations',
-        JSON.stringify(updatedConservations)
-      );
-
-      // empty jars 
-      const empty = await AsyncStorage.getItem('@emptyJars');
-
-      if (empty) {
-        setEmptyJars(JSON.parse(empty));
-      } else {
-        await AsyncStorage.setItem(
-          '@emptyJars',
-          JSON.stringify({
-            jar2_3l: 0,
-            jar4_2l: 0,
-            jar7_15l: 0,
-            jar2_1l: 0,
-            jar1_05l: 0,
-          })
-        );
-      }
+      await saveConservationsToStorage(updatedConservations);
+  
+      const empty = await loadEmptyJarsFromStorage();
+      setEmptyJars(empty);
+  
     } catch (e) {
       console.error('Failed to load conservations', e);
     } finally {
       setLoading(false);
     }
   };
+  
 
   // deleting card
   const deleteConservation = async (itemName: string) => {
@@ -203,10 +178,7 @@ export const ConservationProvider = ({ children }: Props) => {
       );
   
       setConservations(newConservations);
-      await AsyncStorage.setItem(
-        '@conservations',
-        JSON.stringify(newConservations)
-      );
+      await saveConservationsToStorage(newConservations);
     } catch (e) {
       console.error('Failed to delete conservation', e);
     }
@@ -274,7 +246,7 @@ export const ConservationProvider = ({ children }: Props) => {
 
       // new array in AsyncStorage
       setConservations(newList);
-      await AsyncStorage.setItem('@conservations', JSON.stringify(newList));
+      await saveConservationsToStorage(newList);
     } catch (e) {
       console.error('Failed to save conservation', e);
     }
@@ -291,7 +263,7 @@ export const ConservationProvider = ({ children }: Props) => {
       );
 
       setConservations(newConservations);
-      await AsyncStorage.setItem('@conservations', JSON.stringify(newConservations));
+      await saveConservationsToStorage(newConservations);
     } catch (e) {
       console.error('Failed to update image', e);
     }
@@ -307,7 +279,7 @@ export const ConservationProvider = ({ children }: Props) => {
       );
   
       setConservations(newConservations);
-      await AsyncStorage.setItem('@conservations', JSON.stringify(newConservations));
+      await saveConservationsToStorage(newConservations);
     } catch (e) {
       console.error('Failed to update category', e);
     }
@@ -316,8 +288,8 @@ export const ConservationProvider = ({ children }: Props) => {
   // updating empty jar count
   const updateEmptyJars = async (newCounts: JarCounts) => {
     setEmptyJars(newCounts);
-    await AsyncStorage.setItem('@emptyJars', JSON.stringify(newCounts));
-  };
+    await saveEmptyJarsToStorage(newCounts);
+  };  
   
   // updating jar count for a year
   const updateJarHistory = async (
@@ -384,12 +356,12 @@ export const ConservationProvider = ({ children }: Props) => {
           jar1_05l: prev.jar1_05l + jarsToReturn.jar1_05l,
         };
   
-        AsyncStorage.setItem('@emptyJars', JSON.stringify(updated));
+        saveEmptyJarsToStorage(updated);
         return updated;
       });
   
       setConservations(newConservations);
-      await AsyncStorage.setItem('@conservations', JSON.stringify(newConservations));
+      await saveConservationsToStorage(newConservations);
     } catch (e) {
       console.error('Failed to update jar history', e);
     }

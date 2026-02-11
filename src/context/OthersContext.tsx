@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, ReactNode, useContext } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { loadOthersFromStorage, saveOthersToStorage } from '../services/othersStorageService';
 
 const STORAGE_KEY = '@others';
 
@@ -50,14 +50,14 @@ export const OthersProvider = ({ children }: Props) => {
 
   const loadOthers = async (): Promise<void> => {
     try {
-      const json = await AsyncStorage.getItem(STORAGE_KEY);
-      if (json) setOthers(JSON.parse(json));
+      const data = await loadOthersFromStorage();
+      setOthers(data);
     } catch (e) {
       console.error('Failed to load others', e);
     } finally {
       setLoading(false);
     }
-  };
+  };  
 
   const normalizeName = (name: string) =>
     name.trim().replace(/\s+/g, ' ').toLowerCase();
@@ -116,7 +116,7 @@ export const OthersProvider = ({ children }: Props) => {
           });
         }
   
-        AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updated)).catch(console.error);
+        saveOthersToStorage(updated).catch(console.error);
   
         return updated;
       });
@@ -132,7 +132,7 @@ export const OthersProvider = ({ children }: Props) => {
         const updated = prev.map(item =>
           normalizeName(item.name) === normalizeName(itemName) ? { ...item, imageUri: newUri } : item
         );
-        AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updated)).catch(console.error);
+        saveOthersToStorage(updated).catch(console.error);
         return updated;
       });
     } catch (e) {
@@ -144,7 +144,7 @@ export const OthersProvider = ({ children }: Props) => {
     try {
       const updated = others.filter(item => normalizeName(item.name) !== normalizeName(itemName));
       setOthers(updated);
-      await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+      await saveOthersToStorage(updated);
     } catch (e) {
       console.error('Failed to delete other', e);
     }
@@ -161,7 +161,7 @@ export const OthersProvider = ({ children }: Props) => {
           }
           return item;
         });
-        AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updated)).catch(console.error);
+        saveOthersToStorage(updated).catch(console.error);
         return updated;
       });
     } catch (e) {
@@ -187,7 +187,7 @@ export const OthersProvider = ({ children }: Props) => {
           return item;
         });
 
-        AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updated)).catch(console.error);
+        saveOthersToStorage(updated).catch(console.error);
         return updated;
       });
     } catch (e) {
@@ -208,7 +208,7 @@ export const OthersProvider = ({ children }: Props) => {
           return item;
         });
 
-        AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updated)).catch(console.error);
+        saveOthersToStorage(updated).catch(console.error);
         return updated;
       });
     } catch (e) {
