@@ -1,16 +1,19 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet, TextInput, Pressable, ScrollView, Animated } from 'react-native';
+import { View, Text, TouchableOpacity, Image, StyleSheet, Pressable, ScrollView } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigation';
-import JarNumCard from '../../components/CardsInCards/JarNumCard';
 import AlertModal from '../../modals/AlertModal';
-import { launchImageLibrary } from 'react-native-image-picker';
 import { ConservationContext, ConservationItem } from '../../context/ConservationContext';
 import { useContext } from 'react';
-import { TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { Keyboard } from 'react-native';
 import AnimatedButton from '../../animations/AnimatedButton';
+import ImagePickerBlock from '../../components/form/ImagePickerBlock';
+import CategoryDropdown from '../../components/form/CategoryDropdown';
+import LabeledInput from '../../components/form/LabeledInput';
+import YearPicker from '../../components/form/YearPicker';
+import JarGrid from '../../components/form/JarGrid';
 
 const AddConservation = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -23,28 +26,18 @@ const AddConservation = () => {
 
   // name field
   const [name, setName] = useState('');
-  // active 
-  const [isNameFocused, setIsNameFocused] = useState(false);
+
+  const [isCategoryOpen, setIsCategoryOpen] = useState(false);
 
   // period field
   const [period, setPeriod] = useState('');
-  // active 
-  const [isPeriodFocused, setIsPeriodFocused] = useState(false);
 
-  // active category field
-  const [isCategoryFocused, setIsCategoryFocused] = useState(false);
-
-  // categories dropdown menu
-  const [isCategoryModalVisible, setCategoryModalVisible] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  // category list
-  const categories = ['Мариновані', 'Солені', 'Квашені', 'Варення / Джеми', 'Компоти', 'Соуси / Кетчупи', ' Консерви в олії / жирі'];
 
   // years dropdown menu
-  const [isYearsModalVisible, setYearsModalVisible] = useState(false);
   const [selectedYear, setSelectedYear] = useState<string | null>(null);
-  // years list
-  const years = ['2021', '2022', '2023', '2024', '2025', '2026'];
+
+  const [isYearOpen, setIsYearOpen] = useState(false);
 
   // jars count
    const [jarCounts, setJarCounts] = useState({
@@ -59,21 +52,33 @@ const AddConservation = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
 
-  const handleAddConservation = () => {
-    if (!name) {
-      setModalMessage('Введіть назву консервації!');
-      setModalVisible(true);
-      return;
-    }
-    if (!selectedCategory) {
-      setModalMessage('Оберіть категорію!');
-      setModalVisible(true);
-      return;
-    }
-
+  const validateConservation = () => {
+    if (!name) return 'Введіть назву консервації!';
+    if (!selectedCategory) return 'Оберіть категорію!';
     const totalJars = Object.values(jarCounts).reduce((sum, val) => sum + val, 0);
-    if (totalJars === 0) {
-      setModalMessage('Додайте хоча б одну банку!');
+    if (totalJars === 0) return 'Додайте хоча б одну банку!';
+    return null;
+  };  
+
+  const resetForm = () => {
+    setName('');
+    setPeriod('');
+    setSelectedCategory(null);
+    setSelectedYear('2021');
+    setJarCounts({
+      jar2_3l: 0,
+      jar4_2l: 0,
+      jar7_15l: 0,
+      jar2_1l: 0,
+      jar1_05l: 0,
+    });
+    setImageUri(null);
+  };
+
+  const handleAddConservation = () => {
+    const errorMessage = validateConservation();
+    if (errorMessage) {
+      setModalMessage(errorMessage);
       setModalVisible(true);
       return;
     }
@@ -90,38 +95,25 @@ const AddConservation = () => {
         },
       },
     };
-    
   
     // adding obj to context
     addConservation(newItem);
 
     // clearing fields
-    setName('');
-    setPeriod('');
-    setSelectedCategory(null);
-    setSelectedYear('2021');
-    setJarCounts({
-      jar2_3l: 0,
-      jar4_2l: 0,
-      jar7_15l: 0,
-      jar2_1l: 0,
-      jar1_05l: 0,
-    });
-    setImageUri(null);
-
+    resetForm();
     navigation.goBack();
   };
 
   return (
     // MAIN CONTAINER
     <Pressable
-    style={{ flex: 1 }}
-    onPress={() => {
-      Keyboard.dismiss();
-      setCategoryModalVisible(false);
-      setYearsModalVisible(false);
-    }}
-  >
+      style={{ flex: 1 }}
+      onPress={() => {
+        Keyboard.dismiss();
+        setIsCategoryOpen(false);
+        setIsYearOpen(false);
+      }}
+    >
       <SafeAreaProvider style={styles.container}>
         <ScrollView
           style={{ flex: 1 }}
@@ -147,202 +139,47 @@ const AddConservation = () => {
             {/* TITLE TEXT */}
             <Text style={styles.menuTitle}>Нова консервація</Text>
 
-            <View style={{ marginTop: hp(2) }}>
-              <Text style={styles.label}>Фото консервації</Text>
-              <Pressable
-                style={[styles.imagePicker, { borderColor: imageUri ? '#00B4BF' : '#AEAEAE' }]}
-                onPress={() => {
-                  launchImageLibrary(
-                    { mediaType: 'photo', quality: 0.7 },
-                    (response) => {
-                      if (response.assets && response.assets.length > 0) {
-                        setImageUri(response.assets[0].uri);
-                      }
-                    }
-                  );
-                }}
-              >
-                {imageUri ? (
-                  <Image source={{ uri: imageUri }} style={styles.selectedImage} />
-                ) : (
-                  <Text style={styles.imagePickerText}>Оберіть фото</Text>
-                )}
-              </Pressable>
-            </View>
+            <ImagePickerBlock 
+              imageUri={imageUri}
+              setImageUri={setImageUri}
+            />
 
             {/* FIRST INPUT WITH LABEL */}
-            <View style={{ marginTop: hp(2) }}>
-              <Text style={styles.label}>Назва</Text>
-              <View style={[
-                styles.searchContainer,
-                { borderColor: isNameFocused ? '#00B4BF' : '#AEAEAE' }
-              ]}>
-                <TextInput
-                  value={name}                 
-                  onChangeText={text => setName(text)}
-                  style={styles.inputName}
-                  onFocus={() => setIsNameFocused(true)}
-                  onBlur={() => setIsNameFocused(false)}
-                />
-              </View>
-            </View>
+            <LabeledInput label="Назва" value={name} onChangeText={setName} />
 
             {/* CATEGORIES INPUT WITH DROPDOWN */}
-            <View style={{ marginTop: hp(2) }}>
-              <Text style={styles.label}>Категорія</Text>
-              <Pressable
-                onPress={() => {
-                  setCategoryModalVisible(prev => !prev);
-                  setYearsModalVisible(false); 
-                }}
-                style={[
-                  styles.searchContainer,
-                  { borderColor: isCategoryFocused ? '#00B4BF' : '#AEAEAE' }
-                ]}
-              >
-                <Text style={styles.searchInput}>
-                  {selectedCategory || 'Оберіть категорію'}
-                </Text>
-                <Image
-                    source={require('../../../assets/icons/frame_down.png')}
-                    style={[
-                      styles.arrowDownIcon,
-                      isCategoryModalVisible && { transform: [{ rotate: '180deg' }] },
-                    ]}
-                  />
-              </Pressable>
+            <CategoryDropdown
+              selected={selectedCategory}
+              onSelect={setSelectedCategory}
+              isOpen={isCategoryOpen}
+              onToggle={() => {
+                setIsYearOpen(false);
+                setIsCategoryOpen(prev => !prev);
+              }}
+              onClose={() => setIsCategoryOpen(false)}
+            />
 
-              {/* Dropdown */}
-              {isCategoryModalVisible && (
-                <View style={styles.catdropdownContainer}>
-                  {categories.map((cat, index) => (
-                    <Pressable
-                      key={index}
-                      style={styles.dropdownItem}
-                      onPress={() => {
-                        setSelectedCategory(cat);
-                        setCategoryModalVisible(false);
-                      }}
-                    >
-                      <Text style={styles.dropdownItemText}>{cat}</Text>
-                    </Pressable>
-                  ))}
-                </View>
-              )}
-            </View>
-
-             {/* CONSERVATION PERIOD */}
-            <View style={{ marginTop: hp(2) }}>
-              <Text style={styles.label}>Термін консервації (в роках)</Text>
-              <View style={[
-                styles.searchContainer,
-                { borderColor: isNameFocused ? '#00B4BF' : '#AEAEAE' }
-              ]}>
-                <TextInput
-                  value={period}                 
-                  onChangeText={text => setPeriod(text)}
-                  style={styles.inputName}
-                  onFocus={() => setIsPeriodFocused(true)}
-                  onBlur={() => setIsPeriodFocused(false)}
-                />
-              </View>
-            </View>
+            {/* CONSERVATION PERIOD */}
+            <LabeledInput label="Термін консервації (в роках)" value={period} onChangeText={setPeriod} keyboardType="numeric" />
 
             {/* CONSERVATION TIME */}
             <View style={styles.timeRow}> 
               <Text style={styles.timeTitle}>Початок{'\n'}зберігання:</Text>
-              <View style={styles.yearDropdownWrapper}>
-                <Pressable
-                  style={styles.bigIconContainer}
-                  onPress={() => {
-                    setYearsModalVisible(prev => !prev);
-                    setCategoryModalVisible(false); 
-                  }}
-                >
-                  <Text style={styles.timeTitle}>{selectedYear || '2021'}</Text>
-                  <Image
-                    source={require('../../../assets/icons/frame_down.png')}
-                    style={[
-                      styles.arrowDownIcon,
-                      isYearsModalVisible && { transform: [{ rotate: '180deg' }] },
-                    ]}
-                  />
-                </Pressable>
-
-                {/* Dropdown */}
-                {isYearsModalVisible && (
-                  <View style={styles.yearsDropdownContainer}>
-                    {years.map((year, index) => (
-                      <Pressable
-                        key={index}
-                        style={styles.dropdownItem}
-                        onPress={() => {
-                          setSelectedYear(year);
-                          setYearsModalVisible(false);
-                        }}
-                      >
-                        <Text style={styles.dropdownItemText}>{year}</Text>
-                      </Pressable>
-                    ))}
-                  </View>
-                )}
-              </View>
+              <YearPicker
+                selectedYear={selectedYear}
+                onSelect={setSelectedYear}
+                isOpen={isYearOpen}
+                onToggle={() => {
+                  setIsCategoryOpen(false);
+                  setIsYearOpen(prev => !prev);
+                }}
+                onClose={() => setIsYearOpen(false)}
+              />
             </View>
 
             {/* JAR NUM */}
             <Text style={styles.jarNumTitle}>Кількість банок</Text>
-
-            <View style={styles.leftCol}>
-              {/* LEFT COLUMN 3 CARDS */}
-              <View style={{ paddingHorizontal: hp(3.2), justifyContent: 'flex-start' }}>
-                <View style={{ justifyContent: 'flex-start' }}>
-                  <JarNumCard 
-                    image={require('../../../assets/jar_icons/empty_jar.png')} 
-                    style={{ marginBottom: hp(4) }} 
-                    label="2"             // card center text 
-                    circleLabel="3л"        // text in jar
-                    count={jarCounts.jar2_3l}
-                    onChange={(newCount) => setJarCounts(prev => ({ ...prev, jar2_3l: newCount }))}
-                  />
-                  <JarNumCard 
-                    image={require('../../../assets/jar_icons/empty_jar.png')}
-                    style={{ marginBottom: hp(4) }}
-                    label="4" 
-                    circleLabel={'2л'}  
-                    count={jarCounts.jar4_2l}
-                    onChange={(newCount) => setJarCounts(prev => ({ ...prev, jar4_2l: newCount }))}
-                  />
-                  <JarNumCard 
-                    image={require('../../../assets/jar_icons/empty_jar.png')}
-                    label="7" 
-                    style={undefined} 
-                    circleLabel={'1.5л'}
-                    count={jarCounts.jar7_15l}
-                    onChange={(newCount) => setJarCounts(prev => ({ ...prev, jar7_15l: newCount }))}
-                  />
-                </View>
-              </View>
-
-              {/* RIGHT COLUMN 2 CARDS */}
-              <View style={{ justifyContent: 'center' }}>
-                <JarNumCard 
-                  image={require('../../../assets/jar_icons/empty_jar.png')} 
-                  style={{ marginBottom: hp(4) }} 
-                  label={2} 
-                  circleLabel={'1л'} 
-                  count={jarCounts.jar2_1l}
-                  onChange={(newCount) => setJarCounts(prev => ({ ...prev, jar2_1l: newCount }))}
-                />
-                <JarNumCard 
-                  image={require('../../../assets/jar_icons/empty_jar.png')} 
-                  style={undefined} 
-                  label={1} 
-                  circleLabel={'0.5л'} 
-                  count={jarCounts.jar1_05l}
-                  onChange={(newCount) => setJarCounts(prev => ({ ...prev, jar1_05l: newCount }))}
-                />
-              </View>
-            </View>
+            <JarGrid jarCounts={jarCounts} setJarCounts={setJarCounts} />
 
             {/* ALERTS MODALS (required fields empty) */}
             <AlertModal
@@ -409,105 +246,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 
-  // image field
-  imagePicker: {
-    height: hp(15),
-    borderWidth: hp(0.25),
-    borderRadius: hp(1.5),
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F1F1F1',
-  },
-  imagePickerText: {
-    fontSize: hp(2.2),
-    color: '#666',
-  },
-  selectedImage: {
-    width: '100%',
-    height: '100%',
-    borderRadius: hp(1.5),
-    resizeMode: 'cover',
-  },
-
-  // input fields
-  label: {
-    fontSize: hp(2.2),
-    fontWeight: '500',
-    color: '#333',
-    marginBottom: hp(0.5),
-  },
-  searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#F1F1F1',
-    borderWidth: hp(0.25),
-    borderRadius: hp(1.5),
-    paddingHorizontal: hp(1.5),
-    height: hp(6),
-  },
-  inputName: {
-    flex: 1,
-    fontSize: hp(2.2),
-    color: 'black',
-  },
-  searchInput: {
-    flex: 1,
-    fontSize: hp(2.2),
-    color: 'black',
-  },
-
-  // DROPDOWNS
-  // categories
-  catdropdownContainer: {
-    position: 'absolute',  
-    top: hp(10),            
-    width: '100%',
-    backgroundColor: '#F6F6F6',
-    borderWidth: 1,
-    borderColor: '#AEAEAE',
-    borderRadius: hp(1.5),
-    zIndex: 100,            
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
-    elevation: 5,         
-  },
-  // years
-  yearDropdownWrapper: {
-    position: 'relative', 
-    flex: 1,
-  },
-  yearsDropdownContainer: {
-    position: 'absolute',
-    marginLeft: hp(2), 
-    marginTop: hp(0.5), 
-    top: '100%',         
-    left: 0,
-    width: '90%',          
-    backgroundColor: '#F6F6F6',
-    borderWidth: 1,
-    borderColor: '#AEAEAE',
-    borderRadius: hp(1.5),
-    zIndex: 100,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
-    elevation: 5,
-  },
-  dropdownItem: {
-    paddingVertical: hp(1.5),
-    paddingHorizontal: hp(2),
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-  dropdownItemText: {
-    fontSize: hp(2.2),
-    color: '#333',
-    textAlign: 'center',
-  },
-
   // time row styles
   timeRow: {
     flexDirection: 'row',     
@@ -516,25 +254,10 @@ const styles = StyleSheet.create({
     position: 'relative',    
   },
   timeTitle: {
-    fontSize: hp(3), 
+    fontSize: hp(3),
+    marginRight: hp(3), 
     fontWeight: '600', 
     color: 'black', 
-  },
-  bigIconContainer: {
-    flexDirection: 'row',    
-    alignItems: 'center',      
-    paddingHorizontal: hp(1.5),
-    height: hp(6),
-    marginLeft: hp(2),         
-    backgroundColor: '#00B4BF66',
-    borderRadius: hp(1.5),
-    justifyContent: 'center',
-  },
-  arrowDownIcon: {
-    width: hp(2.5),
-    height: hp(2.5),
-    resizeMode: 'contain',
-    marginLeft: hp(1), 
   },
 
   // jar num title 
@@ -546,16 +269,9 @@ const styles = StyleSheet.create({
     marginTop: hp(3),  
   },
 
-  // left column
-  leftCol: { 
-    flexDirection: 'row', 
-    justifyContent: 'space-between', 
-    marginTop: hp(4) 
-  },
-
   // button styles
   addButton: {
-    marginTop: hp(4),
+    marginTop: hp(2),
     paddingHorizontal: hp(2),  
     height: hp(6.5),
     borderRadius: hp(3.25),

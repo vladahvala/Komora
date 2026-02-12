@@ -8,7 +8,6 @@ import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigation';
 import { ConservationContext } from '../../context/ConservationContext';
 import { useContext, useEffect } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const ConservationMain = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();

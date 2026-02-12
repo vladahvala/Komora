@@ -8,7 +8,6 @@ import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigation';
 import { ConservationContext } from '../../context/ConservationContext';
 import { useContext, useEffect } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import ConsMenuCardRemainders from '../../components/BigCards/ConsMenuCardRemainders';
 import ConsMenuCardSmallRemainders from '../../components/SmallCards/ConsMenuCardSmallRemainders';
 
