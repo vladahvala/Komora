@@ -1,14 +1,18 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet, TextInput, Pressable, ScrollView } from 'react-native';
+import { Text, StyleSheet, Pressable, ScrollView } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigation';
-import JarNumCard from '../../components/CardsInCards/JarNumCard';
 import { useRoute, RouteProp } from '@react-navigation/native';
 import { useConservation } from '../../context/ConservationContext';
-import { launchImageLibrary } from 'react-native-image-picker';
 import AnimatedButton from '../../animations/AnimatedButton';
+import JarGrid from '../../components/form/jars/JarGrid';
+import CategoryDropdown from '../../components/form/categories/CategoryDropdown';
+import CardHeader from '../../components/form/CardHeader';
+import YearAndExpiration from '../../components/form/years/YearAndExpiration';
+import TotalJars from '../../components/form/jars/TotalJars';
+import YearTotalJarsRow from '../../components/form/years/YearTotalJarsRow';
 
 type CardPageRouteProp = RouteProp<RootStackParamList, 'CardPage'>;
 
@@ -128,7 +132,6 @@ const CardPage = () => {
       setPeriod(0);
     }
   };
-  
 
   // total Jars of CURRENT YEAR
   const totalJars = Object.values(jarCounts).reduce((sum, v) => sum + v, 0);
@@ -169,241 +172,51 @@ const CardPage = () => {
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={false}
         >
-          <View style={styles.headerContainer}>
-            {/* ARROW TO MAIN MENU */}
-            <TouchableOpacity 
-              onPress={() => navigation.goBack()} 
-              style={styles.arrowWrapper}
-              activeOpacity={1}  
-            >
-              <View style={styles.arrowTouchArea}>
-                <Image
-                  source={require('../../../assets/icons/arrow.png')}
-                  style={styles.arrowIcon}
-                />
-              </View>
-            </TouchableOpacity>
-
-            {/* TITLE TEXT */}
-            <View style={styles.titleRow}>
-              {/* TEXT */}
-              <Text style={styles.menuTitle}>{item.name}</Text>
-
-              {/* IMAGE */}
-              <View style={styles.titleImageWrapper}>
-                <Image
-                  source={
-                    imageUri
-                      ? { uri: imageUri }
-                      : require('../../../assets/images/default_conservation.png')
-                  }
-                  style={styles.titleImage}
-                />
-
-                <Pressable
-                  style={styles.imageOverlay}
-                  onPress={() => {
-                    launchImageLibrary(
-                      { mediaType: 'photo', quality: 0.7 },
-                      (response) => {
-                        if (response.assets && response.assets.length > 0) {
-                          setImageUri(response.assets[0].uri);
-
-                          if (currentItem) {
-                            updateImage(currentItem.name, response.assets[0].uri);
-                          }
-                        }
-                      }
-                    );
-                  }}
-                >
-                  <Text style={styles.imageOverlayText}>Змінити</Text>
-                </Pressable>
-              </View>
-            </View>
+           <CardHeader
+              name={item.name}
+              imageUri={imageUri}
+              onImageChange={(uri) => {
+                setImageUri(uri);
+                if (currentItem) updateImage(currentItem.name, uri);
+              }}
+              onBack={() => navigation.goBack()}
+            />
 
             {/* CATEGORY */}
-            <View style={{ marginTop: hp(2) }}>
-              <Text style={styles.timeTitle}>Категорія:</Text>
-
-              <View style={{ alignItems: 'center', marginTop: hp(1) }}>
-                <Pressable
-                  style={[
-                    styles.bigIconContainerCat,
-                    {
-                      width: '100%', 
-                    },
-                  ]}
-                  onPress={() => {
-                    setCategoryDropdownVisible(prev => !prev);
-                    setDropdownVisible(false); // close year dropdown
-                  }}                  
-                >
-                  <Text style={styles.timeTitleCat}>{selectedCategory}</Text>
-                  <Image
-                    source={require('../../../assets/icons/frame_down.png')}
-                    style={[
-                      styles.arrowDownIconCat,
-                      categoryDropdownVisible && { transform: [{ rotate: '180deg' }] },
-                    ]}
-                  />
-                </Pressable>
-
-                {/* Dropdown */}
-                {categoryDropdownVisible && (
-                  <View
-                    style={[
-                      styles.yearsDropdownContainer,
-                      {
-                        width: '100%',
-                        marginLeft: 0, 
-                      },
-                    ]}
-                  >
-                    {categories.map(cat => (
-                      <Pressable
-                        key={cat}
-                        style={styles.dropdownItem}
-                        onPress={() => {
-                          setSelectedCategory(cat);
-                          setCategoryDropdownVisible(false);
-                        }}
-                      >
-                        <Text style={styles.dropdownItemText}>{cat}</Text>
-                      </Pressable>
-                    ))}
-                  </View>
-                )}
-              </View>
-            </View>
+            <Text style={styles.timeTitle}>Категорія:</Text>
+            <CategoryDropdown
+              selected={selectedCategory}
+              onSelect={setSelectedCategory}
+              isOpen={categoryDropdownVisible}
+              onToggle={() => setCategoryDropdownVisible(prev => !prev)}
+              onClose={() => setCategoryDropdownVisible(false)}
+              inputStyle={[styles.bigIconContainerCat, { width: '100%' }]}
+              textStyle={styles.timeTitleCat}
+              dropdownStyle={[styles.yearsDropdownContainer, { width: '100%', marginLeft: 0 }]}
+              itemTextStyle={styles.dropdownItemText}
+              labelStyle={{ display: 'none' }} 
+            />
 
             {/* TOTAL JAR COUNT */}
-            <View style={styles.timeRow}> 
-                <Text style={styles.timeTitle}>Загальна к-ть банок:</Text>
-                <View style={styles.bigIconContainer}>
-                  <Text style={styles.timeTitle}>{totalJarsAllYears}</Text>
-                </View>
-            </View>
+            <TotalJars
+              totalJarsAllYears={totalJarsAllYears}
+              totalJarsCurrentYear={totalJars}
+              selectedYear={selectedYear}
+            />
 
             {/* CONSERVATION TIME */}
-            <View style={{ marginTop: hp(2), flexDirection: 'row', alignItems: 'center' }}>
-              <Text style={[styles.timeTitle, { marginRight: hp(2) }]}>Обрати рік:</Text>
+            <YearAndExpiration
+              selectedYear={selectedYear}      
+              onYearChange={handleYearChange}   
+              years={availableYears}           
+              expirationYear={expirationYear}   
+              isExpired={isExpired}             
+            />
 
-              <View style={styles.yearDropdownWrapper}>
-                <Pressable
-                  style={styles.bigIconContainer}
-                  onPress={() => {
-                    setDropdownVisible(prev => !prev);
-                    setCategoryDropdownVisible(false); // close category dropdown
-                  }}                  
-                >
-                  <Text style={styles.timeTitle}>{selectedYear}</Text>
-                  <Image
-                    source={require('../../../assets/icons/frame_down.png')}
-                    style={[
-                      styles.arrowDownIcon,
-                      dropdownVisible && { transform: [{ rotate: '180deg' }] },
-                    ]}
-                  />
-
-                </Pressable>
-
-                {/* Dropdown */}
-                {dropdownVisible && (
-                  <View style={styles.yearsDropdownContainer}>
-                    {availableYears.map((year) => (
-                      <Pressable
-                        key={year}
-                        style={styles.dropdownItem}
-                        onPress={() => {
-                          handleYearChange(year);
-                          setDropdownVisible(false);
-                        }}
-                      >
-                        <Text style={styles.dropdownItemText}>{year}</Text>
-                      </Pressable>
-                    ))}
-                  </View>
-                )}
-              </View>
-            </View>
-
-            {/* EXPIRATION INFO */}
-            {selectedHistory && (
-              <View style={{ marginTop: hp(2) }}>
-                <View style={styles.expirationRow}>
-                  <Text style={[styles.timeTitle, { marginRight: hp(2) }]}>
-                    Термін{'\n'}придатності{'\n'}дійсний до:
-                  </Text>
-
-                  {isExpired ? (
-                    <Text style={[styles.timeTitleExpired, { color: 'red', textAlign: 'center' }]}>
-                      Прострочено{'\n'}
-                      ({expirationYear ? expirationYear : '—'})
-                    </Text>
-                  ):(
-                    <View style={styles.bigIconContainer}>
-                    <Text style={styles.timeTitle}>
-                      {expirationYear ? expirationYear : '—'}
-                    </Text>
-                  </View>
-                  )}
-                </View>
-
-                
-              </View>
-            )}
-
-            <View style={styles.leftCol}>
-              {/* LEFT COLUMN 3 CARDS */}
-              <View style={{ paddingHorizontal: hp(3.2), justifyContent: 'flex-start' }}>
-                <View style={{ justifyContent: 'flex-start' }}>
-                  <JarNumCard 
-                    image={require('../../../assets/jar_icons/empty_jar.png')} 
-                    style={{ marginBottom: hp(4) }} 
-                    label="2"             
-                    circleLabel="3л"        
-                    count={jarCounts.jar2_3l}
-                    onChange={(newCount) => updateJarCount('jar2_3l', newCount)}
-                  />
-                  <JarNumCard 
-                    image={require('../../../assets/jar_icons/empty_jar.png')}
-                    style={{ marginBottom: hp(4) }}
-                    label="4" 
-                    circleLabel="2л"  
-                    count={jarCounts.jar4_2l}
-                    onChange={(newCount) => updateJarCount('jar4_2l', newCount)}
-                  />
-                  <JarNumCard 
-                    image={require('../../../assets/jar_icons/empty_jar.png')}
-                    label="7" 
-                    circleLabel="1.5л"
-                    count={jarCounts.jar7_15l}
-                    onChange={(newCount) => updateJarCount('jar7_15l', newCount)}
-                  />
-                </View>
-              </View>
-
-              {/* RIGHT COLUMN 2 CARDS */}
-              <View style={{ justifyContent: 'center' }}>
-                <JarNumCard 
-                  image={require('../../../assets/jar_icons/empty_jar.png')} 
-                  style={{ marginBottom: hp(4) }} 
-                  label="2" 
-                  circleLabel="1л" 
-                  count={jarCounts.jar2_1l}
-                  onChange={(newCount) => updateJarCount('jar2_1l', newCount)}
-                />
-                <JarNumCard 
-                  image={require('../../../assets/jar_icons/empty_jar.png')} 
-                  label="1" 
-                  circleLabel="0.5л" 
-                  count={jarCounts.jar1_05l}
-                  onChange={(newCount) => updateJarCount('jar1_05l', newCount)}
-                />
-              </View>
-
-            </View>
+            <JarGrid
+              jarCounts={jarCounts}
+              setJarCounts={setJarCounts}
+            />
 
             {/* ADD CONSERVATION BUTTON */}
             <AnimatedButton
@@ -429,14 +242,10 @@ const CardPage = () => {
               <Text style={styles.addButtonText}>Зберегти зміни</Text>
             </AnimatedButton>
 
-            <View style={styles.timeRow}> 
-              <Text style={styles.timeTitleYear}>К-ть банок за рік {selectedYear}:</Text>
-              <View style={styles.bigIconContainer}>
-                <Text style={styles.timeTitleNum}>{totalJars}</Text>
-              </View>
-            </View>
-
-          </View>
+            <YearTotalJarsRow
+              totalJarsCurrentYear={totalJars}
+              selectedYear={selectedYear}
+            />
 
         </ScrollView>
       </Pressable>
@@ -456,122 +265,15 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingBottom: hp(4), 
   },
-  headerContainer: { 
-    paddingTop: hp(5), 
-    marginBottom: hp(2), 
-    paddingHorizontal: hp(1), 
-  },
-
-  // arrow styles
-  arrowWrapper: {
-    alignSelf: 'flex-start',
-    marginBottom: hp(1),
-    marginLeft: -hp(1),
-  },
-  arrowTouchArea: {
-    padding: hp(1.2),          
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  arrowIcon: { 
-    width: hp(3.2), 
-    height: hp(3),
-    resizeMode: 'contain', 
-  },  
-
-  // title text
-  titleRow: {
-    flexDirection: 'column',   // <- змінив на column
-    alignItems: 'center',      // щоб по центру
-  },
-  
-  titleLeft: {
-    flex: 1,
-    justifyContent: 'center',
-    marginRight: hp(3), // distance between text & img
-  },
-  menuTitle: { 
-    fontSize: hp(2.9), 
-    fontWeight: '600', 
-    color: 'black',
-    textAlign: 'center', 
-    marginBottom: hp(2),
-  },
-
-  // IMAGE
-  // img styles
-  titleImageWrapper: {
-    width: hp(22),
-    height: hp(17),
-    borderRadius: hp(2.5),
-    overflow: 'hidden', 
-    marginBottom: hp(2),
-  },
-  titleImage: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'cover', 
-  },
-  // img change styles
-  imageOverlay: {
-    position: 'absolute',
-    bottom: 0,
-    width: '100%',
-    height: '25%',       
-    backgroundColor: 'rgba(0,0,0,0.4)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  imageOverlayText: {
-    color: 'white',
-    fontWeight: '600',
-    fontSize: hp(2.2),
-  },
-  
-  // input fields
-  label: {
-    fontSize: hp(2.2),
-    fontWeight: '500',
-    color: '#333',
-    marginBottom: hp(0.5),
-  },
 
   // general styles
-  timeRow: {
-    flexDirection: 'row',     
-    alignItems: 'center', 
-    marginTop: hp(3),    
-  },
   timeTitle: {
     fontSize: hp(3), 
     fontWeight: '600', 
     color: 'black', 
   },
-  timeTitleYear: {
-    fontSize: hp(2.7), 
-    fontWeight: '600', 
-    color: 'black', 
-  },
-  timeTitleNum: {
-    fontSize: hp(2.7), 
-    fontWeight: '600', 
-    color: 'black',
-  },
-  bigIconContainer: {
-    flexDirection: 'row',    
-    alignItems: 'center',      
-    paddingHorizontal: hp(1.5),
-    height: hp(6),
-    marginLeft: hp(2),         
-    backgroundColor: '#00B4BF66',
-    borderRadius: hp(1.5),
-    justifyContent: 'center',
-  },
 
   // DROPDOWN styles
-  yearDropdownWrapper: {
-    position: 'relative', 
-  },
   yearsDropdownContainer: {
     position: 'absolute',
     top: '100%',
@@ -590,22 +292,10 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
     elevation: 5,
   },
-  dropdownItem: {
-    paddingVertical: hp(1.5),
-    paddingHorizontal: hp(2),
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
   dropdownItemText: {
     fontSize: hp(2.2),
     color: '#333',
     textAlign: 'center',
-  },
-  arrowDownIcon: {
-    width: hp(2.5),
-    height: hp(2.5),
-    resizeMode: 'contain',
-    marginLeft: hp(1), 
   },
 
   // CATEGORIES
@@ -619,35 +309,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     position: 'relative',
   },
-  arrowDownIconCat: {
-    position: 'absolute',
-    right: hp(1.5), 
-    width: hp(2.5),
-    height: hp(2.5),
-    resizeMode: 'contain',
-  },
   timeTitleCat: {
     fontSize: hp(2.8), 
     fontWeight: '600', 
     color: 'black', 
-  },
-
-  expirationRow: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-  },
-  timeTitleExpired: {
-    fontSize: hp(2.5), 
-    fontWeight: '600', 
-    color: 'black', 
-  },
-  
-  // left column
-  leftCol: { 
-    flexDirection: 'row', 
-    justifyContent: 'space-between', 
-    marginTop: hp(4) 
   },
 
   // button styles

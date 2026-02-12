@@ -7,6 +7,8 @@ import { RootStackParamList } from '../../navigation';
 import JarNumCard from '../../components/CardsInCards/JarNumCard';
 import { useConservation } from '../../context/ConservationContext';
 import AnimatedButton from '../../animations/AnimatedButton';
+import JarColumn from '../../components/form/jars/JarColumn';
+import TotalJars from '../../components/form/jars/TotalJars';
 
 const EmptyJarsConservation = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -50,66 +52,12 @@ const EmptyJarsConservation = () => {
           <Text style={styles.menuTitle}>Кількість порожніх банок</Text>
 
           {/* JAR CARDS */}
-          <View style={styles.cardsContainer}>
-            <JarNumCard 
-              image={require('../../../assets/jar_icons/empty_jar.png')} 
-              label="2"
-              circleLabel="3л"
-              style={styles.jarCard}
-              count={localJars.jar2_3l}
-              onChange={(newCount) =>
-                setLocalJars(prev => ({ ...prev, jar2_3l: newCount }))
-              }
-            />
-            <JarNumCard 
-              image={require('../../../assets/jar_icons/empty_jar.png')}
-              label="4" 
-              circleLabel="2л"
-              style={styles.jarCard}
-              count={localJars.jar4_2l}
-              onChange={(newCount) =>
-                setLocalJars(prev => ({ ...prev, jar4_2l: newCount }))
-              }
-            />
-            <JarNumCard 
-              image={require('../../../assets/jar_icons/empty_jar.png')}
-              label="7" 
-              circleLabel="1.5л"
-              style={styles.jarCard}
-              count={localJars.jar7_15l}
-              onChange={(newCount) =>
-                setLocalJars(prev => ({ ...prev, jar7_15l: newCount }))
-              }
-            />
-            <JarNumCard 
-              image={require('../../../assets/jar_icons/empty_jar.png')}
-              label="2" 
-              circleLabel="1л"
-              style={styles.jarCard}
-              count={localJars.jar2_1l}
-              onChange={(newCount) =>
-                setLocalJars(prev => ({ ...prev, jar2_1l: newCount }))
-              }
-            />
-            <JarNumCard 
-              image={require('../../../assets/jar_icons/empty_jar.png')}
-              label="1" 
-              circleLabel="0.5л"
-              style={styles.jarCard}
-              count={localJars.jar1_05l}
-              onChange={(newCount) =>
-                setLocalJars(prev => ({ ...prev, jar1_05l: newCount }))
-              }
-            />
-          </View>
+          <JarColumn jarCounts={localJars} setJarCounts={setLocalJars} />
+
 
           {/* TOTAL JARS */}
-          <View style={styles.timeRow}>
-            <Text style={styles.timeTitle}>Загальна к-ть банок:</Text>
-            <View style={styles.bigIconContainer}>
-              <Text style={styles.timeTitle}>{totalJars}</Text>
-            </View>
-          </View>
+          <TotalJars label="Загальна к-ть банок:" value={totalJars} />
+
 
           {/* ADD CONSERVATION BUTTON */}
           <AnimatedButton
@@ -168,39 +116,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 
-  // cards styles
-  cardsContainer: {
-    flexDirection: 'column', 
-    justifyContent: 'flex-start',
-    alignItems: 'center',   
-    marginTop: hp(4),
-  },
-  jarCard: {
-    marginBottom: hp(3),
-  },
-
-  // all empty jars num styles
-  timeRow: {
-    flexDirection: 'row',     
-    alignItems: 'center', 
-    justifyContent: 'center',    
-  },
-  timeTitle: {
-    fontSize: hp(3), 
-    fontWeight: '600', 
-    color: 'black', 
-  },
-  bigIconContainer: {
-    flexDirection: 'row',    
-    alignItems: 'center',      
-    paddingHorizontal: hp(1.5),
-    height: hp(6),
-    marginLeft: hp(2),         
-    backgroundColor: '#00B4BF66',
-    borderRadius: hp(1.5),
-    justifyContent: 'center',
-  },
-  
   // button styles
   addButton: {
     marginTop: hp(2),

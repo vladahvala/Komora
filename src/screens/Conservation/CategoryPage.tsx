@@ -8,6 +8,8 @@ import { useContext, useState } from 'react';
 import ConsMenuCard from '../../components/BigCards/ConsMenuCard';
 import ConsMenuCardSmall from '../../components/SmallCards/ConsMenuCardSmall';
 import { ConservationContext } from '../../context/ConservationContext';
+import CategoryHeader from '../../components/form/categories/CategoryHeader';
+import IconToggle from '../../components/form/IconToggle';
 
 type CategoryPageRouteProp = RouteProp<RootStackParamList, 'CategoryPage'>;
 
@@ -46,37 +48,15 @@ const CategoryPage = () => {
         columnWrapperStyle={isBigIcon ? { justifyContent: 'space-between', marginBottom: hp(3) } : undefined}
         contentContainerStyle={{ paddingHorizontal: hp(3) }}
         ListHeaderComponent={
-          <View style={styles.headerContainer}>
-            <TouchableOpacity
-              onPress={() => navigation.goBack()}
-              style={styles.arrowWrapper}
-              activeOpacity={1}
-            >
-              <View style={styles.arrowTouchArea}>
-                <Image
-                  source={require('../../../assets/icons/arrow.png')}
-                  style={styles.arrowIcon}
-                />
-              </View>
-            </TouchableOpacity>
+          <View style={{ paddingTop: hp(5), marginBottom: hp(2) }}>
+          
+            <CategoryHeader title={category} backRoute="MainMenu" />
 
-            <Text style={styles.menuTitle}>{category}</Text>
-
-            {filteredConservations.length > 0 && (
-                <View style={{ alignItems: 'center', marginTop: hp(2), marginBottom: hp(2) }}>
-                    <Pressable onPress={toggleIcon} style={styles.bigIconContainer}>
-                    <Image
-                        source={
-                        isBigIcon
-                            ? require('../../../assets/icons/big_icons.png')
-                            : require('../../../assets/icons/small_icons.png')
-                        }
-                        style={styles.bigIconImage}
-                    />
-                    </Pressable>
-                </View>
-            ) || 
-            <Text style={styles.noCatMessage}>Поки в цій категорії немає жодної картки!</Text>}
+            {filteredConservations.length > 0 ? (
+              <IconToggle isBigIcon={isBigIcon} onToggle={toggleIcon} />
+            ) : (
+              <Text style={styles.noCatMessage}>Поки в цій категорії немає жодної картки!</Text>
+            )}
           </View>
         }
       />
@@ -91,52 +71,6 @@ const styles = StyleSheet.create({
   container: { 
     flex: 1, 
     backgroundColor: '#FFF',
-  },
-  headerContainer: { 
-    paddingTop: hp(5), 
-    marginBottom: hp(2), 
-    paddingHorizontal: hp(1), 
-  },
-
-  // arrow back
-  arrowWrapper: {
-    alignSelf: 'flex-start',
-    marginBottom: hp(2),
-    marginLeft: -hp(1),
-  },
-  arrowTouchArea: {
-    padding: hp(1.2),          
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  arrowIcon: { 
-    width: hp(3.2), 
-    height: hp(3),
-    resizeMode: 'contain',
-  },
-
-  // cat title
-  menuTitle: { 
-    fontSize: hp(3.5), 
-    fontWeight: '600', 
-    color: 'black', 
-    textAlign: 'center' 
-  },
-
-  // toggle styles
-  bigIconContainer: {
-    width: hp(6),
-    height: hp(6),
-    marginTop: hp(1),
-    backgroundColor: '#00B4BF66',
-    borderRadius: hp(1.5),
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  bigIconImage: {
-    width: hp(3),           
-    height: hp(3),
-    resizeMode: 'contain',
   },
 
   // no cat message

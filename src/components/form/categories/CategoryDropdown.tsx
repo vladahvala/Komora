@@ -14,8 +14,13 @@ interface Props {
   isOpen: boolean;
   onToggle: () => void;
   onClose: () => void;
+  inputStyle?: object | object[];
+  textStyle?: object | object[];
+  dropdownStyle?: object | object[];
+  itemTextStyle?: object | object[];
+  labelStyle?: object | object[];
 }
-  
+
 const categories = [
   'Мариновані',
   'Солені',
@@ -31,46 +36,47 @@ const CategoryDropdown: React.FC<Props> = ({
     onSelect,
     isOpen,
     onToggle,
-    onClose
+    onClose,
+    inputStyle,
+    textStyle,
+    dropdownStyle,
+    itemTextStyle,
+    labelStyle
   }) => {  
 
   return (
     <View style={{ marginTop: hp(2), position: 'relative', zIndex: 10 }}>
-      <Text style={styles.label}>Категорія</Text>
+      <Text style={labelStyle ||styles.label}>Категорія</Text>
 
       <Pressable
-        style={styles.inputContainer}
-        onPress={onToggle}
-        >
-        <Text style={styles.inputText}>
-          {selected || 'Оберіть категорію'}
-        </Text>
+      style={inputStyle || styles.inputContainer}
+      onPress={onToggle}
+    >
+      <Text style={textStyle || styles.inputText}>
+        {selected || 'Оберіть категорію'}
+      </Text>
+      <Image
+        source={require('../../../assets/icons/frame_down.png')}
+        style={[styles.arrowIcon, isOpen && { transform: [{ rotate: '180deg' }] }]}
+      />
+    </Pressable>
 
-        <Image
-          source={require('../../../assets/icons/frame_down.png')}
-          style={[
-            styles.arrowIcon,
-            isOpen && { transform: [{ rotate: '180deg' }] },
-          ]}
-        />
-      </Pressable>
-
-      {isOpen && (
-        <View style={styles.dropdownContainer}>
-          {categories.map((cat, index) => (
-            <Pressable
-              key={index}
-              style={styles.dropdownItem}
-              onPress={() => {
-                onSelect(cat);
-                onClose();
-              }}
-            >
-              <Text style={styles.dropdownItemText}>{cat}</Text>
-            </Pressable>
-          ))}
-        </View>
-      )}
+    {isOpen && (
+      <View style={dropdownStyle || styles.dropdownContainer}>
+        {categories.map((cat, index) => (
+          <Pressable
+            key={index}
+            style={styles.dropdownItem}
+            onPress={() => {
+              onSelect(cat);
+              onClose();
+            }}
+          >
+            <Text style={itemTextStyle || styles.dropdownItemText}>{cat}</Text>
+          </Pressable>
+        ))}
+      </View>
+    )}
     </View>
   );
 };
@@ -127,6 +133,7 @@ const styles = StyleSheet.create({
   arrowIcon: {
     width: hp(2.5),
     height: hp(2.5),
+    marginLeft: hp(1),
     resizeMode: 'contain',
   },
 });

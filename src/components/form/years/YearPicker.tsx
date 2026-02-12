@@ -4,54 +4,57 @@ import { View, Text, Pressable, StyleSheet, Image } from 'react-native';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 interface YearPickerProps {
-    selectedYear: string | null;
-    onSelect: (year: string) => void;
-    isOpen: boolean;
-    onToggle: () => void;
-    onClose: () => void;
+  selectedYear: string | null;
+  onSelect: (year: string) => void;
+  isOpen: boolean;
+  onToggle: () => void;
+  onClose: () => void;
+  years: string[]; // <- додаємо масив років
 }
 
-const YearPicker: React.FC<YearPickerProps> = ({
-selectedYear,
-onSelect,
-isOpen,
-onToggle,
-onClose,
-}) => {
-const years = ['2021', '2022', '2023', '2024', '2025', '2026'];
 
-return (
+const YearPicker: React.FC<YearPickerProps> = ({
+  selectedYear,
+  onSelect,
+  isOpen,
+  onToggle,
+  onClose,
+  years, // <- додали сюди!
+}) => {
+
+  return (
     <View style={{ flex: 1, position: 'relative' }}>
-    <Pressable style={styles.buttonContainer} onPress={onToggle}>
-        <Text style={styles.buttonText}>{selectedYear || '2021'}</Text>
+      <Pressable style={styles.buttonContainer} onPress={onToggle}>
+        <Text style={styles.buttonText}>{selectedYear || (years[0] ?? '2021')}</Text>
         <Image
-        source={require('../../../assets/icons/frame_down.png')}
-        style={[
+          source={require('../../../assets/icons/frame_down.png')}
+          style={[
             styles.arrowDownIcon,
             isOpen && { transform: [{ rotate: '180deg' }] },
-        ]}
+          ]}
         />
-    </Pressable>
+      </Pressable>
 
-    {isOpen && (
+      {isOpen && (
         <View style={styles.dropdownContainer}>
-        {years.map(year => (
+          {years.map(year => (
             <Pressable
-            key={year}
-            style={styles.dropdownItem}
-            onPress={() => {
+              key={year}
+              style={styles.dropdownItem}
+              onPress={() => {
                 onSelect(year);
                 onClose();
-            }}
+              }}
             >
-            <Text style={styles.dropdownItemText}>{year}</Text>
+              <Text style={styles.dropdownItemText}>{year}</Text>
             </Pressable>
-        ))}
+          ))}
         </View>
-    )}
+      )}
     </View>
-);
+  );
 };
+
   
 
 export default YearPicker;
@@ -79,7 +82,7 @@ const styles = StyleSheet.create({
   },
   dropdownContainer: {
     position: 'absolute',
-    top: '90%',
+    top: hp(6) + hp(0.5),
     left: 0,
     width: '100%',
     backgroundColor: '#F6F6F6',
@@ -92,7 +95,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 2,
     elevation: 5,
-  },
+},
   dropdownItem: {
     paddingVertical: hp(1.5),
     paddingHorizontal: hp(2),

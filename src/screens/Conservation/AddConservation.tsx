@@ -9,11 +9,11 @@ import { ConservationContext, ConservationItem } from '../../context/Conservatio
 import { useContext } from 'react';
 import { Keyboard } from 'react-native';
 import AnimatedButton from '../../animations/AnimatedButton';
-import ImagePickerBlock from '../../components/form/ImagePickerBlock';
-import CategoryDropdown from '../../components/form/CategoryDropdown';
+import ImagePickerBlock from '../../components/form/images/ImagePickerBlock';
+import CategoryDropdown from '../../components/form/categories/CategoryDropdown';
 import LabeledInput from '../../components/form/LabeledInput';
-import YearPicker from '../../components/form/YearPicker';
-import JarGrid from '../../components/form/JarGrid';
+import YearPicker from '../../components/form/years/YearPicker';
+import JarGrid from '../../components/form/jars/JarGrid';
 
 const AddConservation = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -38,6 +38,8 @@ const AddConservation = () => {
   const [selectedYear, setSelectedYear] = useState<string | null>(null);
 
   const [isYearOpen, setIsYearOpen] = useState(false);
+
+  const years = ['2021', '2022', '2023', '2024', '2025', '2026'];
 
   // jars count
    const [jarCounts, setJarCounts] = useState({
@@ -173,6 +175,7 @@ const AddConservation = () => {
                   setIsCategoryOpen(false);
                   setIsYearOpen(prev => !prev);
                 }}
+                years={years} 
                 onClose={() => setIsYearOpen(false)}
               />
             </View>
