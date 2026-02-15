@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
-import { View, Image, StyleSheet, Text, Pressable, TextInput, Animated } from 'react-native';
+import React from 'react';
+import { View, Image, StyleSheet, Text, TextInput } from 'react-native';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { Shadow } from 'react-native-shadow-2';
+import CircleActionButton from '../form/buttons/CircleActionButton';
 
 interface JarNumCardProps {
     image: any;
@@ -22,40 +23,6 @@ const JarNumCard: React.FC<JarNumCardProps> = ({ image, style, label, circleLabe
         onChange(num);
     };
 
-    // animations for + and -
-    const [scaleMinus] = useState(new Animated.Value(1));
-    const [scalePlus] = useState(new Animated.Value(1));
-
-    const onPressInMinus = () => {
-        Animated.timing(scaleMinus, {
-            toValue: 1.2,
-            duration: 80,  
-            useNativeDriver: true,
-        }).start();
-    };
-    const onPressOutMinus = () => {
-        Animated.timing(scaleMinus, {
-            toValue: 1,
-            duration: 80,
-            useNativeDriver: true,
-        }).start();
-    };
-      
-    const onPressInPlus = () => {
-        Animated.timing(scalePlus, {
-            toValue: 1.2,
-            duration: 80,  
-            useNativeDriver: true,
-        }).start();
-    };
-    const onPressOutPlus = () => {
-        Animated.timing(scalePlus, {
-            toValue: 1,
-            duration: 80,
-            useNativeDriver: true,
-        }).start();
-    };
- 
     return (
     <View
       style={style}  
@@ -75,18 +42,11 @@ const JarNumCard: React.FC<JarNumCardProps> = ({ image, style, label, circleLabe
                 <View style={styles.circle}>
 
                     {/* SMALL BLACK CIRCLE (MINUS) */}
-                    <Animated.View
-                        style={[styles.smallDot, styles.leftDot, { transform: [{ scale: scaleMinus }] }]}
-                    >
-                        <Pressable
-                            onPress={() => onChange(Math.max(count - 1, 0))}
-                            onPressIn={onPressInMinus}
-                            onPressOut={onPressOutMinus}
-                            style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }} 
-                        >
-                            <Image source={require('../../../assets/jar_icons/minus.png')} style={styles.dotIcon} />
-                        </Pressable>
-                    </Animated.View>
+                    <CircleActionButton
+                        icon={require('../../../assets/jar_icons/minus.png')}
+                        onPress={() => onChange(Math.max(count - 1, 0))}
+                        style={styles.leftDot}
+                    />
 
                     {/* JAR IMAGE */}
                     <Image source={image} style={styles.icon} />
@@ -111,18 +71,11 @@ const JarNumCard: React.FC<JarNumCardProps> = ({ image, style, label, circleLabe
 
 
                     {/* SMALL BLACK CIRCLE (PLUS) */}
-                    <Animated.View
-                        style={[styles.smallDot, styles.rightDot, { transform: [{ scale: scalePlus }] }]}
-                    >
-                        <Pressable
-                            onPress={() => onChange(count + 1)}
-                            onPressIn={onPressInPlus}
-                            onPressOut={onPressOutPlus}
-                            style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}
-                        >
-                            <Image source={require('../../../assets/jar_icons/plus.png')} style={styles.dotIcon} />
-                        </Pressable>
-                    </Animated.View>
+                    <CircleActionButton
+                        icon={require('../../../assets/jar_icons/plus.png')}
+                        onPress={() => onChange(count + 1)}
+                        style={styles.rightDot}
+                    />
 
                 </View>
 
@@ -182,17 +135,6 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
    
-    // black circle
-    smallDot: {
-        width: hp(2.5),
-        height: hp(2.5),
-        borderRadius: hp(1.25),
-        backgroundColor: '#000',
-        position: 'absolute',
-    
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
     // minus
     leftDot: {
         left: -hp(0.7),
@@ -205,13 +147,7 @@ const styles = StyleSheet.create({
         top: '42%',
         transform: [{ translateY: -hp(1) }],
     },
-    // plus/minus icon
-    dotIcon: {
-        width: hp(2.5),
-        height: hp(2.5),
-        resizeMode: 'contain',
-        tintColor: '#fff', 
-    },
+
     // text input
     input: {
         fontSize: hp(2.5),
