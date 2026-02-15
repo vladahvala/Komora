@@ -6,6 +6,8 @@ import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigation';
 import { useConservation } from '../../context/ConservationContext';
 import ConfirmModal from '../../modals/ConfirmModal';
+import JarCountRow from '../form/jars/JarCountRow';
+import ActionButtonSmallCards from '../form/buttons/ActionButtonSmallCards';
 
 // fixed card width
 const CARD_WIDTH = Dimensions.get('window').width - 60; 
@@ -76,27 +78,22 @@ const ConsMenuCardSmall = ({ item }: ConsMenuCardSmallProps) => {
             <Text style={styles.title} numberOfLines={2} ellipsizeMode="tail">
               {item.name}
             </Text>
+            
             <View style={styles.infoRow}>
-              <Text style={styles.subtitle}>{totalJars}</Text>
-              <Image
-                source={require('../../../assets/icons/jar.png')}
-                style={styles.jarIcon}
+              <JarCountRow 
+                count={totalJars} 
+                label="Банок"
               />
-              <Text style={styles.subtitle}> Банок</Text>
 
               {/* TRASH BUTTON INLINE */}
-              <Pressable
+              <ActionButtonSmallCards
+                icon={require('../../../assets/icons/trash.png')}
                 onPress={(e) => {
                   e.stopPropagation();
                   setModalVisible(true);
                 }}
-                style={styles.trashInline}
-              >
-                <Image
-                  source={require('../../../assets/icons/trash.png')}
-                  style={styles.trashIconInline}
-                />
-              </Pressable>
+                style={{ marginLeft: 'auto' }}
+              />
             </View>
           </View>
         </View>
@@ -152,7 +149,7 @@ const styles = StyleSheet.create({
     fontSize: hp(2.2),
     fontWeight: '600',
     color: '#000',
-    marginBottom: hp(1.5),
+    marginBottom: hp(2.5),
   },
 
   // info row with jars and trash button inline
@@ -160,25 +157,5 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
   },
-  subtitle: {
-    fontSize: hp(1.7),
-    color: 'grey',
-  },
-  jarIcon: {
-    width: hp(2.2),
-    height: hp(2.2),
-    marginLeft: hp(0.5),
-    marginRight: hp(0.5),
-    resizeMode: 'contain',
-  },
-
-  // trash button inline
-  trashInline: {
-    marginLeft: 'auto', 
-  },
-  trashIconInline: {
-    width: hp(2.2),
-    height: hp(2.2),
-    resizeMode: 'contain',
-  },
+ 
 });

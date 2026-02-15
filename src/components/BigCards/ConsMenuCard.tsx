@@ -80,10 +80,12 @@ const ConsMenuCard = ({ item, index }: ConsMenuCardProps) => {
             </Text>
 
             {/* CARD INFO */}
-            <JarCountRow 
-              count={totalJars} 
-              label="Банок"
-            />
+            <View style={styles.jarsRow}>
+              <JarCountRow 
+                count={totalJars} 
+                label="Банок"
+              />
+            </View>
 
           </View>
       </Shadow>
@@ -112,6 +114,12 @@ const styles = StyleSheet.create({
     paddingBottom: hp(2),    
     borderRadius: hp(2.5),
     height: hp(25),   
+  },
+  jarsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: hp(2),
+    marginTop: hp(2.5),
   },
   
   // title 

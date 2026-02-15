@@ -6,6 +6,8 @@ import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigation';
 import { OthersItem, useOthers } from '../../context/OthersContext';
 import ConfirmModal from '../../modals/ConfirmModal';
+import JarCountRow from '../form/jars/JarCountRow';
+import ActionButtonSmallCards from '../form/buttons/ActionButtonSmallCards';
 
 // fixed card width
 const CARD_WIDTH = Dimensions.get('window').width - 60;
@@ -58,22 +60,21 @@ const ConsMenuCardOthersSmall = ({ item }: Props) => {
             </Text>
 
             <View style={styles.infoRow}>
-              <Text style={styles.subtitle}>{currentItem.totalCount}</Text>
-              <Text style={styles.subtitle}> Штук</Text>
+              <JarCountRow 
+                count={currentItem.totalCount}
+                showIcon={false}   
+                label="Штук"
+              />
 
               {/* TRASH INLINE */}
-              <Pressable
+              <ActionButtonSmallCards
+                icon={require('../../../assets/icons/trash.png')}
                 onPress={(e) => {
                   e.stopPropagation();
                   setModalVisible(true);
                 }}
-                style={styles.trashInline}
-              >
-                <Image
-                  source={require('../../../assets/icons/trash.png')}
-                  style={styles.trashIcon}
-                />
-              </Pressable>
+                style={{ marginLeft: 'auto' }}
+              />
             </View>
           </View>
         </View>
@@ -130,7 +131,7 @@ const styles = StyleSheet.create({
     fontSize: hp(2.2),
     fontWeight: '600',
     color: '#000',
-    marginBottom: hp(1.5),
+    marginBottom: hp(2.5),
   },
 
   // info row (кількість + trash)
@@ -139,22 +140,4 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 
-  // quantity text
-  subtitle: {
-    color: 'grey',
-    fontWeight: 'bold',
-    fontSize: hp(1.5),
-  },
-
-  // trash inline (right aligned)
-  trashInline: {
-    marginLeft: 'auto',
-  },
-
-  // trash icon
-  trashIcon: {
-    width: hp(2.2),
-    height: hp(2.2),
-    resizeMode: 'contain',
-  },
 });

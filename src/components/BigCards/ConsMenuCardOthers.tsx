@@ -67,11 +67,13 @@ const ConsMenuCardOthers = ({ item, index }: ConsMenuCardOthersProps) => {
             {currentItem.name}
           </Text>
 
-          <JarCountRow
-            count={currentItem.totalCount}
-            showIcon={false}   
-            label="Штук"
-          />
+          <View style={styles.jarsRow}>
+            <JarCountRow 
+              count={currentItem.totalCount}
+              showIcon={false}   
+              label="Штук"
+            />
+          </View>
 
         </View>
       </Shadow>
@@ -97,6 +99,12 @@ const styles = StyleSheet.create({
     paddingBottom: hp(2),
     borderRadius: hp(2.5),
     height: hp(25),
+  },
+  jarsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: hp(2),
+    marginTop: hp(2.5),
   },
   nameText: {
     color: 'black',

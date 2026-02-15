@@ -89,12 +89,14 @@ const ConsMenuCardRemainders = ({ item, index }: ConsMenuCardProps) => {
             </Text>
 
             {/* CARD INFO */}
-            <JarCountRow
-              count={totalJars}
-              label="Банок"
-              extraTexts={[`- ${maxExpired}+ років`]}
-              showIcon={true}
-            />
+            <View style={styles.jarsRow}>
+              <JarCountRow
+                count={totalJars}
+                label="Банок"
+                extraTexts={[`- ${maxExpired}+ років`]}
+                showIcon={true}
+              />
+            </View>
 
           </View>
       </Shadow>
@@ -124,7 +126,12 @@ const styles = StyleSheet.create({
     borderRadius: hp(2.5),
     height: hp(25),   
   },
-
+  jarsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginLeft: hp(2),
+    marginTop: hp(2.5),
+  },
   // title 
   nameText: {
     color: 'black',

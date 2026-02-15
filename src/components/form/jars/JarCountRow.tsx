@@ -12,7 +12,7 @@ type JarCountRowProps = {
 
 const JarCountRow = ({ count, showIcon = true, icon, label, extraTexts = [] }: JarCountRowProps) => {
   return (
-    <View style={styles.jarsRow}>
+    <>
       <Text style={styles.jarText}>{count}</Text>
       {showIcon && (
         <Image
@@ -24,19 +24,13 @@ const JarCountRow = ({ count, showIcon = true, icon, label, extraTexts = [] }: J
       {extraTexts.map((text, idx) => (
         <Text key={idx} style={styles.jarText}> {text}</Text>
       ))}
-    </View>
+    </>
   );
 };
 
 export default JarCountRow;
 
 const styles = StyleSheet.create({
-  jarsRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginLeft: hp(2),
-    marginTop: hp(2.5),
-  },
   jarText: {
     color: 'grey',
     fontWeight: 'bold',

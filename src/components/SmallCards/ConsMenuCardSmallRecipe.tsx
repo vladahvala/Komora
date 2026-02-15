@@ -6,6 +6,7 @@ import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigation';
 import { useRecipe, RecipeItem, RecipesContext } from '../../context/RecipesContext';
 import ConfirmModal from '../../modals/ConfirmModal';
+import ActionButtonSmallCards from '../form/buttons/ActionButtonSmallCards';
 
 // fixed card width
 const CARD_WIDTH = Dimensions.get('window').width - 60; 
@@ -67,25 +68,25 @@ const ConsMenuCardSmallRecipe = ({ item }: ConsMenuCardSmallRecipeProps) => {
 
             {/* ICONS COLUMN */}
             <View style={styles.iconsColumn}>
-              <Pressable
-                onPress={(e) => { e.stopPropagation(); toggleFavorite(item.name); }}
-                style={styles.heartButton}
-              >
-                <Image
-                  source={isFavorite ? require('../../../assets/icons/like_blue.png') : require('../../../assets/icons/like.png')}
-                  style={[styles.heartIcon, { tintColor: isFavorite ? undefined : 'grey' }]}
-                />
-              </Pressable>
+              {/* LIKE INLINE */}
+              <ActionButtonSmallCards
+                icon={isFavorite ? require('../../../assets/icons/like_blue.png') : require('../../../assets/icons/like.png')}
+                onPress={(e) => {
+                  e.stopPropagation();
+                  toggleFavorite(item.name);
+                }}
+                style={[{ tintColor: isFavorite ? undefined : 'grey' }]}
+              />
 
-              <Pressable
-                onPress={(e) => { e.stopPropagation(); setModalVisible(true); }}
-                style={styles.trashButton}
-              >
-                <Image
-                  source={require('../../../assets/icons/trash.png')}
-                  style={styles.trashIconInline}
-                />
-              </Pressable>
+              {/* TRASH INLINE */}
+              <ActionButtonSmallCards
+                icon={require('../../../assets/icons/trash.png')}
+                onPress={(e) => {
+                  e.stopPropagation();
+                  setModalVisible(true);
+                }}
+                style={{ marginLeft: 'auto' }}
+              />
             </View>
           </View>
         </View>
@@ -153,25 +154,7 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     justifyContent: 'flex-start',
+    rowGap: hp(3),
   },
 
-  // heart button
-  heartButton: {
-    width: hp(3),
-    height: hp(3),
-    marginBottom: hp(3),
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  trashButton: {
-    width: hp(3),
-    height: hp(3),
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  trashIconInline: {
-    width: hp(2.2),
-    height: hp(2.2),
-    resizeMode: 'contain',
-  },
 });
