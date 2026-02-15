@@ -6,6 +6,8 @@ import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigation';
 import { RecipeItem, useRecipe } from '../../context/RecipesContext';
 import ConfirmModal from '../../modals/ConfirmModal';
+import CardImageWithButtons from '../form/cards/BigCardImageWithButtons';
+import TrashButton from '../form/buttons/TrashButton';
 
 // fixed card width
 const CARD_WIDTH = Dimensions.get('window').width / 2 - 40;
@@ -53,48 +55,44 @@ const ConsMenuCardRecipe = ({ item, index }: ConsMenuCardRecipeProps) => {
           {/* CARDS */}
           <View style={styles.listContainer}>
             {/* CARD IMG */}
-            <View style={styles.imageContainer}>
-              <Image
-                source={
-                  item.imageUri
-                    ? { uri: item.imageUri }
-                    : require('../../../assets/images/default_conservation.png')
-                }
-                style={styles.image}
-              />
-
-              {/* TRASH BUTTON */}
-              <Pressable
-                style={styles.trashButton}
-                onPress={(e) => {
-                  e.stopPropagation(); 
-                  setModalVisible(true);
-                }}
-              >
-                <Image
-                  source={require('../../../assets/icons/trash.png')}
-                  style={styles.trashIcon}
-                />
-              </Pressable>
-
-               {/* HEART BUTTON */}
-               <Pressable
-                  style={styles.heartButton}
-                  onPress={(e) => {
-                    e.stopPropagation();
-                    toggleFavorite(item.name);
-                  }}
-                >
-                  <Image
-                    source={
-                      isFavorite
-                        ? require('../../../assets/icons/like_blue.png')
-                        : require('../../../assets/icons/like.png')
-                    }
-                    style={[styles.heartIcon, { tintColor: isFavorite ? undefined : 'grey' }]}
-                  />
-                </Pressable>
-            </View>
+            <CardImageWithButtons
+              imageUri={item.imageUri}
+              buttons={[
+                {
+                  element: <TrashButton onPress={() => setModalVisible(true)} />,
+                },
+                {
+                  element: (
+                    <Pressable
+                      onPress={() => toggleFavorite(item.name)}
+                      style={{
+                        width: hp(3.5),
+                        height: hp(3.5),
+                        borderRadius: hp(1),
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        backgroundColor: '#fff',
+                        shadowColor: '#000',
+                        shadowOpacity: 0.2,
+                        shadowOffset: { width: 0, height: 1 },
+                        shadowRadius: 2,
+                        elevation: 3,
+                      }}
+                    >
+                      <Image
+                        source={
+                          isFavorite
+                            ? require('../../../assets/icons/like_blue.png')
+                            : require('../../../assets/icons/like.png')
+                        }
+                        style={{ width: hp(2.2), height: hp(2.2), tintColor: isFavorite ? undefined : 'grey' }}
+                      />
+                    </Pressable>
+                  ),
+                  style: { top: hp(2), right: hp(1) },
+                },
+              ]}
+            />
 
             <Text
               style={styles.nameText}
@@ -132,72 +130,6 @@ const styles = StyleSheet.create({
     borderRadius: hp(2.5),
     height: hp(25),   
   },
-
-  // image styles
-  imageContainer: {
-    marginLeft: hp(2),
-    marginRight: hp(2),
-    marginTop: hp(0.3),
-    overflow: 'hidden',
-    position: 'relative',
-  },
-  image: {
-    width: '100%',
-    height: undefined,
-    aspectRatio: 1,      
-    transform: [{ scaleY: 0.85 }],  
-    borderRadius: hp(1.5),
-  },
-  // delete card styles
-  trashButton: {
-    position: 'absolute',
-    top: hp(2),
-    left: hp(1),
-    backgroundColor: '#FFFFFF',
-    width: hp(3.5),
-    height: hp(3.5),
-    borderRadius: hp(1),
-    justifyContent: 'center',
-    alignItems: 'center',
-  
-    // shadow
-    shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowOffset: { width: 0, height: 1 },
-    shadowRadius: 2,
-    elevation: 3,
-  },
-  trashIcon: {
-    width: hp(2.2),
-    height: hp(2.2),
-    resizeMode: 'contain',
-  },
-
-  // HEART button
-  heartButton: {
-    position: 'absolute',
-    top: hp(2),
-    right: hp(1),        
-    backgroundColor: '#FFFFFF',
-    width: hp(3.5),
-    height: hp(3.5),
-    borderRadius: hp(1),
-    justifyContent: 'center',
-    alignItems: 'center',
-
-    // shadow
-    shadowColor: '#000',
-    shadowOpacity: 0.2,
-    shadowOffset: { width: 0, height: 1 },
-    shadowRadius: 2,
-    elevation: 3,
-  },
-  heartIcon: {
-    width: hp(2.2),
-    height: hp(2.2),
-    resizeMode: 'contain',
-  },
-
   // title 
   nameText: {
     color: 'black',
