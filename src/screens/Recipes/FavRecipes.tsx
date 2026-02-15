@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
-import { FlatList, StyleSheet, Text, View, TouchableOpacity, Image, TextInput, Keyboard, Pressable } from 'react-native';
+import { FlatList, StyleSheet, Text, View, Keyboard, Pressable } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigation';
 import { RecipesContext } from '../../context/RecipesContext';
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import ConsMenuCardRecipe from '../../components/BigCards/ConsMenuCardRecipe';
 import ConsMenuCardSmallRecipe from '../../components/SmallCards/ConsMenuCardSmallRecipe';
+import CategoryHeader from '../../components/form/categories/CategoryHeader';
+import IconToggle from '../../components/form/IconToggle';
 
 const FavRecipes = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -53,35 +55,10 @@ const FavRecipes = () => {
           ListHeaderComponent={
             <View style={styles.headerContainer}>
               {/* ARROW TO MAIN MENU */}
-              <TouchableOpacity 
-                onPress={() => navigation.navigate('MainMenu')} 
-                style={styles.arrowWrapper}
-                activeOpacity={1}  
-              >
-                <View style={styles.arrowTouchArea}>
-                  <Image
-                    source={require('../../../assets/icons/arrow.png')}
-                    style={styles.arrowIcon}
-                  />
-                </View>
-              </TouchableOpacity>
-
-              {/* TITLE TEXT */}
-              <Text style={styles.menuTitle}>Улюблені</Text>
+              <CategoryHeader title={"Улюблені"} backRoute="MainMenu" />
 
               {filteredData.length > 0 ? (
-              <View style={styles.centeredButton}>
-                <Pressable onPress={toggleIcon} style={styles.bigIconContainer}>
-                  <Image
-                    source={
-                      isBigIcon
-                        ? require('../../../assets/icons/big_icons.png')
-                        : require('../../../assets/icons/small_icons.png')
-                    }
-                    style={styles.bigIconImage}
-                  />
-                </Pressable>
-              </View>
+                <IconToggle isBigIcon={isBigIcon} onToggle={toggleIcon} />
               ) : (
                 <Text style={styles.noFavMessage}>Поки немає улюблених рецептів!</Text>
               )}
@@ -106,51 +83,6 @@ const styles = StyleSheet.create({
     paddingTop: hp(5), 
     marginBottom: hp(2), 
     paddingHorizontal: hp(1), 
-  },
-
-  // arrow back
-  arrowWrapper: {
-    alignSelf: 'flex-start',
-    marginBottom: hp(1),
-    marginLeft: -hp(1),
-  },
-  arrowTouchArea: {
-    padding: hp(1.2),          
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  arrowIcon: { 
-    width: hp(3.2), 
-    height: hp(3),
-    resizeMode: 'contain',
-  },
-
-  // title 
-  menuTitle: { 
-    fontSize: hp(3.5), 
-    marginBottom: hp(2), 
-    fontWeight: '600', 
-    color: 'black', 
-    textAlign: 'center' 
-  },
-
-  // toggle icon styles
-  centeredButton: {
-    alignItems: 'center',
-    marginBottom: hp(2),
-  },
-  bigIconContainer: {
-    width: hp(6),
-    height: hp(6),
-    backgroundColor: '#00B4BF66',
-    borderRadius: hp(1.5),
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  bigIconImage: {
-    width: hp(3),
-    height: hp(3),
-    resizeMode: 'contain',
   },
 
   // message when no fav

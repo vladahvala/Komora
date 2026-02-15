@@ -30,7 +30,7 @@ const JarColumn: React.FC<Props> = ({ jarCounts, setJarCounts }) => {
       {jarTypes.map(({ key, label, circleLabel }) => (
         <JarNumCard
           key={key}
-          image={require('../../../assets/jar_icons/empty_jar.png')}
+          image={require('../../../../assets/jar_icons/empty_jar.png')}
           label={label}
           circleLabel={circleLabel}
           count={jarCounts[key]}

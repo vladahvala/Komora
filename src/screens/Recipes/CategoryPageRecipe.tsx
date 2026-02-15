@@ -1,12 +1,14 @@
 import { useNavigation, NavigationProp, RouteProp, useRoute } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigation';
-import { FlatList, View, Text, TouchableOpacity, Image, Pressable, StyleSheet } from 'react-native';
+import { FlatList, View, Text, StyleSheet } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useContext, useState } from 'react';
 import ConsMenuCardRecipe from '../../components/BigCards/ConsMenuCardRecipe';
 import ConsMenuCardSmallRecipe from '../../components/SmallCards/ConsMenuCardSmallRecipe';
 import { RecipesContext } from '../../context/RecipesContext';
+import CategoryHeader from '../../components/form/categories/CategoryHeader';
+import IconToggle from '../../components/form/IconToggle';
 
 type CategoryPageRouteProp = RouteProp<RootStackParamList, 'CategoryPageRecipe'>;
 
@@ -45,35 +47,12 @@ const CategoryPageRecipe = () => {
         }
         contentContainerStyle={{ paddingHorizontal: hp(3) }}
         ListHeaderComponent={
-          <View style={styles.headerContainer}>
-            <TouchableOpacity
-              onPress={() => navigation.goBack()}
-              style={styles.arrowWrapper}
-              activeOpacity={1}
-            >
-              <View style={styles.arrowTouchArea}>
-                <Image
-                  source={require('../../../assets/icons/arrow.png')}
-                  style={styles.arrowIcon}
-                />
-              </View>
-            </TouchableOpacity>
-
-            <Text style={styles.menuTitle}>{category}</Text>
+          <View style={{ paddingTop: hp(5), marginBottom: hp(2) }}>
+          
+            <CategoryHeader title={category} backRoute="MainMenu" />
 
             {filteredRecipes.length > 0 ? (
-              <View style={{ alignItems: 'center', marginTop: hp(2), marginBottom: hp(2) }}>
-                <Pressable onPress={toggleIcon} style={styles.bigIconContainer}>
-                  <Image
-                    source={
-                      isBigIcon
-                        ? require('../../../assets/icons/big_icons.png')
-                        : require('../../../assets/icons/small_icons.png')
-                    }
-                    style={styles.bigIconImage}
-                  />
-                </Pressable>
-              </View>
+              <IconToggle isBigIcon={isBigIcon} onToggle={toggleIcon} />
             ) : (
               <Text style={styles.noCatMessage}>Поки в цій категорії немає жодної картки!</Text>
             )}
@@ -91,51 +70,6 @@ const styles = StyleSheet.create({
   container: { 
     flex: 1, 
     backgroundColor: '#F7F9FD',
-  },
-  headerContainer: { 
-    paddingTop: hp(5), 
-    marginBottom: hp(2), 
-    paddingHorizontal: hp(1), 
-  },
-
-  // arrow back styles
-  arrowWrapper: {
-    alignSelf: 'flex-start',
-    marginBottom: hp(2),
-    marginLeft: -hp(1),
-  },
-  arrowTouchArea: {
-    padding: hp(1.2),          
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  arrowIcon: { 
-    width: hp(3.2), 
-    height: hp(3),
-    resizeMode: 'contain',
-  },
-
-  // menu title style 
-  menuTitle: { 
-    fontSize: hp(3.5), 
-    fontWeight: '600', 
-    color: 'black', 
-    textAlign: 'center' 
-  },
-
-  // toggle icon styles
-  bigIconContainer: {
-    width: hp(6),
-    height: hp(6),
-    backgroundColor: '#00B4BF66',
-    borderRadius: hp(1.5),
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  bigIconImage: {
-    width: hp(3),           
-    height: hp(3),
-    resizeMode: 'contain',
   },
 
   // message when no cat

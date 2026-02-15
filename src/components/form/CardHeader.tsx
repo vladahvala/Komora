@@ -8,9 +8,11 @@ interface CardHeaderProps {
   imageUri: string | null;
   onImageChange: (uri: string) => void;
   onBack: () => void;
+  isFavorite?: boolean;             
+  onToggleFavorite?: () => void;    
 }
 
-const CardHeader: React.FC<CardHeaderProps> = ({ name, imageUri, onImageChange, onBack }) => {
+const CardHeader: React.FC<CardHeaderProps> = ({ name, imageUri, onImageChange, onBack, isFavorite, onToggleFavorite }) => {
   return (
     <View style={styles.headerContainer}>
       {/* ARROW BACK */}
@@ -47,6 +49,23 @@ const CardHeader: React.FC<CardHeaderProps> = ({ name, imageUri, onImageChange, 
           </Pressable>
         </View>
       </View>
+
+      {isFavorite !== undefined && onToggleFavorite && (
+        <Pressable
+          onPress={onToggleFavorite}
+          style={{ position: 'absolute', right: hp(1), top: hp(1) }}
+        >
+          <Image
+            source={
+              isFavorite
+                ? require('../../../assets/icons/like_blue.png')
+                : require('../../../assets/icons/like.png')
+            }
+            style={{ width: hp(3), height: hp(3), resizeMode: 'contain' }}
+          />
+        </Pressable>
+      )}
+
     </View>
   );
 };
@@ -56,8 +75,6 @@ export default CardHeader;
 // можна винести стилі сюди або імпортувати з CardPage
 const styles = StyleSheet.create({
   headerContainer: { 
-    paddingTop: hp(5), 
-    marginBottom: hp(2), 
     paddingHorizontal: hp(1), 
   },
   arrowWrapper: {

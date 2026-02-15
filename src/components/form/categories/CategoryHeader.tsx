@@ -21,7 +21,7 @@ const CategoryHeader: React.FC<CategoryHeaderProps> = ({ title, backRoute }) => 
       >
         <View style={styles.arrowTouchArea}>
           <Image
-            source={require('../../../assets/icons/arrow.png')}
+            source={require('../../../../assets/icons/arrow.png')}
             style={styles.arrowIcon}
           />
         </View>

@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import JarNumCard from '../CardsInCards/JarNumCard';
+import JarNumCard from '../../CardsInCards/JarNumCard';
 
 type JarCounts = {
   jar2_3l: number;
@@ -32,7 +32,7 @@ const JarGrid: React.FC<Props> = ({ jarCounts, setJarCounts }) => {
         {jarTypes.slice(0, 3).map(({ key, label, circleLabel }) => (
           <JarNumCard
             key={key}
-            image={require('../../../assets/jar_icons/empty_jar.png')}
+            image={require('../../../../assets/jar_icons/empty_jar.png')}
             label={label}
             circleLabel={circleLabel}
             count={jarCounts[key]}
@@ -49,7 +49,7 @@ const JarGrid: React.FC<Props> = ({ jarCounts, setJarCounts }) => {
         {jarTypes.slice(3).map(({ key, label, circleLabel }) => (
           <JarNumCard
             key={key}
-            image={require('../../../assets/jar_icons/empty_jar.png')}
+            image={require('../../../../assets/jar_icons/empty_jar.png')}
             label={label}
             circleLabel={circleLabel}
             count={jarCounts[key]}

@@ -14,6 +14,7 @@ import CategoryDropdown from '../../components/form/categories/CategoryDropdown'
 import LabeledInput from '../../components/form/LabeledInput';
 import YearPicker from '../../components/form/years/YearPicker';
 import JarGrid from '../../components/form/jars/JarGrid';
+import FormHeaderWithImage from '../../components/form/AddItemHeader';
 
 const AddConservation = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
@@ -124,26 +125,12 @@ const AddConservation = () => {
           keyboardShouldPersistTaps="handled"
         >
           <View style={styles.headerContainer}>
-            {/* ARROW TO MAIN MENU */}
-            <TouchableOpacity 
-              onPress={() => navigation.navigate('MainMenu')} 
-              style={styles.arrowWrapper}
-              activeOpacity={1}  
-            >
-              <View style={styles.arrowTouchArea}>
-                <Image
-                  source={require('../../../assets/icons/arrow.png')}
-                  style={styles.arrowIcon}
-                />
-              </View>
-            </TouchableOpacity>
 
-            {/* TITLE TEXT */}
-            <Text style={styles.menuTitle}>Нова консервація</Text>
-
-            <ImagePickerBlock 
+            <FormHeaderWithImage
+              title="Нова консервація"
               imageUri={imageUri}
               setImageUri={setImageUri}
+              onBack={() => navigation.navigate('MainMenu')}
             />
 
             {/* FIRST INPUT WITH LABEL */}
@@ -222,31 +209,6 @@ const styles = StyleSheet.create({
     paddingTop: hp(5), 
     marginBottom: hp(2), 
     paddingHorizontal: hp(1), 
-  },
-
-  // arrow styles
-  arrowWrapper: {
-    alignSelf: 'flex-start',
-    marginBottom: hp(1),
-    marginLeft: -hp(1),
-  },
-  arrowTouchArea: {
-    padding: hp(1.2),          
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  arrowIcon: { 
-    width: hp(3.2), 
-    height: hp(3),
-    resizeMode: 'contain', 
-  },  
-
-  // title text
-  menuTitle: { 
-    fontSize: hp(3.5), 
-    fontWeight: '600', 
-    color: 'black', 
-    textAlign: 'center',
   },
 
   // time row styles

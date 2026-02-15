@@ -6,9 +6,10 @@ import { RootStackParamList } from '../../../navigation';
 
 interface CategoryCardListProps {
   cards: typeof import('../../../../data/cat_data.js').default;
+  navigateTo: keyof RootStackParamList;
 }
 
-const CategoryCardList: React.FC<CategoryCardListProps> = ({ cards }) => {
+const CategoryCardList: React.FC<CategoryCardListProps> = ({ cards, navigateTo }) => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   return (
@@ -23,7 +24,7 @@ const CategoryCardList: React.FC<CategoryCardListProps> = ({ cards }) => {
             category: item.category,
           }}
           onPress={() =>
-            navigation.navigate('CategoryPage', { category: item.category })
+            navigation.navigate(navigateTo, { category: item.category })
           }
         />
       ))}

@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet, TextInput, Pressable, ScrollView, Animated } from 'react-native';
+import { View, Text, TouchableOpacity, Image, StyleSheet, ScrollView, } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigation';
-import JarNumCard from '../../components/CardsInCards/JarNumCard';
 import { useConservation } from '../../context/ConservationContext';
 import AnimatedButton from '../../animations/AnimatedButton';
 import JarColumn from '../../components/form/jars/JarColumn';

@@ -56,7 +56,7 @@ const CategoryDropdown: React.FC<Props> = ({
         {selected || 'Оберіть категорію'}
       </Text>
       <Image
-        source={require('../../../assets/icons/frame_down.png')}
+        source={require('../../../../assets/icons/frame_down.png')}
         style={[styles.arrowIcon, isOpen && { transform: [{ rotate: '180deg' }] }]}
       />
     </Pressable>

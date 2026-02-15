@@ -31,6 +31,7 @@ interface YearAndExpirationProps {
             onToggle={() => setDropdownVisible(prev => !prev)}
             onClose={() => setDropdownVisible(false)}
             years={years}
+            fontSize={hp(3)}
           />
         </View>
         {expirationYear && (

@@ -9,9 +9,9 @@ interface YearPickerProps {
   isOpen: boolean;
   onToggle: () => void;
   onClose: () => void;
-  years: string[]; // <- додаємо масив років
+  years: string[];
+  fontSize?: number; // <- додаємо необов'язковий параметр для розміру шрифту
 }
-
 
 const YearPicker: React.FC<YearPickerProps> = ({
   selectedYear,
@@ -19,15 +19,16 @@ const YearPicker: React.FC<YearPickerProps> = ({
   isOpen,
   onToggle,
   onClose,
-  years, // <- додали сюди!
+  years,
+  fontSize = hp(2.5), // <- дефолтне значення, якщо не передано
 }) => {
 
   return (
     <View style={{ flex: 1, position: 'relative' }}>
       <Pressable style={styles.buttonContainer} onPress={onToggle}>
-        <Text style={styles.buttonText}>{selectedYear || (years[0] ?? '2021')}</Text>
+        <Text style={[styles.buttonText, { fontSize }]}>{selectedYear || (years[0] ?? '2021')}</Text>
         <Image
-          source={require('../../../assets/icons/frame_down.png')}
+          source={require('../../../../assets/icons/frame_down.png')}
           style={[
             styles.arrowDownIcon,
             isOpen && { transform: [{ rotate: '180deg' }] },
@@ -55,8 +56,6 @@ const YearPicker: React.FC<YearPickerProps> = ({
   );
 };
 
-  
-
 export default YearPicker;
 
 const styles = StyleSheet.create({
@@ -70,7 +69,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   buttonText: {
-    fontSize: hp(3),
     fontWeight: '600',
     color: 'black',
   },

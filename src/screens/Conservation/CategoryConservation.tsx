@@ -7,6 +7,7 @@ import CategoryHeader from '../../components/form/categories/CategoryHeader';
 import CategoryCardList from '../../components/form/categories/CategoryCardList';
 
 const CategoryConservation = () => { 
+  const cards = cat_data; 
 
   return (
     <SafeAreaView style={styles.container}>
@@ -16,7 +17,11 @@ const CategoryConservation = () => {
         <CategoryHeader title="Категорії" backRoute="MainMenu" />
 
         {/* CATEGORIES CARDS */}
-        <CategoryCardList cards={cat_data} />
+        <CategoryCardList
+          cards={cards}
+          navigateTo="CategoryPage"
+        />
+
       </ScrollView>
     </SafeAreaView>
   );
