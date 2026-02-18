@@ -1,26 +1,23 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { FlatList, StyleSheet, Keyboard, Pressable, SafeAreaView } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import ConsMenuCard from '../../components/BigCards/ConsMenuCard';
 import ConsMenuCardSmall from '../../components/SmallCards/ConsMenuCardSmall'; 
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { ConservationContext } from '../../context/ConservationContext';
-import { useContext } from 'react';
-import HeaderWithSearch from '../../components/form/HeaderWithSearch';
+import HeaderWithSearch from '../../components/form/common/HeaderWithSearch';
+import { useConservationMain } from '../../hooks/Conservation/useConservationMain';
 
 const ConservationMain = () => {
-  const { conservations } = useContext(ConservationContext);
+  const { 
+    // search field
+    searchText,
+    setSearchText,
+    filteredData,
 
-  // search bar
-  const [searchText, setSearchText] = useState('');
-  const filteredData = conservations.filter(item =>
-    item.name.toLowerCase().includes(searchText.toLowerCase())
-  );
-  // cards style
-  const [isBigIcon, setIsBigIcon] = useState(true); 
-  const toggleIcon = () => {
-    setIsBigIcon(prev => !prev);
-  };
+    // toggle icon
+    isBigIcon,
+    toggleIcon,
+  } = useConservationMain();
 
   return (
     <Pressable
@@ -48,26 +45,15 @@ const ConservationMain = () => {
           key={isBigIcon ? 'big' : 'small'}
           data={filteredData}
           renderItem={({ item, index }) =>
-            isBigIcon ? (
-              <ConsMenuCard item={item} index={index} />
-            ) : (
-              <ConsMenuCardSmall item={item} index={index} />
-            )
+            isBigIcon ? <ConsMenuCard item={item} index={index} /> : <ConsMenuCardSmall item={item} index={index} />
           }
           numColumns={isBigIcon ? 2 : 1}
-          columnWrapperStyle={
-            isBigIcon ? { justifyContent: 'space-between', marginBottom: 25 } : undefined
-          }
-          contentContainerStyle={{
-            paddingHorizontal: 27,
-            paddingBottom: hp(3),
-            paddingTop: hp(2),
-          }}
+          columnWrapperStyle={isBigIcon ? styles.columnWrapper : undefined}
+          contentContainerStyle={styles.contentContainer}
         />
       </SafeAreaProvider>
     </Pressable>
   );
-  
 };
 
 export default ConservationMain;
@@ -79,4 +65,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF' 
   },
 
+  // other styles
+  columnWrapper: {
+    justifyContent: 'space-between', 
+    marginBottom: 25,
+  },
+  contentContainer:{
+    paddingHorizontal: 27, 
+    paddingBottom: hp(3), 
+    paddingTop: hp(2),
+  },
 });

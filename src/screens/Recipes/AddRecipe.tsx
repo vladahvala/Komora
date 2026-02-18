@@ -1,82 +1,52 @@
-import React, { useState, useContext } from 'react';
+import React from 'react';
 import { 
-  View, Text, StyleSheet, TextInput, ScrollView, TouchableWithoutFeedback, Keyboard, 
-  Pressable
+  View, Text, StyleSheet, TextInput, ScrollView, 
 } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigation';
 import AlertModal from '../../modals/AlertModal';
-import { RecipesContext, RecipeItem } from '../../context/RecipesContext';
 import AnimatedButton from '../../animations/AnimatedButton';
-import FormHeaderWithImage from '../../components/form/AddItemHeader';
-import LabeledInput from '../../components/form/LabeledInput';
+import FormHeaderWithImage from '../../components/form/common/FormHeaderWithImage';
+import LabeledInput from '../../components/form/common/LabeledInput';
 import CategoryDropdown from '../../components/form/categories/CategoryDropdown';
+import { useAddRecipeForm } from '../../hooks/Recipes/useAddRecipeForm';
 
 const AddRecipe = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-  const { addRecipe } = useContext(RecipesContext);
 
-  // IMAGE
-  const [imageUri, setImageUri] = useState<string | null>(null);
+  const {
+    // Form fields
+    imageUri,
+    setImageUri,
+    name,
+    setName,
+    selectedCategory,
+    setSelectedCategory,
+    recipeText,
+    setRecipeText,
 
-  // NAME
-  const [name, setName] = useState('');
+    // Category modal
+    isCategoryModalVisible,
+    setCategoryModalVisible,
 
-  // CATEGORY
-  const [isCategoryFocused, setIsCategoryFocused] = useState(false);
-  const [isCategoryModalVisible, setCategoryModalVisible] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
-  
-  // RECIPE TEXT
-  const [recipeText, setRecipeText] = useState('');
+    // Alert modal
+    modalVisible,
+    setModalVisible,
+    modalMessage,
 
-  // ALERT MODAL
-  const [modalVisible, setModalVisible] = useState(false);
-  const [modalMessage, setModalMessage] = useState('');
-
-  const handleAddConservation = () => {
-    if (!name) {
-      setModalMessage('Введіть назву рецепту!');
-      setModalVisible(true);
-      return;
-    }
-    if (!selectedCategory) {
-      setModalMessage('Оберіть категорію!');
-      setModalVisible(true);
-      return;
-    }
-
-    const newItem: RecipeItem = {
-      name,
-      category: selectedCategory,
-      imageUri,
-      recipeText,
-      history: {},
-    };
-
-    addRecipe(newItem);
-
-    setName('');
-    setSelectedCategory(null);
-    setImageUri(null);
-    setRecipeText('');
-
-    navigation.goBack();
-  };
+    // Actions
+    handleAddRecipe,
+  } = useAddRecipeForm();
 
   return (
-    <Pressable
-      style={{ flex: 1 }}
-      onPress={() => {
-        Keyboard.dismiss();
-        setCategoryModalVisible(false);
-      }}
-    >
-
       <SafeAreaProvider style={styles.container}>
-        <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false} keyboardShouldPersistTaps="handled">
+        <ScrollView 
+          contentContainerStyle={styles.scrollContent} 
+          showsVerticalScrollIndicator={false} 
+          keyboardShouldPersistTaps="handled"
+        >
           <View style={styles.headerContainer}>
 
             <FormHeaderWithImage
@@ -99,7 +69,7 @@ const AddRecipe = () => {
             />
 
             {/* RECIPE TEXT */}
-            <Text style={[styles.label, { marginTop: hp(2) }]}>Текст рецепту</Text>
+            <Text style={styles.label}>Текст рецепту</Text>
             <TextInput
               value={recipeText} onChangeText={setRecipeText}
               style={styles.recipeInput} multiline numberOfLines={6}
@@ -114,7 +84,7 @@ const AddRecipe = () => {
 
             {/* ADD BUTTON */}
             <AnimatedButton 
-              onPress={handleAddConservation}
+              onPress={handleAddRecipe}
               style={styles.addButton}
             >
               <Text style={styles.addButtonText}>Додати рецепт</Text>
@@ -123,7 +93,6 @@ const AddRecipe = () => {
           </View>
         </ScrollView>
       </SafeAreaProvider>
-    </Pressable>
   );
 };
 
@@ -131,6 +100,9 @@ export default AddRecipe;
 
 const styles = StyleSheet.create({
   // main container
+  pressable: {
+    flex: 1,
+  },
   container: { 
     flex: 1, 
     backgroundColor: '#F7F9FD',
@@ -151,6 +123,7 @@ const styles = StyleSheet.create({
     fontWeight: '500',
     color: '#333',
     marginBottom: hp(0.5),
+    marginTop: hp(2), 
   },
 
   // recipe input style

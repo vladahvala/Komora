@@ -1,33 +1,16 @@
-import { StyleSheet, View, Text, Animated, TouchableOpacity, BackHandler, Image } from 'react-native';
-import React, { useRef } from 'react';
+import { StyleSheet, View, Text, Animated, BackHandler, Image } from 'react-native';
+import React from 'react';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation';
 import MenuCard from '../components/CardsInCards/MenuCard';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { useFocusEffect } from '@react-navigation/native';
 import AnimatedButton from '../animations/AnimatedButton';
+import { useMainMenuAnimation } from '../hooks/MainScreen/useMainMenuAnimation';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'MainMenu'>;
 
 export default function MainMenu({ navigation }: Props) {
-  const opacityAnim = useRef(new Animated.Value(0)).current;
-
-  useFocusEffect(
-    React.useCallback(() => {
-      opacityAnim.setValue(0);
-
-      const animation = Animated.timing(opacityAnim, {
-        toValue: 1,
-        duration: 500,
-        delay: 100,
-        useNativeDriver: true,
-      });
-
-      animation.start();
-
-      return () => animation.stop();
-    }, [])
-  );
+  const { opacityAnim, exitApp } = useMainMenuAnimation();
 
   return (
     <View style={styles.screen}>

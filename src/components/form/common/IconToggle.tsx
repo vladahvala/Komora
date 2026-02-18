@@ -8,24 +8,21 @@ interface IconToggleProps {
 }
 
 const IconToggle: React.FC<IconToggleProps> = ({ isBigIcon, onToggle }) => (
-  <View style={styles.container}>
-    <Pressable onPress={onToggle} style={styles.toggleButton}>
-      <Image
-        source={
-          isBigIcon
-            ? require('../../../assets/icons/big_icons.png')
-            : require('../../../assets/icons/small_icons.png')
-        }
-        style={styles.image}
-      />
-    </Pressable>
-  </View>
+  <Pressable onPress={onToggle} style={styles.toggleButton}>
+    <Image
+      source={
+        isBigIcon
+          ? require('../../../../assets/icons/big_icons.png')
+          : require('../../../../assets/icons/small_icons.png')
+      }
+      style={styles.image}
+    />
+  </Pressable>
 );
 
 export default IconToggle;
 
 const styles = StyleSheet.create({
-  container: { alignItems: 'center', marginTop: hp(2), marginBottom: hp(2) },
   toggleButton: {
     width: hp(6),
     height: hp(6),
@@ -33,6 +30,11 @@ const styles = StyleSheet.create({
     borderRadius: hp(1.5),
     justifyContent: 'center',
     alignItems: 'center',
+    alignSelf: 'center', 
   },
-  image: { width: hp(3), height: hp(3), resizeMode: 'contain' },
+  image: { 
+    width: hp(3), 
+    height: hp(3), 
+    resizeMode: 'contain' 
+  },
 });

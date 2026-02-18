@@ -22,7 +22,7 @@ const YearTotalJarsRow = ({ totalJarsCurrentYear, selectedYear }: YearTotalJarsR
 
 const localStyles = StyleSheet.create({
   container: {
-    marginTop: hp(4), 
+    marginTop: hp(2), 
   },
   timeRow: {
     flexDirection: 'row',

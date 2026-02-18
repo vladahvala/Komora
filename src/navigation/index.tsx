@@ -15,7 +15,7 @@ import CategoryPage from '../screens/Conservation/CategoryPage';
 import { RecipeItem, RecipeProvider } from '../context/RecipesContext';
 import CategoryPageRecipe from '../screens/Recipes/CategoryPageRecipe';
 import { OthersItem, OthersProvider } from '../context/OthersContext';
-import RemaindersMain from '../screens/Conservation/RemaindersMain';
+import RemaindersMain from '../screens/Remainders/RemaindersMain';
 
 export type RootStackParamList = {
   Welcome: undefined;

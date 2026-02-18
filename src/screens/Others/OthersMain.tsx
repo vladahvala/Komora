@@ -1,47 +1,27 @@
-import React, { useState } from 'react';
-import { FlatList, StyleSheet, Text, View, TouchableOpacity, Image, TextInput, Keyboard, Pressable } from 'react-native';
+import React from 'react';
+import { FlatList, StyleSheet, Keyboard, Pressable } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import ConsMenuCardOthers from '../../components/BigCards/ConsMenuCardOthers';
 import ConsMenuCardOthersSmall from '../../components/SmallCards/ConsMenuCardOthersSmall';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { useNavigation, NavigationProp } from '@react-navigation/native';
-import { RootStackParamList } from '../../navigation';
-import { useOthers } from '../../context/OthersContext';
-import { useEffect } from 'react';
-import HeaderWithSearch from '../../components/form/HeaderWithSearch';
+import HeaderWithSearch from '../../components/form/common/HeaderWithSearch';
+import { useOthersMain } from '../../hooks/Others/useOthersMain';
 
 const OthersMain = () => {
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-  const { others, loadOthers, loading } = useOthers();
-
-  useEffect(() => {
-    loadOthers();
-  }, []);
-
-  if (loading) return null;
-
-  // search bar
-  const [searchText, setSearchText] = useState('');
-  const filteredData = others.filter(item =>
-    item.name.toLowerCase().includes(searchText.toLowerCase())
-  );
-
-  // cards style
-  const [isBigIcon, setIsBigIcon] = useState(true);
-  const toggleIcon = () => {
-    setIsBigIcon(prev => !prev);
-  };
+  const { 
+    // search field
+    filteredData, 
+    searchText, 
+    setSearchText, 
+    
+    // toggle icon
+    isBigIcon, 
+    toggleIcon 
+  } = useOthersMain();
 
   return (
-    <Pressable
-      style={{ flex: 1 }}
-      onPress={() => {
-        Keyboard.dismiss();
-        setSearchText('');
-      }}
-    >
+    <Pressable style={styles.pressable} onPress={() => { Keyboard.dismiss(); setSearchText(''); }}>
       <SafeAreaProvider style={styles.container}>
-
         {/* FIXED HEADER */}
         <HeaderWithSearch
           title="Інші продукти"
@@ -57,7 +37,6 @@ const OthersMain = () => {
         <FlatList
           key={isBigIcon ? 'big' : 'small'}
           data={filteredData}
-          extraData={others}
           renderItem={({ item, index }) =>
             isBigIcon
               ? <ConsMenuCardOthers item={item} index={index} />
@@ -65,12 +44,8 @@ const OthersMain = () => {
           }
           keyExtractor={item => item.name}
           numColumns={isBigIcon ? 2 : 1}
-          columnWrapperStyle={isBigIcon ? { justifyContent: 'space-between', marginBottom: 25 } : undefined}
-          contentContainerStyle={{
-            paddingHorizontal: 27,
-            paddingBottom: 50,
-            paddingTop: hp(2),
-          }}
+          columnWrapperStyle={isBigIcon ? styles.columnWrapper : undefined}
+          contentContainerStyle={styles.contentContainer}
         />
       </SafeAreaProvider>
     </Pressable>
@@ -81,8 +56,22 @@ export default OthersMain;
 
 const styles = StyleSheet.create({
   // main container
+  pressable: {
+    flex: 1,
+  },
   container: {
     flex: 1,
     backgroundColor: '#FFF'
+  },
+
+  // other styles
+  columnWrapper: {
+    justifyContent: 'space-between', 
+    marginBottom: 25,
+  },
+  contentContainer: {
+    paddingHorizontal: 27,
+    paddingBottom: 50,
+    paddingTop: hp(2),
   },
 });

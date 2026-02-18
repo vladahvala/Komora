@@ -56,19 +56,19 @@ interface CircleActionButtonProps {
   
   const styles = StyleSheet.create({
     smallDot: {
-        width: hp(2.5),
-        height: hp(2.5),
-        borderRadius: hp(1.25),
-        backgroundColor: '#000',
-        position: 'absolute',
-    
-        justifyContent: 'center',
-        alignItems: 'center',
+      width: hp(2.5),
+      height: hp(2.5),
+      borderRadius: hp(1.25),
+      backgroundColor: '#000',
+      position: 'absolute',
+  
+      justifyContent: 'center',
+      alignItems: 'center',
     },
     dotIcon: {
-        width: hp(2.5),
-        height: hp(2.5),
-        resizeMode: 'contain',
-        tintColor: '#fff', 
+      width: hp(2.5),
+      height: hp(2.5),
+      resizeMode: 'contain',
+      tintColor: '#fff', 
     },
 });

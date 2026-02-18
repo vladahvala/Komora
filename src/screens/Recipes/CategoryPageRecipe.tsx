@@ -1,33 +1,22 @@
-import { useNavigation, NavigationProp, RouteProp, useRoute } from '@react-navigation/native';
+import { RouteProp, useRoute } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigation';
 import { FlatList, View, Text, StyleSheet } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { useContext, useState } from 'react';
 import ConsMenuCardRecipe from '../../components/BigCards/ConsMenuCardRecipe';
 import ConsMenuCardSmallRecipe from '../../components/SmallCards/ConsMenuCardSmallRecipe';
-import { RecipesContext } from '../../context/RecipesContext';
 import CategoryHeader from '../../components/form/categories/CategoryHeader';
-import IconToggle from '../../components/form/IconToggle';
+import IconToggle from '../../components/form/common/IconToggle';
+import { useCategoryPageRecipe } from '../../hooks/Recipes/useCategoryPageRecipe';
 
 type CategoryPageRouteProp = RouteProp<RootStackParamList, 'CategoryPageRecipe'>;
 
 const CategoryPageRecipe = () => {
   const route = useRoute<CategoryPageRouteProp>();
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const category = route.params?.category ?? '';
 
-  const { recipes } = useContext(RecipesContext);
-
-  // filtered according to category
-  const filteredRecipes = recipes.filter(
-    r => r.category.toLowerCase() === category.toLowerCase()
-  );
-
-  // toggle icon
-  const [isBigIcon, setIsBigIcon] = useState(true);
-  const toggleIcon = () => setIsBigIcon(prev => !prev);
+  const { filteredRecipes, isBigIcon, toggleIcon } = useCategoryPageRecipe(category);
 
   return (
     <SafeAreaProvider style={styles.container}>

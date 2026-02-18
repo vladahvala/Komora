@@ -1,25 +1,14 @@
-import React, { useState, useContext } from 'react';
+import React from 'react';
 import { FlatList, StyleSheet, Keyboard, Pressable } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import ConsMenuCardRecipe from '../../components/BigCards/ConsMenuCardRecipe';
 import ConsMenuCardSmallRecipe from '../../components/SmallCards/ConsMenuCardSmallRecipe';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { useNavigation, NavigationProp } from '@react-navigation/native';
-import { RootStackParamList } from '../../navigation';
-import { RecipesContext } from '../../context/RecipesContext';
-import HeaderWithSearch from '../../components/form/HeaderWithSearch';
+import HeaderWithSearch from '../../components/form/common/HeaderWithSearch';
+import { useRecipeMain } from '../../hooks/Recipes/useRecipeMain';
 
 const RecipeMain = () => {
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-  const { recipes } = useContext(RecipesContext);
-
-  const [searchText, setSearchText] = useState('');
-  const filteredData = recipes
-    .filter(item => item)
-    .filter(item => item.name.toLowerCase().includes(searchText.toLowerCase()));
-
-  const [isBigIcon, setIsBigIcon] = useState(true);
-  const toggleIcon = () => setIsBigIcon(prev => !prev);
+  const { filteredRecipes, searchText, setSearchText, isBigIcon, toggleIcon } = useRecipeMain();
 
   return (
     <Pressable
@@ -45,7 +34,7 @@ const RecipeMain = () => {
         {/* LIST */}
         <FlatList
           key={isBigIcon ? 'big' : 'small'}
-          data={filteredData}
+          data={filteredRecipes}
           keyExtractor={(item) => item.name}
           renderItem={({ item, index }) =>
             isBigIcon ? (

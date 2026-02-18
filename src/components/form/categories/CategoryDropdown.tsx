@@ -5,6 +5,7 @@ import {
   Pressable,
   Image,
   StyleSheet,
+  ScrollView, 
 } from 'react-native';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
@@ -62,21 +63,40 @@ const CategoryDropdown: React.FC<Props> = ({
     </Pressable>
 
     {isOpen && (
-      <View style={dropdownStyle || styles.dropdownContainer}>
-        {categories.map((cat, index) => (
-          <Pressable
-            key={index}
-            style={styles.dropdownItem}
-            onPress={() => {
-              onSelect(cat);
-              onClose();
-            }}
+      <>
+        {/* Overlay */}
+        <Pressable
+          style={StyleSheet.absoluteFill}
+          onPress={onClose}
+        />
+
+        {/* Dropdown */}
+        <View style={dropdownStyle || styles.dropdownContainer}>
+          <ScrollView
+            style={{ maxHeight: hp(30) }}
+            nestedScrollEnabled
+            showsVerticalScrollIndicator
+            keyboardShouldPersistTaps="handled"
           >
-            <Text style={itemTextStyle || styles.dropdownItemText}>{cat}</Text>
-          </Pressable>
-        ))}
-      </View>
+            {categories.map((cat, index) => (
+              <Pressable
+                key={index}
+                style={styles.dropdownItem}
+                onPress={() => {
+                  onSelect(cat);
+                  onClose();
+                }}
+              >
+                <Text style={itemTextStyle || styles.dropdownItemText}>
+                  {cat}
+                </Text>
+              </Pressable>
+            ))}
+          </ScrollView>
+        </View>
+      </>
     )}
+
     </View>
   );
 };
@@ -115,8 +135,9 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#AEAEAE',
     borderRadius: hp(1.5),
-    zIndex: 100,
+    zIndex: 1000,
     elevation: 5,
+    maxHeight: hp(30),
   },
   
   dropdownItem: {

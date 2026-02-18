@@ -1,16 +1,15 @@
-import React, { useState } from 'react';
-import { View, Text, StyleSheet, TextInput, Pressable, ScrollView } from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet, Pressable, ScrollView, Keyboard } from 'react-native';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigation';
 import { useRoute, RouteProp } from '@react-navigation/native';
-import { useRecipe } from '../../context/RecipesContext';
-import AnimatedButton from '../../animations/AnimatedButton';
-import CardHeader from '../../components/form/CardHeader';
+import CardHeader from '../../components/form/common/CardHeader';
 import CategoryDropdown from '../../components/form/categories/CategoryDropdown';
 import IngredientsList from '../../components/form/recipeComponents/IngredientsList';
 import NewIngredientInput from '../../components/form/recipeComponents/NewIngredientInput';
 import RecipeEditor from '../../components/form/recipeComponents/RecipeEditor';
+import { useCardPageRecipe } from '../../hooks/Recipes/useCardPageRecipe';
 
 type CardPageRouteProp = RouteProp<RootStackParamList, 'CardPageRecipe'>;
 
@@ -19,35 +18,35 @@ const CardPageRecipe = () => {
 
   const route = useRoute<CardPageRouteProp>();
 
-  const { item } = route.params;  // card ConsMenuCard
+  const {
+    // Current Item
+    currentItem,
+    isFavorite,
+    imageUri,
+    changeImage,
 
-  const { recipes, updateImage, updateCategory, addIngredient, updateRecipeText, favorites, toggleFavorite } = useRecipe();
+    // Category Selection
+    selectedCategory,
+    setSelectedCategory,
+    categoryDropdownVisible,
+    setCategoryDropdownVisible,
 
-  // current card 
-  const currentItem = recipes.find(c => c.name === item.name);
+    // units
+    units,
+    unitDropdownVisible,
+    setUnitDropdownVisible,
 
-  // fav log
-  const isFavorite = favorites.includes(item.name);
+    // ingredients
+    newIngredient,
+    setNewIngredient,
+    addNewIngredient,
+    deleteIngredient,
 
-  // changing img
-  const [imageUri, setImageUri] = useState<string | null>(item.imageUri || null);
-
-  // CATEGORY
-  // category state
-  const [selectedCategory, setSelectedCategory] = useState<string>(item.category);
-  // category dropdown visibility
-  const [categoryDropdownVisible, setCategoryDropdownVisible] = useState(false);
-  // categories list
-  const categories = ['Мариновані', 'Солені', 'Квашені', 'Варення / Джеми', 'Компоти', 'Соуси / Кетчупи', 'Консерви в олії / жирі'];
-   
-  // UNITS
-  const units = ['ст л', 'ст', 'чй л', 'кг', 'л', 'г'];
-  const [unitDropdownVisible, setUnitDropdownVisible] = useState(false);
-  const [newIngredient, setNewIngredient] = useState<{ amount: string; unit: string; name: string }>({ amount: '', unit: 'ст л', name: '' });
-    
-  // recipe text
-  const [isEditingRecipe, setIsEditingRecipe] = useState(false);
-  const [editableRecipeText, setEditableRecipeText] = useState(currentItem?.recipeText || '');
+    // recipe
+    editableRecipeText,
+    saveRecipeText,
+    toggleFavorite,
+  } = useCardPageRecipe(route.params.item);
 
   return (
     // MAIN CONTAINER
@@ -67,17 +66,12 @@ const CardPageRecipe = () => {
           <View style={styles.headerContainer}>
             {/* ARROW TO MAIN MENU */}
             <CardHeader
-              name={item.name}
+              name={currentItem?.name || ''}
               imageUri={imageUri}
-              onImageChange={(uri) => {
-                setImageUri(uri);
-                if (currentItem) {
-                  updateImage(currentItem.name, uri);
-                }
-              }}
+              onImageChange={changeImage}
               onBack={() => navigation.goBack()}
               isFavorite={isFavorite}
-              onToggleFavorite={() => toggleFavorite(item.name)}
+              onToggleFavorite={() => toggleFavorite(currentItem?.name || '')}
             />
 
             {/* CATEGORY */}
@@ -98,14 +92,8 @@ const CardPageRecipe = () => {
             {/* INGREDIENTS HEADER */}
             <Text style={styles.textHeader}>Інгредієнти</Text>
             <IngredientsList 
-              ingredients={currentItem?.ingredients ?? []} 
-              onDelete={(i) => {
-                if (currentItem) {
-                  const updated = currentItem.ingredients.filter((_, idx) => idx !== i);
-                  currentItem.ingredients = updated;
-                  updateCategory(currentItem.name, currentItem.category);
-                }
-              }}
+               ingredients={currentItem?.ingredients ?? []}
+               onDelete={deleteIngredient}
             />
 
             {/* INGREDIENT INPUTS */}
@@ -113,25 +101,15 @@ const CardPageRecipe = () => {
               newIngredient={newIngredient}
               setNewIngredient={setNewIngredient}
               units={units}
-              onAdd={() => {
-                if (!newIngredient.amount || !newIngredient.name) return;
-                if (currentItem) {
-                  addIngredient(currentItem.name, { amount: `${newIngredient.amount} ${newIngredient.unit}`, name: newIngredient.name });
-                }
-                setNewIngredient({ amount: '', unit: 'ст л', name: '' });
-              }}
+              onAdd={addNewIngredient}
             />
 
             <Text style={styles.textHeader}>Рецепт</Text>
 
             {/* RECIPE HEADER */}
             <RecipeEditor
-              recipeText={currentItem?.recipeText || ''}
-              onSave={(text) => {
-                if (currentItem) {
-                  updateRecipeText(currentItem.name, text);
-                }
-              }}
+              recipeText={editableRecipeText}
+              onSave={saveRecipeText}
             />
           </View>
 

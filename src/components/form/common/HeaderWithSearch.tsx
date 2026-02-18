@@ -2,7 +2,8 @@ import React from 'react';
 import { View, Text, TouchableOpacity, Image, TextInput, StyleSheet } from 'react-native';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
-import { RootStackParamList } from '../../navigation';
+import { RootStackParamList } from '../../../navigation';
+import IconToggle from './IconToggle';
 
 interface HeaderWithSearchProps {
   title: string;
@@ -40,7 +41,7 @@ const HeaderWithSearch: React.FC<HeaderWithSearchProps> = ({
       >
         <View style={styles.arrowTouchArea}>
           <Image
-            source={require('../../../assets/icons/arrow.png')}
+            source={require('../../../../assets/icons/arrow.png')}
             style={styles.arrowIcon}
           />
         </View>
@@ -54,7 +55,7 @@ const HeaderWithSearch: React.FC<HeaderWithSearchProps> = ({
         {onSearchChange && (
           <View style={styles.searchContainer}>
             <Image
-              source={require('../../../assets/icons/search.png')}
+              source={require('../../../../assets/icons/search.png')}
               style={styles.searchIcon}
             />
             <TextInput
@@ -69,17 +70,9 @@ const HeaderWithSearch: React.FC<HeaderWithSearchProps> = ({
         )}
 
         {showToggle && isBigIcon !== undefined && onToggle && (
-          <TouchableOpacity onPress={onToggle} style={styles.bigIconContainer}>
-            <Image
-              source={
-                isBigIcon
-                  ? require('../../../assets/icons/big_icons.png')
-                  : require('../../../assets/icons/small_icons.png')
-              }
-              style={styles.bigIconImage}
-            />
-          </TouchableOpacity>
+          <IconToggle isBigIcon={isBigIcon} onToggle={onToggle} />
         )}
+
       </View>
     </View>
   );
@@ -118,6 +111,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: hp(2.3),
     marginBottom: hp(0.7),
+    columnGap: hp(1),
   },
   searchContainer: {
     flex: 1,
@@ -155,4 +149,9 @@ const styles = StyleSheet.create({
     height: hp(3),
     resizeMode: 'contain',
   },
+  containerToggle: {
+    alignItems: 'center', 
+    marginTop: hp(2), 
+    marginBottom: hp(2),
+  }
 });

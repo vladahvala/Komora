@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React from 'react';
 import {
   View,
   Text,
@@ -12,57 +12,36 @@ import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigation';
 import AlertModal from '../../modals/AlertModal';
-import { OthersContext } from '../../context/OthersContext';
 import AnimatedButton from '../../animations/AnimatedButton';
-import FormHeaderWithImage from '../../components/form/AddItemHeader';
-import LabeledInput from '../../components/form/LabeledInput';
+import FormHeaderWithImage from '../../components/form/common/FormHeaderWithImage';
+import LabeledInput from '../../components/form/common/LabeledInput';
 import DatePickerInput from '../../components/form/years/DatePickerInput';
+import { useOthersForm } from '../../hooks/Others/useOthersForm';
 
 const AddOthers = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-  const { addOther } = useContext(OthersContext);
 
-  const [imageUri, setImageUri] = useState<string | null>(null);
-  const [name, setName] = useState('');
-  const [packsCount, setPacksCount] = useState('');
-  const [date, setDate] = useState(new Date());
+  const {
+    // form fields
+    imageUri,
+    setImageUri,
+    name,
+    setName,
+    packsCount,
+    setPacksCount,
 
-  const [modalVisible, setModalVisible] = useState(false);
-  const [modalMessage, setModalMessage] = useState('');
+    // date
+    date,
+    setDate,
 
-  const formatDate = (d: Date) => {
-    const day = String(d.getDate()).padStart(2, '0');
-    const month = String(d.getMonth() + 1).padStart(2, '0');
-    const year = d.getFullYear();
-    return `${day}.${month}.${year}`;
-  };
+    // modal alerts
+    modalVisible,
+    setModalVisible,
+    modalMessage,
 
-  const handleAddOther = () => {
-    if (!name) {
-      setModalMessage('Введіть назву продукту!');
-      setModalVisible(true);
-      return;
-    }
-    if (!packsCount) {
-      setModalMessage('Введіть кількість упаковок/пляшок/банок!');
-      setModalVisible(true);
-      return;
-    }
-
-    const newItem = {
-      name,
-      imageUri,
-      count: Number(packsCount ?? 0),
-      date: formatDate(date),
-    };
-
-    addOther(newItem);
-
-    setName('');
-    setPacksCount('');
-    setImageUri(null);
-    navigation.goBack();
-  };
+    // actions
+    handleAddOther,
+  } = useOthersForm(() => navigation.goBack()); // onFinish = goBack
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -85,7 +64,7 @@ const AddOthers = () => {
             <LabeledInput label="Назва" value={name} onChangeText={setName} />
 
             {/* PACKS COUNT INPUT */}
-            <LabeledInput label="Кількість упаковок/пляшок/банок" value={name} onChangeText={setName} />
+            <LabeledInput label="Кількість упаковок/пляшок/банок" value={packsCount} onChangeText={setPacksCount} />
 
             {/* DATE */}
             <DatePickerInput
@@ -114,6 +93,7 @@ const AddOthers = () => {
 export default AddOthers;
 
 const styles = StyleSheet.create({
+  // container
   container: {
     flex: 1,
     backgroundColor: '#FFF',
@@ -127,6 +107,8 @@ const styles = StyleSheet.create({
     marginBottom: hp(2),
     paddingHorizontal: hp(1),
   },
+
+  // button
   addButton: {
     marginTop: hp(4),
     paddingHorizontal: hp(2),

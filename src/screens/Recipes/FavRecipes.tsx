@@ -1,29 +1,16 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { FlatList, StyleSheet, Text, View, Keyboard, Pressable } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { useNavigation, NavigationProp } from '@react-navigation/native';
-import { RootStackParamList } from '../../navigation';
-import { RecipesContext } from '../../context/RecipesContext';
-import { useContext } from 'react';
 import ConsMenuCardRecipe from '../../components/BigCards/ConsMenuCardRecipe';
 import ConsMenuCardSmallRecipe from '../../components/SmallCards/ConsMenuCardSmallRecipe';
 import CategoryHeader from '../../components/form/categories/CategoryHeader';
-import IconToggle from '../../components/form/IconToggle';
+import IconToggle from '../../components/form/common/IconToggle';
+import { useFavRecipes } from '../../hooks/Recipes/useFavRecipes';
 
 const FavRecipes = () => {
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-  const { recipes, favorites } = useContext(RecipesContext);
-
-  // filter: showing only favorite
-  const filteredData = recipes
-    .filter(item => item) // hide undefined/null
-    .filter(item => favorites.includes(item.name)) // only fav
-
-  // cards style
-  const [isBigIcon, setIsBigIcon] = useState(true); 
-  const toggleIcon = () => setIsBigIcon(prev => !prev);
-
+  const { filteredFavorites, isBigIcon, toggleIcon } = useFavRecipes();
+  
   return (
     <Pressable
       style={{ flex: 1 }}
@@ -34,7 +21,7 @@ const FavRecipes = () => {
       <SafeAreaProvider style={styles.container}>
         <FlatList
           key={isBigIcon ? 'big' : 'small'}
-          data={filteredData}
+          data={filteredFavorites}
           keyExtractor={(item) => item.name}
           renderItem={({ item, index }) =>
             isBigIcon ? (
@@ -57,7 +44,7 @@ const FavRecipes = () => {
               {/* ARROW TO MAIN MENU */}
               <CategoryHeader title={"Улюблені"} backRoute="MainMenu" />
 
-              {filteredData.length > 0 ? (
+              {filteredFavorites.length > 0 ? (
                 <IconToggle isBigIcon={isBigIcon} onToggle={toggleIcon} />
               ) : (
                 <Text style={styles.noFavMessage}>Поки немає улюблених рецептів!</Text>

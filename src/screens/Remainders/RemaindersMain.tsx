@@ -1,50 +1,17 @@
-import React, { useState } from 'react';
-import { FlatList, StyleSheet, Text, View, TouchableOpacity, Image, TextInput, Keyboard, Pressable } from 'react-native';
+import React from 'react';
+import { FlatList, StyleSheet, Text, View, TouchableOpacity, Image, Keyboard, Pressable } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import ConsMenuCard from '../../components/BigCards/ConsMenuCard';
-import ConsMenuCardSmall from '../../components/SmallCards/ConsMenuCardSmall'; 
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigation';
-import { ConservationContext } from '../../context/ConservationContext';
-import { useContext, useEffect } from 'react';
 import ConsMenuCardRemainders from '../../components/BigCards/ConsMenuCardRemainders';
 import ConsMenuCardSmallRemainders from '../../components/SmallCards/ConsMenuCardSmallRemainders';
+import IconToggle from '../../components/form/common/IconToggle';
+import { useRemaindersMain } from '../../hooks/Remainders/useRemaindersMain';
 
 const RemaindersMain = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-  const { conservations } = useContext(ConservationContext);
-
-// search bar
-const [searchText, setSearchText] = useState('');
-
-const currentYear = new Date().getFullYear();
-
-
-const isExpiredOneYearPlus = (item: any) => {
-  const currentYear = new Date().getFullYear();
-
-  return Object.entries(item.history).some(([year, data]: any) => {
-    const period = data.period ?? 0;
-    const expirationYear = Number(year) + period;
-    const overdueYears = currentYear - expirationYear;
-
-    return overdueYears >= 1;
-  });
-};
-
-
-const filteredData = conservations
-  .filter(item =>
-    item.name.toLowerCase().includes(searchText.toLowerCase())
-  )
-  .filter(isExpiredOneYearPlus);
-
-  // cards style
-  const [isBigIcon, setIsBigIcon] = useState(true); 
-  const toggleIcon = () => {
-    setIsBigIcon(prev => !prev);
-  };
+  const { filteredData, searchText, setSearchText, isBigIcon, toggleIcon } = useRemaindersMain();
 
   return (
     <Pressable
@@ -96,23 +63,12 @@ const filteredData = conservations
               <Text style={styles.menuTextMain}>Консервацію потрібно терміново з’їсти!</Text>
               <Text style={styles.menuTextSecondary}>Якщо якійсь партії більше року - вона відобразиться тут</Text>
 
-              
-                {/* CARD STYLE CHANGE */}
-                {/* SHOW TOGGLE ONLY IF DATA EXISTS */}
-                {filteredData.length > 0 && (
-                  <View style={styles.toggleWrapper}>
-                    <Pressable onPress={toggleIcon} style={styles.bigIconContainer}>
-                      <Image
-                        source={
-                          isBigIcon
-                            ? require('../../../assets/icons/big_icons.png')
-                            : require('../../../assets/icons/small_icons.png')
-                        }
-                        style={styles.bigIconImage}
-                      />
-                    </Pressable>
-                  </View>
-                )}
+              {/* SHOW TOGGLE ONLY IF DATA EXISTS */}
+              {filteredData.length > 0 && (
+                <View style={styles.toggleWrapper}>
+                  <IconToggle isBigIcon={isBigIcon} onToggle={toggleIcon} />
+                </View>
+              )}
 
               </View>
            

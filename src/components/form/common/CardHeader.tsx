@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, TouchableOpacity, Image, Pressable, StyleSheet } from 'react-native';
 import { launchImageLibrary } from 'react-native-image-picker';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
+import BackButton from './BackButton';
 
 interface CardHeaderProps {
   name: string;
@@ -16,14 +17,7 @@ const CardHeader: React.FC<CardHeaderProps> = ({ name, imageUri, onImageChange, 
   return (
     <View style={styles.headerContainer}>
       {/* ARROW BACK */}
-      <TouchableOpacity onPress={onBack} style={styles.arrowWrapper} activeOpacity={1}>
-        <View style={styles.arrowTouchArea}>
-          <Image
-            source={require('../../../assets/icons/arrow.png')}
-            style={styles.arrowIcon}
-          />
-        </View>
-      </TouchableOpacity>
+      <BackButton onPress={onBack} />
 
       {/* TITLE + IMAGE */}
       <View style={styles.titleRow}>
@@ -31,7 +25,7 @@ const CardHeader: React.FC<CardHeaderProps> = ({ name, imageUri, onImageChange, 
 
         <View style={styles.titleImageWrapper}>
           <Image
-            source={imageUri ? { uri: imageUri } : require('../../../assets/images/default_conservation.png')}
+            source={imageUri ? { uri: imageUri } : require('../../../../assets/images/default_conservation.png')}
             style={styles.titleImage}
           />
 
@@ -58,8 +52,8 @@ const CardHeader: React.FC<CardHeaderProps> = ({ name, imageUri, onImageChange, 
           <Image
             source={
               isFavorite
-                ? require('../../../assets/icons/like_blue.png')
-                : require('../../../assets/icons/like.png')
+                ? require('../../../../assets/icons/like_blue.png')
+                : require('../../../../assets/icons/like.png')
             }
             style={{ width: hp(3), height: hp(3), resizeMode: 'contain' }}
           />

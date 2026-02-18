@@ -1,29 +1,24 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, Image, StyleSheet, ScrollView, } from 'react-native';
+import React from 'react';
+import { View, Text, StyleSheet, ScrollView, } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import { useNavigation, NavigationProp } from '@react-navigation/native';
-import { RootStackParamList } from '../../navigation';
-import { useConservation } from '../../context/ConservationContext';
 import AnimatedButton from '../../animations/AnimatedButton';
 import JarColumn from '../../components/form/jars/JarColumn';
 import TotalJars from '../../components/form/jars/TotalJars';
+import { useEmptyJarsForm } from '../../hooks/Conservation/useEmptyJarsForm';
+import BackButton from '../../components/form/common/BackButton';
+import { NavigationProp, useNavigation } from '@react-navigation/native';
+import { RootStackParamList } from '../../navigation';
 
 const EmptyJarsConservation = () => {
+
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
-  // jars count
-  const { emptyJars, updateEmptyJars } = useConservation();
+  const handleBack = () => {
+    navigation.goBack();
+  };
 
-  // local changes by user
-  const [localJars, setLocalJars] = useState(emptyJars);
-  // sync local changes with context
-  useEffect(() => {
-    setLocalJars(emptyJars);
-  }, [emptyJars]);
-
-  // all empty jars count
-  const totalJars = Object.values(localJars).reduce((sum, val) => sum + val, 0);
+  const { localJars, setLocalJars, totalJars, saveChanges } = useEmptyJarsForm();
 
   return (
     // MAIN CONTAINER
@@ -34,18 +29,7 @@ const EmptyJarsConservation = () => {
       >
         <View style={styles.headerContainer}>
           {/* ARROW TO MAIN MENU */}
-          <TouchableOpacity 
-            onPress={() => navigation.navigate('MainMenu')} 
-            style={styles.arrowWrapper}
-            activeOpacity={1}  
-          >
-            <View style={styles.arrowTouchArea}>
-              <Image
-                source={require('../../../assets/icons/arrow.png')}
-                style={styles.arrowIcon}
-              />
-            </View>
-          </TouchableOpacity>
+          <BackButton onPress={handleBack} />
 
           {/* TITLE TEXT */}
           <Text style={styles.menuTitle}>Кількість порожніх банок</Text>
@@ -59,10 +43,7 @@ const EmptyJarsConservation = () => {
 
 
           {/* ADD CONSERVATION BUTTON */}
-          <AnimatedButton
-            onPress={() => updateEmptyJars(localJars)}
-            style={styles.addButton}
-          >
+          <AnimatedButton onPress={saveChanges} style={styles.addButton}>
             <Text style={styles.addButtonText}>Зберегти зміни</Text>
           </AnimatedButton>
 
@@ -75,7 +56,7 @@ const EmptyJarsConservation = () => {
 export default EmptyJarsConservation;
 
 const styles = StyleSheet.create({
-  // main cintainer
+  // main container
   container: { 
     flex: 1, 
     backgroundColor: '#FFF',
@@ -89,23 +70,6 @@ const styles = StyleSheet.create({
     marginBottom: hp(2), 
     paddingHorizontal: hp(1), 
   },
-
-  // arrow styles
-  arrowWrapper: {
-    alignSelf: 'flex-start',
-    marginBottom: hp(1),
-    marginLeft: -hp(1),
-  },
-  arrowTouchArea: {
-    padding: hp(1.2),          
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  arrowIcon: { 
-    width: hp(3.2), 
-    height: hp(3),
-    resizeMode: 'contain', 
-  },  
   
   // title text
   menuTitle: { 
