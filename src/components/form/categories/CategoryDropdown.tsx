@@ -1,13 +1,24 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {
   View,
   Text,
   Pressable,
   Image,
+  ScrollView,
+  Modal,
   StyleSheet,
-  ScrollView, 
 } from 'react-native';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
+
+const categories = [
+  'Мариновані',
+  'Солені',
+  'Квашені',
+  'Варення / Джеми',
+  'Компоти',
+  'Соуси / Кетчупи',
+  'Консерви в олії / жирі',
+];
 
 interface Props {
   selected: string | null;
@@ -22,80 +33,69 @@ interface Props {
   labelStyle?: object | object[];
 }
 
-const categories = [
-  'Мариновані',
-  'Солені',
-  'Квашені',
-  'Варення / Джеми',
-  'Компоти',
-  'Соуси / Кетчупи',
-  'Консерви в олії / жирі',
-];
-
 const CategoryDropdown: React.FC<Props> = ({
-    selected,
-    onSelect,
-    isOpen,
-    onToggle,
-    onClose,
-    inputStyle,
-    textStyle,
-    dropdownStyle,
-    itemTextStyle,
-    labelStyle
-  }) => {  
-
+  selected,
+  onSelect,
+  isOpen,
+  onToggle,
+  onClose,
+  inputStyle,
+  textStyle,
+  dropdownStyle,
+  itemTextStyle,
+  labelStyle,
+}) => {
   return (
-    <View style={{ marginTop: hp(2), position: 'relative', zIndex: 10 }}>
-      <Text style={labelStyle ||styles.label}>Категорія</Text>
+    <View style={{ marginTop: hp(2) }}>
+      <Text style={labelStyle || styles.label}>Категорія</Text>
 
       <Pressable
-      style={inputStyle || styles.inputContainer}
-      onPress={onToggle}
-    >
-      <Text style={textStyle || styles.inputText}>
-        {selected || 'Оберіть категорію'}
-      </Text>
-      <Image
-        source={require('../../../../assets/icons/frame_down.png')}
-        style={[styles.arrowIcon, isOpen && { transform: [{ rotate: '180deg' }] }]}
-      />
-    </Pressable>
-
-    {isOpen && (
-      <>
-        {/* Overlay */}
-        <Pressable
-          style={StyleSheet.absoluteFill}
-          onPress={onClose}
+        style={inputStyle || styles.inputContainer}
+        onPress={onToggle}
+      >
+        <Text style={textStyle || styles.inputText}>
+          {selected || 'Оберіть категорію'}
+        </Text>
+        <Image
+          source={require('../../../../assets/icons/frame_down.png')}
+          style={[styles.arrowIcon, isOpen && { transform: [{ rotate: '180deg' }] }]}
         />
+      </Pressable>
 
-        {/* Dropdown */}
-        <View style={dropdownStyle || styles.dropdownContainer}>
-          <ScrollView
-            style={{ maxHeight: hp(30) }}
-            nestedScrollEnabled
-            showsVerticalScrollIndicator
-            keyboardShouldPersistTaps="handled"
-          >
-            {categories.map((cat, index) => (
-              <Pressable
-                key={index}
-                style={styles.dropdownItem}
-                onPress={() => {
-                  onSelect(cat);
-                  onClose();
-                }}
-              >
-                <Text style={itemTextStyle || styles.dropdownItemText}>
-                  {cat}
-                </Text>
-              </Pressable>
-            ))}
-          </ScrollView>
-        </View>
-      </>
-    )}
+      {isOpen && (
+        <>
+          {/* Dropdown */}
+          <View style={[dropdownStyle || styles.dropdownContainer, { zIndex: 1000 }]}>
+            <ScrollView
+              style={{ maxHeight: hp(30) }}
+              nestedScrollEnabled
+              keyboardShouldPersistTaps="handled"
+              showsVerticalScrollIndicator
+              onStartShouldSetResponder={() => true}
+              onMoveShouldSetResponder={() => true}
+            >
+              {categories.map((cat, index) => (
+                <Pressable
+                  key={index}
+                  style={styles.dropdownItem}
+                  onPress={() => {
+                    onSelect(cat);
+                    onClose();
+                  }}
+                >
+                  <Text style={itemTextStyle || styles.dropdownItemText}>{cat}</Text>
+                </Pressable>
+              ))}
+            </ScrollView>
+          </View>
+
+          {/* Overlay для закриття */}
+          <Pressable
+            style={[StyleSheet.absoluteFill, { zIndex: 500 }]}
+            onPress={onClose}
+          />
+        </>
+      )}
 
     </View>
   );
@@ -127,19 +127,17 @@ const styles = StyleSheet.create({
   },
   dropdownContainer: {
     position: 'absolute',
-    top: '100%',
-    left: 0,
-    right: 0,
-    marginTop: hp(0.5),
+    top: hp(10), // тут можна коригувати, щоб під input
+    left: hp(3.2),
+    right: hp(3.2),
     backgroundColor: '#F6F6F6',
     borderWidth: 1,
     borderColor: '#AEAEAE',
     borderRadius: hp(1.5),
-    zIndex: 1000,
-    elevation: 5,
     maxHeight: hp(30),
+    elevation: 5,
+    zIndex: 100,
   },
-  
   dropdownItem: {
     paddingVertical: hp(1.5),
     paddingHorizontal: hp(2),
@@ -156,5 +154,9 @@ const styles = StyleSheet.create({
     height: hp(2.5),
     marginLeft: hp(1),
     resizeMode: 'contain',
+  },
+  modalOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: 'transparent',
   },
 });

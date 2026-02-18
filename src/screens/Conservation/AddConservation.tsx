@@ -65,6 +65,8 @@ const AddConservation = () => {
                 form.setIsCategoryOpen(prev => !prev);
               }}
               onClose={() => form.setIsCategoryOpen(false)}
+              dropdownStyle={[styles.DropdownContainer, { width: '100%', marginLeft: 0 }]}
+              itemTextStyle={styles.dropdownItemText} 
             />
 
             {/* CONSERVATION PERIOD INPUT */}
@@ -160,6 +162,31 @@ const styles = StyleSheet.create({
     color: 'black', 
     textAlign: 'center', 
     marginTop: hp(3),  
+  },
+
+   // CATEGORIES
+   dropdownItemText: {
+    fontSize: hp(2.2),
+    color: '#333',
+    textAlign: 'center',
+  },
+  DropdownContainer: {
+    position: 'absolute',
+    top: '100%',
+    left: 0,
+    width: '90%',          
+    backgroundColor: '#F6F6F6',
+    borderWidth: 1,
+    borderColor: '#AEAEAE',
+    borderRadius: hp(1.5),
+    marginLeft: hp(2),
+    marginTop: hp(0.5),
+    zIndex: 100,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
+    elevation: 5,
   },
 
   // button styles

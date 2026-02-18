@@ -4,6 +4,7 @@ import {
   Text,
   StyleSheet,
   ScrollView,
+  Pressable,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
@@ -50,64 +51,73 @@ const CardPageOther = () => {
 
     return (
     <SafeAreaView style={[styles.container]}>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        {/* HEADER */}
-        <CardHeader
-          name={currentItem.name}
-          imageUri={imageUri}
-          onImageChange={handleImageChange}
-          onBack={() => navigation.goBack()}
-        />
+      <Pressable 
+        style={{ flex: 1 }} 
+        onPress={() => {
+          setDropdownVisible(false);
+        }}
+      >
+        <ScrollView 
+        showsVerticalScrollIndicator={false}>
+         
+          {/* HEADER */}
+          <CardHeader
+            name={currentItem.name}
+            imageUri={imageUri}
+            onImageChange={handleImageChange}
+            onBack={() => navigation.goBack()}
+          />
 
-        {/* SUM TOTAL */}
-        <TotalJars totalJarsAllYears={currentItem.totalCount} />
+          {/* SUM TOTAL */}
+          <TotalJars totalJarsAllYears={currentItem.totalCount} />
 
-        {/* DATE SELECT */}
-        <View style={styles.dateContainer}>
-          <Text style={styles.timeTitle}>Дата купівлі:</Text>
-          <View style={styles.yearContainer}>
-            <YearPicker
-              selectedYear={selectedDate}
-              onSelect={setSelectedDate}
-              isOpen={dropdownVisible}
-              onToggle={() => setDropdownVisible(prev => !prev)}
-              onClose={() => setDropdownVisible(false)}
-              years={sortedHistory.map(h => h.date)}
-              fontSize={hp(2.5)}
-            />
+          {/* DATE SELECT */}
+          <View style={styles.dateContainer}>
+            <Text style={styles.timeTitle}>Дата купівлі:</Text>
+            <View style={styles.yearContainer}>
+              <YearPicker
+                selectedYear={selectedDate}
+                onSelect={setSelectedDate}
+                isOpen={dropdownVisible}
+                onToggle={() => setDropdownVisible(prev => !prev)}
+                onClose={() => setDropdownVisible(false)}
+                years={sortedHistory.map(h => h.date)}
+                fontSize={hp(2.5)}
+              />
+            </View>
           </View>
-        </View>
 
-        {/* ProductNumCard */}
-        {selectedDate && (
-          <View style={styles.productCardWrap}>
-            <ProductNumCard
-              image={require('../../../assets/icons/products.png')}
-              count={sortedHistory.find(h => h.date === selectedDate)?.count ?? 0}
-              circleLabel={(sortedHistory.find(h => h.date === selectedDate)?.count ?? 0).toString()}
-              style={styles.productNumCard}
-              onChange={handleUpdateCount}
-            />
-          </View>
-        )}
+          {/* ProductNumCard */}
+          {selectedDate && (
+            <View style={styles.productCardWrap}>
+              <ProductNumCard
+                image={require('../../../assets/icons/products.png')}
+                count={sortedHistory.find(h => h.date === selectedDate)?.count ?? 0}
+                circleLabel={(sortedHistory.find(h => h.date === selectedDate)?.count ?? 0).toString()}
+                style={styles.productNumCard}
+                onChange={handleUpdateCount}
+              />
+            </View>
+          )}
 
-        {/* DELETE BUTTON */}
-        {selectedDate && (
-          <View style={styles.deleteRow}>
-            <Text style={styles.timeTitleDelete}>
-              Видалити продукти за цю{'\n'}дату:
-            </Text>
-            <DeleteIngredientButton
-              onPress={() => selectedDate && handleDeleteDate(selectedDate)}
-            />
-          </View>
-        )}
+          {/* DELETE BUTTON */}
+          {selectedDate && (
+            <View style={styles.deleteRow}>
+              <Text style={styles.timeTitleDelete}>
+                Видалити продукти за цю{'\n'}дату:
+              </Text>
+              <DeleteIngredientButton
+                onPress={() => selectedDate && handleDeleteDate(selectedDate)}
+              />
+            </View>
+          )}
 
-        {/* SAVE BUTTON */}
-        <AnimatedButton onPress={() => handleSave(() => navigation.goBack())} style={styles.saveButton}>
-          <Text style={styles.saveButtonText}>Зберегти зміни</Text>
-        </AnimatedButton>
-      </ScrollView>
+          {/* SAVE BUTTON */}
+          <AnimatedButton onPress={() => handleSave(() => navigation.goBack())} style={styles.saveButton}>
+            <Text style={styles.saveButtonText}>Зберегти зміни</Text>
+          </AnimatedButton>
+        </ScrollView>
+      </Pressable>
     </SafeAreaView>
   );
 };

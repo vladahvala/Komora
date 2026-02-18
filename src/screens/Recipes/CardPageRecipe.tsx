@@ -84,7 +84,7 @@ const CardPageRecipe = () => {
               onClose={() => setCategoryDropdownVisible(false)}
               inputStyle={[styles.bigIconContainerCat, { width: '100%' }]}
               textStyle={styles.timeTitleCat}
-              dropdownStyle={[styles.yearsDropdownContainer, { width: '100%', marginLeft: 0 }]}
+              dropdownStyle={[styles.DropdownContainer, { width: '100%', marginLeft: 0 }]}
               itemTextStyle={styles.dropdownItemText}
               labelStyle={{ display: 'none' }} 
             />
@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 
-  yearsDropdownContainer: {
+  DropdownContainer: {
     position: 'absolute',
     top: '100%',
     left: 0,
