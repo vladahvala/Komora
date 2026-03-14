@@ -115,15 +115,19 @@ export const ConservationProvider = ({ children }: Props) => {
         const newHistory: any = {};
   
         Object.entries(item.history || {}).forEach(([year, data]: any) => {
-          if (data && typeof data === 'object' && !('jarCounts' in data)) {
-            newHistory[year] = {
-              jarCounts: data,
-              period: 0,
-              notified: false,
-            };
-          } else {
-            newHistory[year] = data;
-          }
+          Object.entries(item.history || {}).forEach(([year, data]: any) => {
+            if (data && typeof data === 'object') {
+              if (!('jarCounts' in data)) {
+                newHistory[year] = {
+                  jarCounts: data,
+                  period: 0,
+                  notified: false,
+                };
+              } else {
+                newHistory[year] = data;
+              }
+            }
+          });
         });
   
         return { ...item, history: newHistory };

@@ -4,8 +4,8 @@ import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation';
 import MenuCard from '../components/CardsInCards/MenuCard';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import AnimatedButton from '../animations/AnimatedButton';
-import { useMainMenuAnimation } from '../hooks/MainScreen/useMainMenuAnimation';
+import AnimatedButton from '../components/form/buttons/AnimatedButton';
+import { useMainMenuAnimation } from '../hooks/Animations/useMainMenuAnimation';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'MainMenu'>;
 

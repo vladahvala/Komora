@@ -2,9 +2,16 @@
   "devDependencies": {
     "@react-native-community/cli": "^20.0.2",
     "@react-native/metro-config": "^0.83.1",
+    "@testing-library/jest-native": "^5.4.3",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/react-native": "^13.3.3",
+    "@types/jest": "^30.0.0",
     "@types/react": "~19.1.10",
+    "jest": "^30.3.0",
+    "jest-environment-jsdom": "^30.2.0",
     "metro": "^0.83.3",
     "metro-config": "^0.83.3",
+    "ts-jest": "^29.4.6",
     "typescript": "~5.9.2"
   },
   "dependencies": {
@@ -22,6 +29,7 @@
     "react-native-linear-gradient": "^2.8.3",
     "react-native-responsive-screen": "^1.4.2",
     "react-native-safe-area-context": "^5.6.2",
+    "react-native-screens": "~3.22.0",
     "react-native-shadow-2": "^7.1.2",
     "react-native-svg": "15.12.1"
   },
@@ -29,6 +37,7 @@
   "version": "1.0.0",
   "scripts": {
     "android": "expo run:android",
-    "ios": "expo run:ios"
+    "ios": "expo run:ios",
+    "test": "jest"
   }
 }

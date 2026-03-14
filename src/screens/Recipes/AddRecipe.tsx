@@ -1,21 +1,24 @@
 import React from 'react';
 import { 
   View, Text, StyleSheet, TextInput, ScrollView,
-  Pressable, 
+  Pressable,
+  SafeAreaView, 
 } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigation';
 import AlertModal from '../../modals/AlertModal';
-import AnimatedButton from '../../animations/AnimatedButton';
+import AnimatedButton from '../../components/form/buttons/AnimatedButton';
 import FormHeaderWithImage from '../../components/form/common/FormHeaderWithImage';
 import LabeledInput from '../../components/form/common/LabeledInput';
 import CategoryDropdown from '../../components/form/categories/CategoryDropdown';
-import { useAddRecipeForm } from '../../hooks/Recipes/useAddRecipeForm';
+import { useAddRecipeForm } from '../../hooks/Recipes/useRecipeForm';
+import { useBottomTabBarHeight } from '@react-navigation/bottom-tabs';
 
 const AddRecipe = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const tabBarHeight = useBottomTabBarHeight();
 
   const {
     // Form fields
@@ -42,18 +45,21 @@ const AddRecipe = () => {
   } = useAddRecipeForm();
 
   return (
-    <SafeAreaProvider style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Pressable 
         style={{ flex: 1 }} 
         onPress={() => {
           setCategoryModalVisible(false);
         }}
       >
-      <ScrollView 
-        contentContainerStyle={styles.scrollContent} 
-        showsVerticalScrollIndicator={false} 
-        keyboardShouldPersistTaps="handled"
-      >
+      <ScrollView
+  contentContainerStyle={[
+    styles.scrollContent,
+    { paddingBottom: tabBarHeight + hp(2) }
+  ]}
+  showsVerticalScrollIndicator={false}
+  keyboardShouldPersistTaps="handled"
+>
         <View style={styles.headerContainer}>
 
           <FormHeaderWithImage
@@ -102,7 +108,7 @@ const AddRecipe = () => {
         </View>
       </ScrollView>
       </Pressable>
-    </SafeAreaProvider>
+    </SafeAreaView>
   );
 };
 
@@ -115,7 +121,7 @@ const styles = StyleSheet.create({
   },
   container: { 
     flex: 1, 
-    backgroundColor: '#F7F9FD',
+    backgroundColor: '#FFF',
     paddingHorizontal: hp(3.2),
   },
   scrollContent: {

@@ -62,7 +62,7 @@ export default function RecipesNavigation() {
         }}
       />
       <Tab.Screen
-        name="AddTab"
+        name="FavRecipes"
         component={FavRecipes}
         options={{
           tabBarIcon: ({ focused }) => (
@@ -78,7 +78,7 @@ export default function RecipesNavigation() {
         }}
       />
       <Tab.Screen
-        name="JarTab"
+        name="AddTab"
         component={AddRecipe}
         options={{
           tabBarIcon: ({ focused }) => (
@@ -112,7 +112,8 @@ const styles = StyleSheet.create({
   iconContainer: {
     width: hp(6),          
     height: hp(6),           
-    borderRadius: hp(3),     
+    borderRadius: hp(3), 
+    marginTop: hp(3),
     alignItems: 'center',
     justifyContent: 'center',
   },

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Text, StyleSheet, TextInput } from 'react-native';
-import AnimatedButton from '../../../animations/AnimatedButton';
+import AnimatedButton from '../buttons/AnimatedButton';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
 interface RecipeEditorProps {

@@ -65,6 +65,6 @@ export default RecipeMain;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F7F9FD'
+    backgroundColor: '#FFF',
   },
 });

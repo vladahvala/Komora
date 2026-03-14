@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
   // main container
   container: { 
     flex: 1, 
-    backgroundColor: '#F7F9FD' 
+    backgroundColor: '#FFF',
   },
   // header container
   headerContainer: { 

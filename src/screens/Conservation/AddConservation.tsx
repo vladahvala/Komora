@@ -6,18 +6,21 @@ import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigation';
 import AlertModal from '../../modals/AlertModal';
 import { Keyboard } from 'react-native';
-import AnimatedButton from '../../animations/AnimatedButton';
+import AnimatedButton from '../../components/form/buttons/AnimatedButton';
 import CategoryDropdown from '../../components/form/categories/CategoryDropdown';
 import LabeledInput from '../../components/form/common/LabeledInput';
 import YearPicker from '../../components/form/years/YearPicker';
 import JarGrid from '../../components/form/jars/JarGrid';
 import FormHeaderWithImage from '../../components/form/common/FormHeaderWithImage';
 import { useConservationForm } from '../../hooks/Conservation/useConservationForm';
+import { useConservation } from '../../context/ConservationContext';
 
 const AddConservation = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
-  const form = useConservationForm();
+  const { addConservation } = useConservation();
+
+  const form = useConservationForm(addConservation);
 
   const years = ['2021', '2022', '2023', '2024', '2025', '2026'];
 

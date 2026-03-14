@@ -7,7 +7,7 @@ import { useRoute, RouteProp } from '@react-navigation/native';
 
 import { RootStackParamList } from '../../navigation';
 
-import AnimatedButton from '../../animations/AnimatedButton';
+import AnimatedButton from '../../components/form/buttons/AnimatedButton';
 import JarGrid from '../../components/form/jars/JarGrid';
 import CategoryDropdown from '../../components/form/categories/CategoryDropdown';
 import CardHeader from '../../components/form/common/CardHeader';

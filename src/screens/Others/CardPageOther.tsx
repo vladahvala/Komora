@@ -11,7 +11,7 @@ import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useNavigation, NavigationProp, useRoute, RouteProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigation';
 import ProductNumCard from '../../components/CardsInCards/ProductNumCard';
-import AnimatedButton from '../../animations/AnimatedButton';
+import AnimatedButton from '../../components/form/buttons/AnimatedButton';
 import CardHeader from '../../components/form/common/CardHeader';
 import TotalJars from '../../components/form/jars/TotalJars';
 import YearPicker from '../../components/form/years/YearPicker';

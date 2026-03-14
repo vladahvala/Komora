@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Image, StyleSheet } from 'react-native';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import AnimatedButton from '../../../animations/AnimatedButton';
+import AnimatedButton from './AnimatedButton';
 
 interface DeleteIngredientButtonProps {
   onPress: () => void;

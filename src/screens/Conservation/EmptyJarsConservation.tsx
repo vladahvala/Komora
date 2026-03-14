@@ -2,23 +2,15 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView, } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import AnimatedButton from '../../animations/AnimatedButton';
+import AnimatedButton from '../../components/form/buttons/AnimatedButton';
 import JarColumn from '../../components/form/jars/JarColumn';
 import TotalJars from '../../components/form/jars/TotalJars';
 import { useEmptyJarsForm } from '../../hooks/Conservation/useEmptyJarsForm';
 import BackButton from '../../components/form/common/BackButton';
-import { NavigationProp, useNavigation } from '@react-navigation/native';
-import { RootStackParamList } from '../../navigation';
 
 const EmptyJarsConservation = () => {
 
-  const navigation = useNavigation<NavigationProp<RootStackParamList>>();
-
-  const handleBack = () => {
-    navigation.goBack();
-  };
-
-  const { localJars, setLocalJars, totalJars, saveChanges } = useEmptyJarsForm();
+  const { localJars, setLocalJars, totalJars, saveChanges, handleBack } = useEmptyJarsForm();
 
   return (
     // MAIN CONTAINER
@@ -39,7 +31,7 @@ const EmptyJarsConservation = () => {
 
 
           {/* TOTAL JARS */}
-          <TotalJars label="Загальна к-ть банок:" value={totalJars} />
+          <TotalJars value={totalJars} />
 
 
           {/* ADD CONSERVATION BUTTON */}
@@ -60,7 +52,7 @@ const styles = StyleSheet.create({
   container: { 
     flex: 1, 
     backgroundColor: '#FFF',
-    paddingHorizontal: hp(3.2),
+    paddingHorizontal: hp(3),
   },
   scrollContent: {
     paddingBottom: hp(4), 

@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
   // main container
   container: {
     flex: 1,
-    backgroundColor: '#F7F9FD',
+    backgroundColor: '#FFF',
   },
   scrollContainer: {
     paddingHorizontal: hp(3.2),

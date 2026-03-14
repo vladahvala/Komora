@@ -24,8 +24,11 @@ export default function ConservationNavigation() {
       initialRouteName="HomeTab"
       screenOptions={{
         headerShown: false,
-        tabBarStyle: styles.tabBar,
         tabBarShowLabel: false,
+        tabBarStyle: styles.tabBar,
+        tabBarBackground: () => (
+          <View style={{ flex: 1, backgroundColor: '#FFF' }} />
+        ),
       }}
     >
       {/* TABS*/}

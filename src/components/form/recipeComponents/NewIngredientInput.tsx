@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, Image, StyleSheet, TextInput, Pressable } from 'react-native';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
-import AnimatedButton from '../../../animations/AnimatedButton';
+import AnimatedButton from '../buttons/AnimatedButton';
 
 interface NewIngredientInputProps {
     newIngredient: { amount: string; unit: string; name: string };

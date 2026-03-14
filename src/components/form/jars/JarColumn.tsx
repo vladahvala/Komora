@@ -27,19 +27,23 @@ const jarTypes = [
 const JarColumn: React.FC<Props> = ({ jarCounts, setJarCounts }) => {
   return (
     <View style={styles.column}>
-      {jarTypes.map(({ key, label, circleLabel }) => (
-        <JarNumCard
-          key={key}
-          image={require('../../../../assets/jar_icons/empty_jar.png')}
-          label={label}
-          circleLabel={circleLabel}
-          count={jarCounts[key]}
-          onChange={newCount =>
-            setJarCounts(prev => ({ ...prev, [key]: newCount }))
-          }
-          style={{ marginBottom: hp(4) }}
-        />
-      ))}
+     {jarTypes.map(({ key, label, circleLabel }, index) => {
+  const isLast = index === jarTypes.length - 1;
+
+  return (
+    <JarNumCard
+      key={key}
+      image={require('../../../../assets/jar_icons/empty_jar.png')}
+      label={label}
+      circleLabel={circleLabel}
+      count={jarCounts[key]}
+      onChange={newCount =>
+        setJarCounts(prev => ({ ...prev, [key]: newCount }))
+      }
+      style={!isLast ? { marginBottom: hp(4) } : undefined}
+    />
+  );
+})}
     </View>
   );
 };

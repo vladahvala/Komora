@@ -12,7 +12,7 @@ import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from '../../navigation';
 import AlertModal from '../../modals/AlertModal';
-import AnimatedButton from '../../animations/AnimatedButton';
+import AnimatedButton from '../../components/form/buttons/AnimatedButton';
 import FormHeaderWithImage from '../../components/form/common/FormHeaderWithImage';
 import LabeledInput from '../../components/form/common/LabeledInput';
 import DatePickerInput from '../../components/form/years/DatePickerInput';
