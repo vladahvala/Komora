@@ -1,5 +1,6 @@
 import { useState, useContext } from 'react';
 import { OthersContext } from '../../context/OthersContext';
+import { renderHook, act } from '@testing-library/react-native';
 
 /**
  * Custom hook for managing the "Other Products" form,

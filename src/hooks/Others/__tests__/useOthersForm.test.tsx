@@ -1,4 +1,4 @@
-import { renderHook, act } from '@testing-library/react';
+import { renderHook, act } from '@testing-library/react-native';
 import { useOthersForm } from '../useOthersForm';
 import { OthersContext } from '../../../context/OthersContext';
 import React from 'react';
