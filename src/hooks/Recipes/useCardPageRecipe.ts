@@ -17,6 +17,9 @@ export const useCardPageRecipe = (item: RecipeItem) => {
     toggleFavorite 
   } = useRecipe();
 
+  const toggle = () => {
+    toggleFavorite(item.name);
+  };
   // current card
   const currentItem = recipes.find(c => c.name === item.name);
 
@@ -96,6 +99,6 @@ export const useCardPageRecipe = (item: RecipeItem) => {
     // recipe
     editableRecipeText,
     saveRecipeText,
-    toggleFavorite,
+    toggleFavorite: toggle,
   };
 };
