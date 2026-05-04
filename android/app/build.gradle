@@ -82,24 +82,18 @@ def enableMinifyInReleaseBuilds = (findProperty('android.enableMinifyInReleaseBu
 def jscFlavor = 'io.github.react-native-community:jsc-android:2026004.+'
 
 android {
-    ndkVersion rootProject.ext.ndkVersion
-    // externalNativeBuild {
-    //     cmake {
-    //         path "android/CMakeLists.txt"
-    //         version "3.22.1"
-    //     }
-    // }
+    ndkVersion "26.2.11394342"
 
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace "com.komora"
+    namespace 'com.anonymous.komora'
     defaultConfig {
-        applicationId "com.komora"
+        applicationId 'com.anonymous.komora'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
-        versionName "1.0"
+        versionName "1.0.0"
 
         buildConfigField "String", "REACT_NATIVE_RELEASE_LEVEL", "\"${findProperty('reactNativeReleaseLevel') ?: 'stable'}\""
     }

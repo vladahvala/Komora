@@ -1,4 +1,4 @@
-package com.komora
+package com.anonymous.komora
 
 import android.os.Build
 import android.os.Bundle

@@ -1,5 +1,13 @@
 {
-  "android": {
-    "package": "com.anonymous.komora"
+  "expo": {
+    "newArchEnabled": false,
+    "android": {
+      "package": "com.anonymous.komora"
+    },
+    "plugins": [
+      "@react-native-community/datetimepicker",
+      "./plugins/withNotifeeMaven",
+      "./plugins/withAndroidNdk26"
+    ]
   }
 }
