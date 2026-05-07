@@ -93,12 +93,12 @@ export const useJarManager = (currentItem: any) => {
         const dataToCount =
           drafts[year] ?? yearData.jarCounts ?? emptyJarCounts;
 
-        const yearSum = Object.values(dataToCount).reduce(
-          (s, val) => s + val,
-          0
-        );
-
-        return sum + yearSum;
+          const yearSum = Object.values(dataToCount).reduce<number>(
+            (sum, v) => sum + Number(v),
+            0
+          );
+          
+          return sum + yearSum;
       }, 0)
     : 0;
 
