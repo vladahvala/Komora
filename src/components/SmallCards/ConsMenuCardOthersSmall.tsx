@@ -35,13 +35,16 @@ const ConsMenuCardOthersSmall = ({ item }: Props) => {
       onPressIn={() => setPressed(true)}
       onPressOut={() => setPressed(false)}
     >
-      <Shadow
-        distance={pressed ? 15 : 7}
-        startColor={pressed ? 'rgba(7,181,189,0.6)' : 'rgba(0,0,0,0.3)'}
-        radius={12}
-        offset={[0, 0]}
-        viewStyle={{ width: '100%', borderRadius: 12, backgroundColor: '#fff' }}
-      >
+<Shadow
+  distance={pressed ? 15 : 7}
+  startColor={
+    pressed
+      ? 'rgba(7,181,189,0.6)'
+      : 'rgba(0,0,0,0.3)'
+  }
+  offset={[0, 0]}
+>
+<View style={styles.shadowWrapper}>
         <View style={styles.cardContainer}>
           {/* IMAGE */}
           <Image
@@ -68,15 +71,15 @@ const ConsMenuCardOthersSmall = ({ item }: Props) => {
 
               {/* TRASH INLINE */}
               <ActionButtonSmallCards
-                icon={require('../../../assets/icons/trash.png')}
-                onPress={(e) => {
-                  e.stopPropagation();
-                  setModalVisible(true);
-                }}
-                style={{ marginLeft: 'auto' }}
-              />
+              icon={require('../../../assets/icons/trash.png')}
+              onPress={() => {
+                setModalVisible(true);
+              }}
+              style={{ marginLeft: 'auto' }}
+            />
             </View>
           </View>
+        </View>
         </View>
       </Shadow>
 
@@ -140,4 +143,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
 
+  shadowWrapper: {
+    width: '100%',
+    borderRadius: 12,
+    backgroundColor: '#fff',
+    overflow: 'hidden',
+  }
 });
