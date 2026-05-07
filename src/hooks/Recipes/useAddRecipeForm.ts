@@ -50,7 +50,7 @@ export const useAddRecipeForm = () => {
       category: selectedCategory,
       imageUri,
       recipeText,
-      history: {},
+      // history: {},
     };
 
     // Add recipe to context
