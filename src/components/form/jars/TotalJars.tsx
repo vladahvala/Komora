@@ -2,14 +2,23 @@ import React from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 
-const TotalJars = ({ totalJarsAllYears }: TotalJarsProps) => {
+type TotalJarsProps = {
+  totalJarsAllYears: number;
+  label?: string;
+};
+
+const TotalJars = ({ totalJarsAllYears, label = 'банок' }: TotalJarsProps) => {
   return (
     <View style={localStyles.container}>
-      {/* Загальна кількість банок */}
       <View style={localStyles.timeRow}>
-        <Text style={localStyles.timeTitle}>Загальна к-ть банок:</Text>
+        <Text style={localStyles.timeTitle}>
+          Загальна к-ть {label}:
+        </Text>
+
         <View style={localStyles.bigIconContainer}>
-          <Text style={localStyles.timeTitle}>{totalJarsAllYears}</Text>
+          <Text style={localStyles.timeTitle}>
+            {totalJarsAllYears}
+          </Text>
         </View>
       </View>
     </View>

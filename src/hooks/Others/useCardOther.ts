@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect  } from 'react';
 import { useOthers } from '../../context/OthersContext';
 
 /**
@@ -12,15 +12,19 @@ const normalizeName = (name: string) => name.trim().replace(/\s+/g, ' ').toLower
 export const useCardOther = (itemName: string) => {
   const { others, updateCount, updateImage, deleteHistory } = useOthers();
 
-  // Find the current product by normalized name
-  const currentItem = others.find(o => normalizeName(o.name) === normalizeName(itemName));
+    // Find the current product by normalized name
+    const currentItem = others.find(o => normalizeName(o.name) === normalizeName(itemName));
 
-  // Get sorted history by date (earliest first)
   const history = currentItem?.history ?? [];
-  const sortedHistory = [...history].sort((a, b) => {
+
+  const [draftHistory, setDraftHistory] = useState(history);
+  // Get sorted history by date (earliest first)
+
+  const sortedHistory = [...draftHistory].sort((a, b) => {
     const [d1, m1, y1] = a.date.split('.');
     const [d2, m2, y2] = b.date.split('.');
-    return new Date(`${y1}-${m1}-${d1}`).getTime() - new Date(`${y2}-${m2}-${d2}`).getTime();
+    return new Date(`${y1}-${m1}-${d1}`).getTime() -
+           new Date(`${y2}-${m2}-${d2}`).getTime();
   });
 
   // Image URI state
@@ -32,6 +36,24 @@ export const useCardOther = (itemName: string) => {
   // Dropdown visibility state
   const [dropdownVisible, setDropdownVisible] = useState(false);
 
+  const editedTotal = draftHistory.reduce(
+    (sum, item) => sum + item.count,
+    0
+  );
+
+  const editedCount =
+  draftHistory.find(h => h.date === selectedDate)?.count ?? 0;
+
+  useEffect(() => {
+    if (!currentItem) return;
+  
+    setDraftHistory(currentItem.history);
+  
+    setSelectedDate(currentItem.history[0]?.date || null);
+  
+    setImageUri(currentItem.imageUri || null);
+  }, [currentItem]);
+
   // Update image locally and in context
   const handleImageChange = (uri: string) => {
     setImageUri(uri);
@@ -41,21 +63,42 @@ export const useCardOther = (itemName: string) => {
   // Delete history entry by date
   const handleDeleteDate = (date: string) => {
     if (!currentItem) return;
+  
+    const updated = draftHistory.filter(h => h.date !== date);
+  
+    setDraftHistory(updated);
+  
+    setSelectedDate(updated[0]?.date || null);
+  
     deleteHistory(currentItem.name, date);
-    const newHistory = currentItem.history.filter(h => h.date !== date);
-    setSelectedDate(newHistory[0]?.date || null);
   };
-
   // Update count for selected date
   const handleUpdateCount = (count: number) => {
-    if (currentItem && selectedDate) updateCount(currentItem.name, count, selectedDate);
+    if (!selectedDate) return;
+  
+    setDraftHistory(prev =>
+      prev.map(h =>
+        h.date === selectedDate ? { ...h, count } : h
+      )
+    );
   };
 
   // Save changes (image updates) and optionally call onFinish
-  const handleSave = (onFinish?: () => void) => {
-    if (currentItem && imageUri) updateImage(currentItem.name, imageUri);
-    if (onFinish) onFinish();
-  };
+const handleSave = (onFinish?: () => void) => {
+  if (currentItem) {
+    if (imageUri) {
+      updateImage(currentItem.name, imageUri);
+    }
+
+    if (selectedDate) {
+      updateCount(currentItem.name, editedCount, selectedDate);
+    }
+  }
+
+  if (onFinish) onFinish();
+};
+
+
 
   return {
     // Current product
@@ -79,5 +122,8 @@ export const useCardOther = (itemName: string) => {
     handleDeleteDate,
     handleUpdateCount,
     handleSave,
+    editedCount,
+
+    editedTotal,
   };
 };

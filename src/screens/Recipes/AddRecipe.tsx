@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { 
   View, Text, StyleSheet, TextInput, ScrollView,
   Pressable, 
@@ -16,6 +16,15 @@ import { useAddRecipeForm } from '../../hooks/Recipes/useAddRecipeForm';
 
 const AddRecipe = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
+  const scrollRef = useRef<ScrollView>(null);
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      scrollRef.current?.scrollTo({ y: 0, animated: false });
+    }, 0);
+  
+    return () => clearTimeout(timeout);
+  }, []);
 
   const {
     // Form fields
@@ -50,6 +59,7 @@ const AddRecipe = () => {
         }}
       >
       <ScrollView 
+        ref={scrollRef}
         contentContainerStyle={styles.scrollContent} 
         showsVerticalScrollIndicator={false} 
         keyboardShouldPersistTaps="handled"

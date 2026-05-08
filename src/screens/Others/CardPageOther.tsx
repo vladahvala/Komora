@@ -46,7 +46,9 @@ const CardPageOther = () => {
     handleDeleteDate, 
     handleUpdateCount, 
     handleSave,
-    
+    editedCount,
+
+    editedTotal,
   } = useCardOther(item.name);
 
     return (
@@ -69,7 +71,7 @@ const CardPageOther = () => {
           />
 
           {/* SUM TOTAL */}
-          <TotalJars totalJarsAllYears={currentItem.totalCount} />
+          <TotalJars totalJarsAllYears={editedTotal} label="штук" />
 
           {/* DATE SELECT */}
           <View style={styles.dateContainer}>
@@ -92,8 +94,8 @@ const CardPageOther = () => {
             <View style={styles.productCardWrap}>
               <ProductNumCard
                 image={require('../../../assets/icons/products.png')}
-                count={sortedHistory.find(h => h.date === selectedDate)?.count ?? 0}
-                circleLabel={(sortedHistory.find(h => h.date === selectedDate)?.count ?? 0).toString()}
+                count={editedCount}
+                circleLabel={editedCount.toString()}
                 style={styles.productNumCard}
                 onChange={handleUpdateCount}
               />

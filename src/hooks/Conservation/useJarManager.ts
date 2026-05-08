@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 /**
  * Custom hook for managing jar counts and related data for a conservation item.
@@ -55,6 +55,13 @@ export const useJarManager = (currentItem: any) => {
     setPeriod(currentItem.history[selectedYear]?.period ?? 0);
   }, [selectedYear, currentItem]);
 
+  useEffect(() => {
+    setDrafts(prev => ({
+      ...prev,
+      [selectedYear]: jarCounts,
+    }));
+  }, [jarCounts, selectedYear]);
+
   const handleYearChange = (year: string) => {
     setSelectedYear(year);
 
@@ -71,16 +78,10 @@ export const useJarManager = (currentItem: any) => {
   };
 
   const updateJarCount = (key: keyof JarCounts, newCount: number) => {
-    setJarCounts(prev => {
-      const updated = { ...prev, [key]: newCount };
-
-      setDrafts(d => ({
-        ...d,
-        [selectedYear]: updated,
-      }));
-
-      return updated;
-    });
+    setJarCounts(prev => ({
+      ...prev,
+      [key]: newCount,
+    }));
   };
 
   const totalJarsCurrentYear = Object.values(jarCounts).reduce(
@@ -88,19 +89,21 @@ export const useJarManager = (currentItem: any) => {
     0
   );
 
-  const totalJarsAllYears = currentItem
-    ? Object.entries(currentItem.history).reduce((sum, [year, yearData]: any) => {
-        const dataToCount =
-          drafts[year] ?? yearData.jarCounts ?? emptyJarCounts;
-
-          const yearSum = Object.values(dataToCount).reduce<number>(
-            (sum, v) => sum + Number(v),
-            0
-          );
-          
-          return sum + yearSum;
-      }, 0)
-    : 0;
+  const totalJarsAllYears = useMemo(() => {
+    if (!currentItem) return 0;
+  
+    return Object.entries(currentItem.history).reduce((sum, [year, yearData]: any) => {
+      const data =
+        drafts[year] ?? yearData.jarCounts ?? emptyJarCounts;
+  
+      const yearSum = Object.values(data).reduce(
+        (s, v) => s + Number(v),
+        0
+      );
+  
+      return sum + yearSum;
+    }, 0);
+  }, [currentItem, drafts]);
 
   const selectedHistory = currentItem?.history[selectedYear];
 
