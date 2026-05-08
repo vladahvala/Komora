@@ -4,7 +4,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import AnimatedButton from '../../animations/AnimatedButton';
 import JarColumn from '../../components/form/jars/JarColumn';
-import TotalJars from '../../components/form/jars/TotalJars';
+import TotalJarsEmpty from '../../components/form/jars/TotalJarsEmpty';
 import { useEmptyJarsForm } from '../../hooks/Conservation/useEmptyJarsForm';
 import BackButton from '../../components/form/common/BackButton';
 import { NavigationProp, useNavigation } from '@react-navigation/native';
@@ -15,7 +15,7 @@ const EmptyJarsConservation = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
 
   const handleBack = () => {
-    navigation.goBack();
+    navigation.navigate('MainMenu');
   };
 
   const { localJars, setLocalJars, totalJars, saveChanges } = useEmptyJarsForm();
@@ -39,7 +39,7 @@ const EmptyJarsConservation = () => {
 
 
           {/* TOTAL JARS */}
-          <TotalJars label="Загальна к-ть банок:" value={totalJars} />
+          <TotalJarsEmpty totalJarsAllYears={totalJars} />
 
 
           {/* ADD CONSERVATION BUTTON */}

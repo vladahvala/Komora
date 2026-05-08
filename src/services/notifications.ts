@@ -19,7 +19,7 @@ export const sendExpirationNotification = async (name: string) => {
     body: `Консервація "${name}" просрочена!`,
     android: {
       channelId: 'conservations-channel',
-      smallIcon: 'ic_notification',
+      smallIcon: 'ic_launcher_foreground',
       color: '#00B4BF',
       pressAction: {
         id: 'default',

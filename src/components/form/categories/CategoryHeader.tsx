@@ -15,7 +15,7 @@ const CategoryHeader: React.FC<CategoryHeaderProps> = ({ title, backRoute }) => 
   return (
     <View style={styles.headerContainer}>
       <TouchableOpacity
-        onPress={() => navigation.navigate(backRoute)}
+        onPress={() => navigation.goBack()}
         style={styles.arrowWrapper}
         activeOpacity={1}
       >
