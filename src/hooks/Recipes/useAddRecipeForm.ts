@@ -33,13 +33,13 @@ export const useAddRecipeForm = () => {
   const handleAddRecipe = () => {
     // Validate name
     if (!name) {
-      setModalMessage('Enter recipe name!');
+      setModalMessage('Введіть назву рецепту!');
       setModalVisible(true);
       return;
     }
     // Validate category
     if (!selectedCategory) {
-      setModalMessage('Select a category!');
+      setModalMessage('Оберіть категорію!');
       setModalVisible(true);
       return;
     }

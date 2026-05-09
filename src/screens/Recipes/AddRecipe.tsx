@@ -3,6 +3,7 @@ import {
   View, Text, StyleSheet, TextInput, ScrollView,
   Pressable, 
 } from 'react-native';
+import { useFocusEffect } from '@react-navigation/native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import { useNavigation, NavigationProp } from '@react-navigation/native';
@@ -17,14 +18,16 @@ import { useAddRecipeForm } from '../../hooks/Recipes/useAddRecipeForm';
 const AddRecipe = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const scrollRef = useRef<ScrollView>(null);
-
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      scrollRef.current?.scrollTo({ y: 0, animated: false });
-    }, 0);
   
-    return () => clearTimeout(timeout);
-  }, []);
+  useFocusEffect(
+    React.useCallback(() => {
+      const timer = setTimeout(() => {
+        scrollRef.current?.scrollTo({ y: 0, animated: false });
+      }, 50);
+  
+      return () => clearTimeout(timer);
+    }, [])
+  );
 
   const {
     // Form fields
@@ -58,10 +61,10 @@ const AddRecipe = () => {
           setCategoryModalVisible(false);
         }}
       >
-      <ScrollView 
+      <ScrollView
         ref={scrollRef}
-        contentContainerStyle={styles.scrollContent} 
-        showsVerticalScrollIndicator={false} 
+        // onContentSizeChange={scrollToTop}
+        showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
       >
         <View style={styles.headerContainer}>
