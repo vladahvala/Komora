@@ -57,7 +57,6 @@ export const useCardOther = (itemName: string) => {
   // Update image locally and in context
   const handleImageChange = (uri: string) => {
     setImageUri(uri);
-    if (currentItem) updateImage(currentItem.name, uri);
   };
 
   // Delete history entry by date

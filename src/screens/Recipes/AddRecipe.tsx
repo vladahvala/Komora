@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React, { useRef } from 'react';
 import { 
   View, Text, StyleSheet, TextInput, ScrollView,
   Pressable, 
@@ -18,7 +18,7 @@ import { useAddRecipeForm } from '../../hooks/Recipes/useAddRecipeForm';
 const AddRecipe = () => {
   const navigation = useNavigation<NavigationProp<RootStackParamList>>();
   const scrollRef = useRef<ScrollView>(null);
-  
+
   useFocusEffect(
     React.useCallback(() => {
       const timer = setTimeout(() => {
