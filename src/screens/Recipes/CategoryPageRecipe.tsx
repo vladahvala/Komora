@@ -38,7 +38,7 @@ const CategoryPageRecipe = () => {
         ListHeaderComponent={
           <View style={{ paddingTop: hp(5), marginBottom: hp(2) }}>
           
-            <CategoryHeader title={category} backRoute="MainMenu" />
+            <CategoryHeader title={category}/>
 
             {filteredRecipes.length > 0 ? (
               <IconToggle isBigIcon={isBigIcon} onToggle={toggleIcon} />

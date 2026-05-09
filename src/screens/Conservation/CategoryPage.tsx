@@ -30,7 +30,7 @@ const CategoryPage = () => {
         contentContainerStyle={styles.contentContainer}
         ListHeaderComponent={
           <View style={styles.listHeaderContainer}>
-            <CategoryHeader title={category} backRoute="MainMenu" />
+            <CategoryHeader title={category} />
             {filteredConservations.length > 0 ? (
               <IconToggle isBigIcon={isBigIcon} onToggle={toggleIcon} />
             ) : (

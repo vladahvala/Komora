@@ -6,7 +6,7 @@ import { RootStackParamList } from '../../../navigation';
 
 interface CategoryHeaderProps {
   title: string;
-  backRoute: keyof RootStackParamList; 
+  backRoute?: keyof RootStackParamList; 
 }
 
 const CategoryHeader: React.FC<CategoryHeaderProps> = ({ title, backRoute }) => {
@@ -15,7 +15,13 @@ const CategoryHeader: React.FC<CategoryHeaderProps> = ({ title, backRoute }) => 
   return (
     <View style={styles.headerContainer}>
       <TouchableOpacity
-        onPress={() => navigation.goBack()}
+     onPress={() => {
+      if (backRoute) {
+        navigation.navigate(backRoute as never);
+      } else {
+        navigation.goBack();
+      }
+    }}
         style={styles.arrowWrapper}
         activeOpacity={1}
       >
