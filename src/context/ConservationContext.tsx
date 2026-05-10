@@ -306,9 +306,10 @@ export const ConservationProvider = ({ children }: Props) => {
         jar1_05l: 0,
       };
   
-      const newConservations = conservations.map(item => {
+      const newConservations = conservations
+      .map(item => {
         if (item.name !== itemName) return item;
-  
+    
         const prevJarCounts = item.history[year]?.jarCounts || {
           jar2_3l: 0,
           jar4_2l: 0,
@@ -316,7 +317,7 @@ export const ConservationProvider = ({ children }: Props) => {
           jar2_1l: 0,
           jar1_05l: 0,
         };
-  
+    
         // diff
         (Object.keys(prevJarCounts) as (keyof JarCounts)[]).forEach(key => {
           const diff = prevJarCounts[key] - newJarCounts[key];
@@ -324,12 +325,11 @@ export const ConservationProvider = ({ children }: Props) => {
             jarsToReturn[key] = diff;
           }
         });
-  
-        // перевірка: чи всі банки = 0
+    
         const allZero = Object.values(newJarCounts).every(v => v === 0);
-  
-        // якщо всі 0 -> видаляємо рік з history
+    
         const updatedHistory = { ...item.history };
+    
         if (allZero) {
           delete updatedHistory[year];
         } else {
@@ -339,12 +339,31 @@ export const ConservationProvider = ({ children }: Props) => {
             notified: item.history[year]?.notified ?? false,
           };
         }
-  
+    
+        const totalRemaining = Object.values(updatedHistory).reduce(
+          (sum: number, historyItem: any) => {
+            return (
+              sum +
+              Object.values(historyItem.jarCounts).reduce(
+                (s: number, v: any) => s + Number(v),
+                0
+              )
+            );
+          },
+          0
+        );
+    
+        // якщо банок не залишилось → видаляємо картку
+        if (totalRemaining === 0) {
+          return null;
+        }
+    
         return {
           ...item,
           history: updatedHistory,
         };
-      });
+      })
+      .filter(Boolean) as ConservationItem[];
   
       // adding jars to empty
       setEmptyJars(prev => {
