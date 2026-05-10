@@ -33,6 +33,7 @@ const DatePickerInline: React.FC<Props> = ({ label, date, onChange }) => {
           value={date}
           mode="date"
           display="default"
+          maximumDate={new Date()} 
           onChange={(_, selectedDate) => {
             setShowPicker(false);
             if (selectedDate) onChange(selectedDate);

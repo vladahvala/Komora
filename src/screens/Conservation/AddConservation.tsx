@@ -21,7 +21,11 @@ const AddConservation = () => {
   const { addConservation } = useConservation();
   const form = useConservationForm(addConservation);
 
-  const years = ['2021', '2022', '2023', '2024', '2025', '2026'];
+  const currentYear = new Date().getFullYear();
+
+  const years = Array.from({ length: 6 }, (_, i) =>
+    String(currentYear - (5 - i))
+  );
 
   return (
     // MAIN CONTAINER
