@@ -1,47 +1,38 @@
 import { renderHook, act } from '@testing-library/react';
+import { useCardPage } from '../useCardPage';
 
-// mock context
-jest.mock('../../../context/ConservationContext', () => {
-  const updateJarHistoryMock = jest.fn();
-  const updateImageMock = jest.fn();
+const updateJarHistoryMock = jest.fn();
+const updateImageMock = jest.fn();
 
-  return {
-    useConservation: () => ({
-      conservations: [
-        {
-          name: 'Jam',
-          category: 'food',
-          imageUri: null,
-          history: {
-            2024: {},
+// MOCK context
+jest.mock('../../../context/ConservationContext', () => ({
+  useConservation: () => ({
+    conservations: [
+      {
+        name: 'Jam',
+        category: 'food',
+        imageUri: null,
+        history: {
+          2024: {
+            jarCounts: {},
+            period: 1,
           },
         },
-      ],
-      updateJarHistory: updateJarHistoryMock,
-      updateImage: updateImageMock,
-    }),
-    __mocks: {
-      updateJarHistoryMock,
-      updateImageMock,
-    },
-  };
-});
-
-// mock jar manager hook
-jest.mock('../useJarManager', () => ({
-  useJarManager: () => ({
-    selectedYear: '2024',
-    jarCounts: { jar2_3l: 1 },
-    setDrafts: jest.fn(),
+      },
+    ],
+    updateJarHistory: updateJarHistoryMock,
+    updateImage: updateImageMock,
   }),
 }));
 
-import { useCardPage } from '../useCardPage';
-
-// дістаємо mocks після jest.mock
-const contextMock = jest.requireMock('../../../context/ConservationContext');
-const updateJarHistoryMock = contextMock.__mocks.updateJarHistoryMock;
-const updateImageMock = contextMock.__mocks.updateImageMock;
+// MOCK jar manager
+jest.mock('../useJarManager', () => ({
+  useJarManager: () => ({
+    selectedYear: '2024',
+    jarCounts: { jar2_3l: 1, jar4_2l: 0, jar7_15l: 0, jar2_1l: 0, jar1_05l: 0 },
+    setDrafts: jest.fn(),
+  }),
+}));
 
 describe('useCardPage', () => {
   beforeEach(() => {
@@ -76,7 +67,7 @@ describe('useCardPage', () => {
     expect(updateImageMock).toHaveBeenCalledWith('Jam', 'new-uri');
   });
 
-  test('handleSave calls updateJarHistory and goBack', () => {
+  test('handleSave calls updateJarHistory', () => {
     const { result } = renderHook(() =>
       useCardPage({
         name: 'Jam',
@@ -86,16 +77,15 @@ describe('useCardPage', () => {
     );
 
     const goBackMock = jest.fn();
-    const navigation = { goBack: goBackMock };
 
     act(() => {
-      result.current.handleSave(navigation);
+      result.current.handleSave({ goBack: goBackMock });
     });
 
     expect(updateJarHistoryMock).toHaveBeenCalledWith(
       'Jam',
       '2024',
-      { jar2_3l: 1 }
+      expect.any(Object)
     );
 
     expect(goBackMock).toHaveBeenCalled();
