@@ -64,7 +64,15 @@ const AddOthers = () => {
             <LabeledInput label="Назва" value={name} onChangeText={setName} />
 
             {/* PACKS COUNT INPUT */}
-            <LabeledInput label="Кількість упаковок/пляшок/банок" value={packsCount} onChangeText={setPacksCount} />
+            <LabeledInput 
+              label="Кількість упаковок/пляшок/банок"
+              value={packsCount}
+              keyboardType="numeric"
+              onChangeText={(text) => {
+                const onlyNumbers = text.replace(/[^0-9]/g, '');
+                setPacksCount(onlyNumbers);
+              }}
+            />
 
             {/* DATE */}
             <DatePickerInput

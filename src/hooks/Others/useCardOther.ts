@@ -10,7 +10,13 @@ import { useOthers } from '../../context/OthersContext';
 const normalizeName = (name: string) => name.trim().replace(/\s+/g, ' ').toLowerCase();
 
 export const useCardOther = (itemName: string) => {
-  const { others, updateCount, updateImage, deleteHistory } = useOthers();
+  const { 
+    others, 
+    updateCount, 
+    updateImage, 
+    deleteHistory,
+    deleteOther
+  } = useOthers();
 
     // Find the current product by normalized name
     const currentItem = others.find(o => normalizeName(o.name) === normalizeName(itemName));
@@ -68,8 +74,7 @@ export const useCardOther = (itemName: string) => {
     setDraftHistory(updated);
   
     setSelectedDate(updated[0]?.date || null);
-  
-    deleteHistory(currentItem.name, date);
+
   };
   // Update count for selected date
   const handleUpdateCount = (count: number) => {
@@ -83,20 +88,37 @@ export const useCardOther = (itemName: string) => {
   };
 
   // Save changes (image updates) and optionally call onFinish
-const handleSave = (onFinish?: () => void) => {
-  if (currentItem) {
+  const handleSave = (onFinish?: () => void) => {
+    if (!currentItem) return;
+  
+    // якщо всього 0 — видаляємо всю картку
+    if (editedTotal <= 0) {
+      deleteOther(currentItem.name);
+  
+      if (onFinish) onFinish();
+      return;
+    }
+  
     if (imageUri) {
       updateImage(currentItem.name, imageUri);
     }
-
-    if (selectedDate) {
-      updateCount(currentItem.name, editedCount, selectedDate);
-    }
-  }
-
-  if (onFinish) onFinish();
-};
-
+  
+    // видаляємо дати яких більше нема
+    currentItem.history.forEach(h => {
+      const stillExists = draftHistory.find(d => d.date === h.date);
+  
+      if (!stillExists) {
+        deleteHistory(currentItem.name, h.date);
+      }
+    });
+  
+    // оновлюємо count
+    draftHistory.forEach(h => {
+      updateCount(currentItem.name, h.count, h.date);
+    });
+  
+    if (onFinish) onFinish();
+  };
 
 
   return {
