@@ -89,18 +89,21 @@ export const useJarManager = (currentItem: any) => {
   );
 
   const totalJarsAllYears = currentItem
-    ? Object.entries(currentItem.history).reduce((sum, [year, yearData]: any) => {
-        const dataToCount =
-          drafts[year] ?? yearData.jarCounts ?? emptyJarCounts;
+  ? Object.entries(currentItem.history).reduce((sum, [year, yearData]: any) => {
 
-        const yearSum = Object.values(dataToCount).reduce(
-          (s, val) => s + val,
-          0
-        );
+      const dataToCount =
+        year === selectedYear
+          ? jarCounts
+          : drafts[year] ?? yearData.jarCounts ?? emptyJarCounts;
 
-        return sum + yearSum;
-      }, 0)
-    : 0;
+      const yearSum = Object.values(dataToCount).reduce(
+        (s, val) => s + val,
+        0
+      );
+
+      return sum + yearSum;
+    }, 0)
+  : 0;
 
   const selectedHistory = currentItem?.history[selectedYear];
 
