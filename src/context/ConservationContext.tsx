@@ -135,22 +135,27 @@ export const ConservationProvider = ({ children }: Props) => {
   
           const updatedHistory = { ...item.history };
   
-          for (const [year, data] of Object.entries(item.history)) {
-            const period = data.period ?? 0;
-  
-            const startDate = new Date(Number(year), 0, 1);
-            const expirationDate = new Date(startDate);
-            expirationDate.setFullYear(expirationDate.getFullYear() + period);
-  
-            if (new Date() >= expirationDate && !data.notified) {
-              await sendExpirationNotification(item.name);
-  
-              updatedHistory[year] = {
-                ...data,
-                notified: true,
-              };
+          const currentYear = new Date().getFullYear();
+
+            for (const [year, data] of Object.entries(item.history)) {
+              const period = data.period ?? 0;
+
+              const startDate = new Date(Number(year), 0, 1);
+              const expirationDate = new Date(startDate);
+              expirationDate.setFullYear(startDate.getFullYear() + period);
+
+              const isExpired = new Date() >= expirationDate;
+              const alreadyNotified = data.lastNotifiedYear === currentYear;
+
+              if (isExpired && !alreadyNotified) {
+                await sendExpirationNotification(item.name);
+
+                updatedHistory[year] = {
+                  ...data,
+                  lastNotifiedYear: currentYear,
+                };
+              }
             }
-          }
   
           return { ...item, history: updatedHistory };
         })
