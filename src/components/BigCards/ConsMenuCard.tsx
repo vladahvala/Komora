@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, Pressable, StyleSheet, Dimensions } from 'react-native';
 import { Shadow } from 'react-native-shadow-2';
 import { heightPercentageToDP as hp } from 'react-native-responsive-screen';
@@ -43,6 +43,10 @@ const ConsMenuCard = ({ item, index }: ConsMenuCardProps) => {
     },
     0
   );
+  
+  // useEffect(() => {
+  //   console.log("📊 ITEM HISTORY:", item.history);
+  // }, [item.history]);
   
   return (
     <Pressable

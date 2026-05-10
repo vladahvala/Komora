@@ -62,7 +62,7 @@ describe('useAddRecipeForm', () => {
     expect(result.current.modalVisible).toBe(true);
 
     expect(result.current.modalMessage).toBe(
-      'Enter recipe name!'
+      'Введіть назву рецепту!'
     );
   });
 
@@ -82,7 +82,7 @@ describe('useAddRecipeForm', () => {
     expect(result.current.modalVisible).toBe(true);
 
     expect(result.current.modalMessage).toBe(
-      'Select a category!'
+      'Оберіть категорію!'
     );
   });
 

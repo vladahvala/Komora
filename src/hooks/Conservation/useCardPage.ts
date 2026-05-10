@@ -41,27 +41,22 @@ export const useCardPage = (item: any) => {
   // Image Update
   const handleImageChange = (uri: string) => {
     setImageUri(uri);
+    if (currentItem) updateImage(currentItem.name, uri);
   };
 
   // save changes
   const handleSave = (navigation: any) => {
     if (!currentItem) return;
-  
-    updateJarHistory(
-      currentItem.name,
-      jarManager.selectedYear,
-      jarManager.jarCounts
-    );
-  
-    updateImage(currentItem.name, imageUri);
-  
+
+    updateJarHistory(currentItem.name, jarManager.selectedYear, jarManager.jarCounts);
+
     // clear drafts
     jarManager.setDrafts(d => {
       const copy = { ...d };
       delete copy[jarManager.selectedYear];
       return copy;
     });
-  
+
     navigation.goBack();
   };
 

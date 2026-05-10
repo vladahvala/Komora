@@ -143,11 +143,7 @@ export const ConservationProvider = ({ children }: Props) => {
             expirationDate.setFullYear(expirationDate.getFullYear() + period);
   
             if (new Date() >= expirationDate && !data.notified) {
-              try {
-                await sendExpirationNotification(item.name);
-              } catch (e) {
-                console.log('Notification failed:', e);
-              }
+              await sendExpirationNotification(item.name);
   
               updatedHistory[year] = {
                 ...data,
