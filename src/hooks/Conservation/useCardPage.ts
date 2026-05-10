@@ -26,7 +26,13 @@ export const useCardPage = (item: any) => {
   const [categoryDropdownVisible, setCategoryDropdownVisible] = useState(false);
 
   // IMAGE
-  const [imageUri, setImageUri] = useState<string | null>(item.imageUri || null);
+  const [imageDraft, setImageDraft] = useState<string | null>(
+    item.imageUri || null
+  );
+  
+  const handleImageChange = (uri: string) => {
+    setImageDraft(uri);
+  };
 
   // Dropdown control
   const [openDropdown, setOpenDropdown] = useState<null | 'category' | 'year'>(null);
@@ -37,12 +43,6 @@ export const useCardPage = (item: any) => {
       ? Object.keys(currentItem.history).sort((a, b) => Number(a) - Number(b))
       : [];
   }, [currentItem]);
-
-  // Image Update
-  const handleImageChange = (uri: string) => {
-    setImageUri(uri);
-    if (currentItem) updateImage(currentItem.name, uri);
-  };
 
   // save changes
   const handleSave = (navigation: any) => {
@@ -56,6 +56,10 @@ export const useCardPage = (item: any) => {
       delete copy[jarManager.selectedYear];
       return copy;
     });
+
+    if (imageDraft !== currentItem.imageUri) {
+      updateImage(currentItem.name, imageDraft || '');
+    }
 
     navigation.goBack();
   };
@@ -71,7 +75,7 @@ export const useCardPage = (item: any) => {
     setCategoryDropdownVisible,
   
     // Image Handling 
-    imageUri,
+    imageUri: imageDraft,
     handleImageChange,
   
     // Years 
