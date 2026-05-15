@@ -35,7 +35,7 @@ The goal of **Komora** is to:
 
 
 
-# 🔧 Tech Stack (planned)
+# 🔧 Tech Stack
 **React Native / Expo** – for cross-platform mobile development
 
 **AsyncStorage or SQLite** – for local data persistence
