@@ -21,15 +21,15 @@ The goal of **Komora** is to:
 
 📝 Save and view preservation recipes, including ingredients and preparation methods
 
-📷 Attach photos to each jar or recipe for easy identification
+📷 Attach photos to jars and recipes for easy identification
 
-📊 Provide a clear overview of preserved food stock at home
+📊 Provide a clear overview of stored preserved goods
 
-🗃️ Sort recipes and jars by category (e.g., jams, compotes, fermented, etc.)
+🗃️ Sort recipes and jars by category (e.g., jams, compotes, fermented foods, etc.)
 
 🧮 Track the number of empty jars available for future use
 
-⏳ Monitor how long each set of preserved items has been stored and notify when it's time to consume it
+⏳ Monitor storage time and notify users when items are close to expiration
 
 
 
@@ -46,22 +46,5 @@ The goal of **Komora** is to:
 
 
 
-# ✨ Planned Features
-- Inventory dashboard with categories (Jam, Fermented, etc.)
-
-- Recipe library with photo support
-
-- Add/Edit/Delete jars and recipes
-
-- Quantity tracking for each type of preserved item and empty jars
-
-- Tracking of expiring sets
-
-- Optional future features: reminders for expiring item sets
-
-
-
-
-
 # 🗂️ Project Status
-🟡 In design phase - the Figma mockups are ready, and development will begin soon
+🟢 Project completed — the mobile application has been fully implemented based on the Figma design.
