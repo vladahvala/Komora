@@ -38,7 +38,7 @@ The goal of **Komora** is to:
 # 🔧 Tech Stack
 **React Native / Expo** – for cross-platform mobile development
 
-**AsyncStorage or SQLite** – for local data persistence
+**AsyncStorage** – for local data persistence
 
 **Figma** – for UI/UX design
 
